@@ -1,0 +1,391 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}레몬::추가하기{% endblock title %}
+
+{% block nav %}
+        <div id="nav">
+            <div style="margin-top: 10px;">
+            
+            <div style="margin-left:15px; float:left; width:35%;">
+                <a style="color: #fff;" href="javascript:history.back();"<i class="fas fa-arrow-left"></i></a><!--<img style="position: absolute; margin-left:15px;" onclick="location.href='calendar'" src="../../media/lemonlogo_white.png" width="200px"> -->
+            </div>
+        </div>
+        <div style="float:right; margin-right:20px;">
+            <i style="font-size: 30px;" class="fas fa-bell"></i>
+        </div>
+        </div>
+        {% endblock %}
+
+{% block container %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700;900&family=Pacifico&display=swap" rel="stylesheet"></head>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<style>
+    .income_div{
+        display: none;
+    }
+    .addEvent-wrap{
+        position: relative;
+        margin-top: 5.5rem;
+        max-width: 768px;
+        border: 1px solid rgb(202, 202, 202);
+        box-shadow: 2px 3px 4px 1px rgb(202, 202, 202);
+        border-radius: 15px;
+        padding: 15px;
+    }
+    .list{
+        text-align: center;
+    }
+    input[type="radio"] {
+        display: none;
+    }
+    th{
+        white-space: nowrap;
+    }
+    label {
+    width: 100px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    display: inline-block;
+    border-radius: 15px;
+    text-align: center;
+    text-decoration: none;
+    border: solid 1px #4C8AE5;
+    transition: 0.25s;
+    padding: 6px 18px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin: 3px;
+    }
+    input[type="radio"]:checked + label {
+    width: 100px;
+    background: #4C8AE5;
+    color: #fff;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+    .span_div,.income_div{
+        padding: 5px;
+    }
+    .span_list_title{
+        color: #000;
+        text-decoration: none;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 500;
+        font-size: 1.2rem;
+    }
+    .input_span{
+        width: 250px;
+        padding-bottom: 5px;
+        font-size: 1.2rem;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        text-align: right;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid #767676;
+    }
+    .span_list_select{
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        width:250px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight:400;
+        font-size:1.3rem;
+    }
+    .income_list_title{
+        float: left;
+        margin-top: 15px;
+        margin-left: 10px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 600;
+        font-size: 1.4rem;
+        margin-right: 2rem;
+    }
+    .input_textarea{
+        width: 250px;
+        overflow:visible;
+        font-size: 1.3rem;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid #767676;
+        resize: none;
+
+    }
+    .addBtn{
+        border: 1px solid transparent;
+        border-radius: 10px;
+        width: 100%;
+        height: 60px;
+        font-weight: bold;
+        font-size: 1.3rem;
+        color: #fff;
+        background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+    }
+
+    /*datepicker CSS */
+    .ui-widget-header { border: 0px solid #dddddd; background: #fff; } 
+    .ui-datepicker-calendar>thead>tr>th { font-size: 14px !important; } 
+    .ui-datepicker .ui-datepicker-header { position: relative; padding: 10px 0; } 
+    .ui-state-default,
+    .ui-widget-content .ui-state-default,
+    .ui-widget-header .ui-state-default,
+    .ui-button,
+    html .ui-button.ui-state-disabled:hover,
+    html .ui-button.ui-state-disabled:active { border: 0px solid #c5c5c5; background-color: transparent; font-weight: normal; color: #454545; text-align: center; } 
+    .ui-datepicker .ui-datepicker-title { margin: 0 0em; line-height: 16px; text-align: center; font-size: 14px; padding: 0px; font-weight: bold; } 
+    .ui-datepicker { display: none; background-color: #fff; border-radius: 4px; margin-top: 10px; margin-left: 0px; margin-right: 0px; padding: 20px; padding-bottom: 10px; width: 300px; box-shadow: 10px 10px 40px rgba(0, 0, 0, 0.1); } 
+    .ui-widget.ui-widget-content { border: 1px solid #eee; } 
+    #datepicker:focus>.ui-datepicker { display: block; } 
+    .ui-datepicker-prev,
+    .ui-datepicker-next { cursor: pointer; } 
+    .ui-datepicker-next { float: right; } 
+    .ui-state-disabled { cursor: auto; color: hsla(0, 0%, 80%, 1); } 
+    .ui-datepicker-title { text-align: center; padding: 10px; font-weight: 100; font-size: 20px; } 
+    .ui-datepicker-calendar { width: 100%; } 
+    .ui-datepicker-calendar>thead>tr>th { padding: 5px; font-size: 20px; font-weight: 400; } 
+    .ui-datepicker-calendar>tbody>tr>td>a { color: #000; font-size: 12px !important; font-weight: bold !important; text-decoration: none;}
+    .ui-datepicker-calendar>tbody>tr>.ui-state-disabled:hover { cursor: auto; background-color: #fff; } 
+    .ui-datepicker-calendar>tbody>tr>td { border-radius: 100%; width: 44px; height: 30px; cursor: pointer; padding: 5px; font-weight: 100; text-align: center; font-size: 12px; } 
+    .ui-datepicker-calendar>tbody>tr>td:hover { background-color: transparent; opacity: 0.6; } 
+    .ui-state-hover,
+    .ui-widget-content .ui-state-hover,
+    .ui-widget-header .ui-state-hover,
+    .ui-state-focus,
+    .ui-widget-content .ui-state-focus,
+    .ui-widget-header .ui-state-focus,
+    .ui-button:hover,
+    .ui-button:focus { border: 0px solid #cccccc; background-color: transparent; font-weight: normal; color: #2b2b2b; } 
+    .ui-widget-header .ui-icon { background-image: url('../../media/btns.png'); } 
+    .ui-icon-circle-triangle-e { background-position: -20px 0px; background-size: 36px; } 
+    .ui-icon-circle-triangle-w { background-position: -0px -0px; background-size: 36px; } 
+    .ui-datepicker-calendar>tbody>tr>td:first-child a { color: red !important; } 
+    .ui-datepicker-calendar>tbody>tr>td:last-child a { color: #0099ff !important; } 
+    .ui-datepicker-calendar>thead>tr>th:first-child { color: red !important; } 
+    .ui-datepicker-calendar>thead>tr>th:last-child { color: #0099ff !important; } 
+    .ui-state-highlight,
+    .ui-widget-content .ui-state-highlight,
+    .ui-widget-header .ui-state-highlight { border: 0px; background: #f1f1f1; border-radius: 50%; padding-top: 10px; padding-bottom: 10px; } 
+    .inp { padding: 10px 10px; background-color: #f1f1f1; border-radius: 4px; border: 0px; } 
+    .inp:focus { outline: none; background-color: #eee; } 
+</style>
+
+<div class="addEvent-wrap">
+    <div class="list">
+        <input type="radio" name="jtags" value="지출" id="span" checked>
+        <label for="span">지출</label>
+        <input type="radio" name="jtags" value="수입" id="income">
+        <label for="income">수입</label>
+    </div>
+
+    <form action="{%url 'accounts:add_calendar' %}" method="POST">
+        {% csrf_token %}
+    <div class="span_div" id="span_div">
+        <div class="span_list">
+                <input type="text" style="display: none;" readonly name="user" value="{{user.user_id}}"/>
+                <input type="text" style="display: none;" readonly name="kind" value="지출"/>
+            <table min-width="300">
+                <tr> <!-- 행선언 -->
+                    <th width="110" height="60"><a class="span_list_title">금액</a></th>
+                    <th width="260" style="text-align: end;"><input class="input_span" type="number" name="amount" value="{{form.amount.value|default_if_none:''}}"></th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="110" height="60"><a class="span_list_title">소비처</a></th>
+                    <th width="260" style="text-align: end;"><input class="input_span" type="text" name="place" value="{{form.place.value|default_if_none:''}}"></th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="110" height="60"><a class="span_list_title">날짜</a></th>
+                    <th width="260" style="text-align: end;"><input class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{form.spend_date.value|default_if_none:''}}"></th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="110" height="60"><a class="span_list_title">결제수단</a></th>
+                    <th width="260" style="text-align: end;"><select class="span_list_select" name="way">
+                            <option style="text-align: center;" value='' selected>-------- 선택하세요 --------</option>
+                            <option value='1'>현금</option>
+                            <option value='2'>카드</option>    
+                        </select></th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="110" height="60"><a class="span_list_title">카테고리</a></th>
+                    <th width="260" style="text-align: end;"><select class="span_list_select" name="category">
+                        <option style="text-align: center;" value='' selected>-------- 선택하세요 --------</option>
+                        <option value='1'>식비</option>
+                        <option value='2'>카페/간식</option>
+                        <option value='3'>술/유흥</option>
+                        <option value='4'>생활</option>
+                        <option value='5'>쇼핑</option>
+                        <option value='6'>뷰티/미용</option>
+                        <option value='7'>교통</option>
+                        <option value='8'>자동차</option>
+                        <option value='9'>주거/통신</option>
+                        <option value='10'>의료/건강</option>
+                        <option value='11'>문화/여가</option>
+                        <option value='12'>여행/숙박</option>
+                        <option value='13'>교육/학습</option>
+                        <option value='14'>반려동물</option>
+                        <option value='15'>경조/선물</option>
+                        <option value='16'>기타</option>
+                        </select>
+                    </th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="110" height="60"><a class="span_list_title">카드사</a></th>
+                    <th width="260" style="text-align: end;"> <input class="input_span" type="text" id="cardlist" name="card" value="{{form.card.value|default_if_none:''}}"></th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="110" height="60"><a class="span_list_title">메모</a></th>
+                    <th width="260" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo"></textarea></th>
+                </tr>
+            </table>
+        </div>
+
+        <div style="text-align:center; margin-top:15px;">
+        <button class="addBtn" name="spendbtn" value="spendbtn" type="submit">추가하기</button>
+        </div>
+    </form>
+    </div>
+
+    <form action="{% url 'accounts:add_calendar' %}" method = "POST">
+        {% csrf_token %}
+    <div class="income_div" id="income_div">
+        <div class="income_list">
+
+                <input type="text" style="display: none;" readonly name="kind" id="kind" value="수입">
+                <input type="number" style="display: none;" readonly name="user" id="user_id" value="{{user.user_id}}">
+
+            <table min-width="300">
+                <tr> <!-- 행선언 -->
+                    <th width="100" height="60"><a class="span_list_title">수입수단</a></th>
+                    <th width="260" style="text-align: end;"><select class="span_list_select" name="income_way">
+                        <option style="text-align: center;" value='' selected>-------- 선택하세요 --------</option>
+                        <option value='1'>급여</option>
+                        <option value='2'>용돈</option>
+                        <option value='3'>금융수입</option>
+                        <option value='4'>사업수입</option>
+                        <option value='5'>기타</option>
+                    </select>
+                    </th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="100" height="60"><a class="span_list_title">날짜</a></th>
+                    <th width="260" style="text-align: end;"><input class="input_span" type="date" id="datepicker4" min="1900-01-01" max="2099-12-31" autocomplete="off" name="income_date" value="{{form.income_date.value|default_if_none:''}}"></th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="100" height="60"><a class="span_list_title">금액</a></th>
+                    <th width="260" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" value="{{form.amount.value|default_if_none:''}}"/></th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                <th width="100" height="60"><a class="span_list_title">메모</a></th>
+                <th width="260" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo"></textarea></th>
+            </tr>
+
+            </table>
+        </div>
+
+        <div style="text-align:center; margin-top:15px;">
+            <button class="addBtn" value="incomebtn" name="incomebtn" type="submit">추가하기</button>
+        </div>
+    </div>
+    </form>
+</div>
+
+<script>
+    $(function (){
+        $('input[type="radio"][id="span"]').on('click', function(){
+            var chkValue = $('input[type=radio][id="span"]:checked').val();
+            if(chkValue){
+                $('#span_div').css('display','block');
+                $('#income_div').css('display','none');
+            }            
+        });
+        $('input[type="radio"][id="income"]').on('click', function(){
+            var chkValue = $('input[type=radio][id="income"]:checked').val();
+            if(chkValue){
+                $('#income_div').css('display','block');
+                $('#span_div').css('display','none');
+            }            
+        });
+        
+    });
+
+    //textarea auto height increaze...
+    $("textarea.input_textarea").on('keydown keyup', function () {
+        $(this).height(1).height( $(this).prop('scrollHeight')+12 );	
+      });
+
+
+    $(function() {
+        var cardlist_Tags = [
+        "국민카드",
+        "롯데카드",
+        "BC카드",
+        "삼성카드",
+        "신한카드",
+        "하나카드",
+        "현대카드",
+        "농협카드",
+        "시티카드",
+        "카카오뱅크카드"
+        ];
+        $('#cardlist').autocomplete({
+            source: cardlist_Tags
+        });
+    });
+
+    /*
+    $(document).ready(function(){
+        //키를 누르거나 떼었을때 이벤트 발생
+        $("#numcomma").bind('keyup keydown',function(){
+            inputNumberFormat(this);
+        });
+    
+        //입력한 문자열 전달
+        function inputNumberFormat(obj) {
+            obj.value = comma(uncomma(obj.value));
+        }
+          
+        //콤마찍기
+        function comma(str) {
+            str = String(str);
+            return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+        }
+    
+        //콤마풀기
+        function uncomma(str) {
+            str = String(str);
+            return str.replace(/[^\d]+/g, '');
+        }
+    
+        //숫자만 리턴(저장할때)
+        //alert(cf_getNumberOnly('1,2./3g')); -> 123 return
+        function cf_getNumberOnly (str) {
+            var len      = str.length;
+            var sReturn  = "";
+    
+            for (var i=0; i<len; i++){
+                if ( (str.charAt(i) >= "0") && (str.charAt(i) <= "9") ){
+                    sReturn += str.charAt(i);
+                }
+            }
+            return sReturn;
+        }
+    });*/
+</script>
+
+{% endblock %}

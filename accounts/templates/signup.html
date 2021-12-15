@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css'%}">
+    <link rel="stylesheet" href="{% static 'css/swiper.css'%}">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/> -->
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+    <title>레몬::회원가입</title>
+</head>
+<style>
+.sms_btn{
+padding:5px;
+float:right;
+color:white;
+background:#4cbacf;
+border-radius:10px;
+position:relative;
+}
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    }
+
+.form-control {
+    display:inline-block;
+    width:100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 0px;
+    border-bottom: 1px solid #4cbacf;
+}
+
+table{
+width:100%;
+height:40px;
+text-align:center;
+position: sticky;
+top: 0px;
+z-index: 2;
+background: white;
+}
+body{
+margin:0px;}
+
+button{
+width:100%;
+padding:20px;
+margin-top:20px;
+background:#4cbacf;
+border:0px;
+border-radius:10px;
+color:white;
+}
+
+</style>
+
+<body>
+    <div class="swiper mySwiper">
+        <table>
+            <tr>
+                <th>회원 정보</th>
+                <th>추가 정보</th>
+            </tr>
+        </table>
+    <div class="swiper-scrollbar"></div>
+    <div class="swiper-wrapper">
+        <div class="swiper-slide">
+            <div class="input-form col-md-12 mx-auto" style="padding:20px;">
+                <form class="validation-form" method="POST" action="">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control"
+                                    id="uid" name="uid" placeholder="아이디를 입력해주세요." value="">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="password" class="form-control"
+                                    id="password" name="password" placeholder="비밀번호를 입력해주세요." value="">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="password" class="form-control"
+                                    id="password1" name="password1" placeholder="한번 더 비밀번호를 입력해주세요."
+                                    value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control"
+                                    id="name" name="name" placeholder="이름을 입력해주세요." value="">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력해주세요." value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3" style="text-align:left;">
+                            <input type="text" id="phonenumber" class="form-control"
+                                    name="phonenumber" placeholder="- 를 제외한 휴대폰번호"
+                                    style="width:85%;display:inline;">
+                            <a class="sms_btn" href="#" onclick="click_sms">발송</a>
+                        </div>
+                        <div class="input-style has-icon input-style-1 input-required" id="sms_cert_div"
+                                style="display: none">
+                            <span>인증번호</span>
+                            <d class="sms_btn" id="send_sms_cert_btn">확인</d>
+                            <d class="sms_time">
+                                남은시간(<d id="time">00:00</d>)
+                            </d>
+                            <input type="hidden" id="cert_id" value="">
+                            <input type="number" oninput="maxLengthCheck(this)" class="form-control"
+                                    style="padding-right: 140px;padding-left: 10px;" id="cert_key"
+                                    name="cert_key" placeholder="인증번호 입력">
+                        </div>
+
+                        <div class="help_txt" id="phone_number_help"></div>
+                    </div>
+                    <div class="custom-control custom-checkbox" style="text-align: left;">
+                        <!--<input type="checkbox" class="custom-control-input" id="agreement">-->
+                        <label class="custom-control-label" for="agreement">개인정보 수집 및 이용에 동의합니다.</label></div>
+                    <div class="mb-4"></div>
+                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="move_page(1)">다음</button>
+            </div>
+        </div>
+
+        <div class="swiper-slide">
+            <div class="row">
+                            <div class="input-form col-md-12 mx-auto" style="padding:20px;">
+                    <div class="col-md-6 mb-3">
+                        <input type="number" class="form-control"
+                                id="money" name="money" placeholder="월급" value="">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="datetime"
+                                class="form-control"
+                                id="moneydate"
+                                name="moneydate"
+                                placeholder="월급 입금"
+                                value="">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="number"
+                                class="form-control"
+                                id="fakemoney"
+                                name="fakemoney"
+                                placeholder="모의 투자금액"
+                                value="">
+                    </div>
+                                <div style="display:flex;justify-content: space-between;">
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="move_page(0)" style="width:48%; background:lightgrey">뒤로가기</button>
+                    <button class="btn btn-primary btn-lg btn-block" type="submit" value="signup" style="width:48%">회원가입</button>
+                                    </div>
+                                    </div>
+            </div>
+            </form>
+        </div>
+    </div>
+
+
+<script src="https://unpkg.com/swiper/js/swiper.min.js"></script>
+</body>
+<script>
+    var swiper = new Swiper(".mySwiper", {
+    observer: true,
+    observeParents: true,
+    scrollbar: {
+        el: ".swiper-scrollbar",
+        },
+        allowTouchMove:false,
+    });
+    
+        function move_page(index) {
+        swiper.slideTo(index)
+        }
+</script>
+</html>

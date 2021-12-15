@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}레몬::메인{% endblock title %}
+{% block nav %}{%endblock nav%}
+{% block container %}
+<style>
+    .titletxt{
+        text-align: center;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 500;
+        font-size: 1.5rem;
+    }
+    .sub-titletxt{
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        font-size: 0.95rem;
+        color: #666666;
+    }
+    #footer{
+        display: none !important;
+    }
+    .download-btn, .login1-btn{
+        font-family: 'Noto Sans KR', sans-serif;
+        width: 150px;
+        height: 35px;
+        background-color: #fff;
+        outline: none;
+        border: 1px solid gray;
+        border-radius: 5px;
+    }
+    a {
+		color:#202020;
+        text-decoration:none;
+        text-decoration-line: none;
+    }
+
+    a:link, a:visited, a:hover, a:active {
+		text-decoration:none;
+        text-decoration-line: none;
+        color:#202020;
+    }
+</style>
+<div style="text-align: center; padding-top:3rem; margin-bottom:2rem; width:100%;">
+    <a class="titletxt">가계부와 주식을 관리해보세요.</a><br>
+    <a class="sub-titletxt">나의 소비패턴을 기반으로 주식도 관리할수있습니다.</a>
+</div>
+<div style="text-align: center;  margin-bottom:2rem">
+<button style="margin-bottom: 1rem;" class="download-btn" type="button">
+    <img src="https://visualbank.io/wp-content/themes/qlip/imgs/google_play.png" alt="구글 플레이" width=15" scale="0">
+    <a style="margin-left:5px;">Download</a></button><br>
+<button class="login1-btn" type="button"><a href="{% url 'accounts:login' %}">로그인하러가기</a></button>
+</div>
+{% endblock container %}

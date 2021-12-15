@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}레몬::모의주식{% endblock title %}
+{% block container %}
+<style>
+    .bottom-nav-myinfo,.bottom-nav-myinfo a{
+        color: #FFD859;
+    }
+    .profile-wrap{
+        margin-bottom: 1.5rem;
+        padding: 3px 5px;
+        border: 1px solid #343D4C;
+        border-radius: 10px;
+        box-shadow: 1px 4px 5px 0px rgb(202, 202, 202);
+    }
+    .menu1-wrap{
+        padding: 3px 5px;
+        border: 1px solid #343D4C;
+        border-radius: 10px;
+        box-shadow: 1px 4px 5px 0px rgb(202, 202, 202);
+    }
+</style>
+<a>내정보</a><br>
+<div class="profile-wrap">
+    {% if user.is_authenticated %}
+<a>{{user.uid}} 님 안녕하세요.<br>(최근로그인 :{{user.last_login|date:"M d일 D H:i"}})</a><br>
+<a>보유 가상 자산 :{{user.fakemoney}}원</a>
+<a style="color: #FF4444;" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>
+{% else %}
+<a style="color: #4DABF7;" href="{% url 'accounts:login' %}"><i class="fas fa-sign-out-alt"></i> 로그인</a>
+{% endif %}
+</div>
+
+<div class="menu1-wrap">
+    <ul style="list-style: none;">
+        <li><a><i class="fas fa-wallet"></i> 자산설정</a></li>
+        <li><a><i class="fas fa-bullhorn"></i> 공지사항</a></li>
+        <li><a><i class="fas fa-exclamation-triangle"></i> 알림설정</a></li>
+    </ul>
+</div>
+
+
+
+{% endblock %}

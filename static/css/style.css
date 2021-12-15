@@ -1,0 +1,218 @@
+/*
+font-family: 'Nanum Gothic', sans-serif;
+font-family: 'Noto Sans KR', sans-serif;
+
+폰트는 무조건 rem으로 적용할것 (모바일 디바이스 또는 확대등 각종 대응을 위해서)
+html { font-size: 62.5%; } // 기본 폰트는 16px이지만 이거 덕분에 10px로 변경됨
+ex. 12rem -> 120px;
+    1.2rem -> 12px;
+*/
+
+@media screen and (min-width: 769px) {
+	:root{
+		--body-background-color: #F3F4F6;
+		--font-color: #4e4e4e;
+		--border-gray-color : #dadada;
+		--naver-green-color: #04c75a;
+		--naver-green-border-color: #06b350;
+	}
+
+	a {
+		color:#202020;
+        text-decoration:none;
+        text-decoration-line: none;
+    }
+
+    a:link, a:visited, a:hover, a:active {
+		text-decoration:none;
+        text-decoration-line: none;
+        color:#202020;
+    }
+
+	html{
+		margin: 0;
+		padding: 0;
+		font-family: 'Noto Sans KR', sans-serif;
+		-webkit-text-size-adjust: none;
+		width: 100%;
+		height: 100%;
+		font-size: 62.5%; /* 기본 폰트 10px로 고정*/
+	}
+
+	body{
+		font-family: 'Noto Sans KR', sans-serif;
+		background:var(--body-background-color);
+	}
+
+}
+
+*{
+	margin:0;
+	padding:0;
+}
+.logo-wrap{
+	width: 100%;
+}
+.logo-logo{
+	font-size: 100px;
+}
+.fa-lemon{
+	margin-left: 14rem;
+	text-align: center;
+	color: #FFCB6B;
+	font-size: 80px;
+	width: 150px;
+}
+.form_errors_view{
+	padding: 10px;
+	width: 100%;
+}
+.login-wrap{
+	font-family: 'Noto Sans KR', sans-serif;
+	font-size: 1.6rem;
+	font-weight: 400;
+	padding: 5px 15px;
+	margin: 3rem auto 0 auto;
+	width: 100%;
+	position: relative;
+	/*border: 1px solid black;*/
+	border-radius: 10px;
+}
+.id-input{
+	width: 100%;
+	height: 5rem;
+	margin-top: 0.5rem;
+	margin-bottom: 1rem;
+	border-radius: 40px;
+	border: 0.8px solid #9599A3;
+	background-color: #F5F5F5;
+	padding-left: 10px;
+}
+.pw-input{
+	width: 100%;
+	height: 5rem;
+	margin-bottom: 1rem;
+	border-radius: 40px;
+	border: 0.8px solid #9599A3;
+	background-color: #F5F5F5;
+	padding-left: 10px;
+}
+.login-btn{
+	font-family: 'Noto Sans KR', sans-serif;
+	font-size: 2rem;
+	font-weight: 400;
+	color: #fff;
+	margin: 1rem auto 4rem auto;
+	width: 100%;
+	height: 70px;
+	background: #C6FFDD;  /* fallback for old browsers */
+	background: -webkit-linear-gradient(to right, #ffe7b0, #FBD786, #f8bf3a);  /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to right, #ffe7b0, #FBD786, #f8bf3a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	border-radius: 50px;
+	border: 1px solid #fff;
+	outline: none;
+}
+.sns-login-wrap{
+	padding: 0 10px;
+	margin-top: 5rem;
+	width: 100%;
+}
+.sns-login-wrap a{
+	font-family: 'Noto Sans KR', sans-serif;
+	font-size: 1.4rem;
+	font-weight: 500;
+	color: #BDBDBD;
+}
+.sign-button-list{
+	list-style: none;
+	display: flex;
+	text-align: center;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-content: center;
+}
+
+.sign-button-list button{
+	font-family: 'Noto Sans KR', sans-serif;
+	font-size: 1.5rem;
+	font-weight: 500;
+	width: 50px;
+	height: 50px;
+	margin: 0.5rem auto;
+	border-radius: 50px;
+	border: 1px solid #BDBDBD;
+	outline: none;
+}
+.sign-button-list i{
+	font-size: 2rem;
+}
+.main-wrap{
+	width: 100%;
+	align-items:center;
+	position: relative;
+}
+
+.fa-qrcode
+{
+	color:var(--naver-green-color);
+}
+.fa-line{
+	color:var(--naver-green-color);
+}
+.fa-facebook-square
+{
+	color:#4064ac;
+}
+.fa-google {
+  background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.fa-comment{
+    color:#343740;
+}
+
+.Easy-sgin-in-wrap .sign-button-list li button span{
+	padding-left: 20px;
+	font-size: 18px;
+}
+.Easy-sgin-in-wrap .forget-msg{
+	color:var(--font-color);
+	font-size: 14px;
+	padding-top: 10px;
+
+}
+footer{
+   
+	padding-top: 95px;
+	padding-bottom: 15px;
+
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	width:768px;
+
+
+
+}
+.copyright-wrap{
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 15px;
+
+
+}
+footer .copyright-wrap span img{
+	width: 59px;
+	
+	height: 11px;
+}
+footer .copyright-wrap span{
+	font-size: 13px;
+	line-height: 15px;
+}

@@ -1,0 +1,581 @@
+{% extends 'base.html' %}
+{% load mytag %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}레몬::가계부{% endblock title %}
+{% block container %}
+
+
+<style>
+  /* fullcalendar CSS */
+  .fc-toolbar-chunk{
+    display: flex;
+  }
+  .fc-prev-button.fc-button.fc-button-primary,
+  .fc-next-button.fc-button.fc-button-primary{
+    background-color: transparent;
+    border-color: transparent;
+    color: #32BC8B;
+    margin: 0;
+  }
+  .fc-prev-button.fc-button.fc-button-primary:hover,
+  .fc-next-button.fc-button.fc-button-primary:hover,
+  .fc-prev-button.fc-button.fc-button-primary:active,
+  .fc-next-button.fc-button.fc-button-primary:active{
+    background-color: transparent;
+    border-color: transparent;
+    color: #4C8AE5;
+    font-weight: bold;
+    transition: 0.5s;
+    margin: 0;
+    border-color: transparent;
+  }
+  .fc-view-harness.fc-view-harness-active{
+    border-radius: 10px;
+    /*box-shadow: 2px 3px 4px 1px rgb(202, 202, 202);*/
+  }
+  .fc-toolbar-title{
+    font-weight: blod;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .fc .fc-col-header-cell-cushion {
+    display: inline-block;
+    padding: 2px 4px;
+  }
+  .fc-col-header-cell-cushion, .fc-daygrid-day-number {
+    color: black;
+    font-weight: bold;
+  }
+  .fc-event-title-container{
+    text-align: end;
+  }
+  .fc-day-sun {
+    color:#FF0000;
+    }
+    .fc-day-sun a{ color:#FF0000; }
+  .fc-day-sat {
+    color:blue;
+    }
+    .fc-day-sat a{ color:blue; }
+
+  /*End Fullcalendar CSS*/
+
+  .addevent-btn{
+    border-radius: 50%;
+    background-color: #4C8AE5;
+    font-size: 37px;
+    width: 65px;
+    height: 65px;
+    display: block;
+    position: absolute;
+    float: right;
+    bottom: 50px;
+    margin-bottom: 4rem;
+    right: 15px;
+    text-align: center;
+    z-index: 15;
+  }
+  
+  .bottom-nav-calendar{
+      color: #FFD859 !important;
+  }
+  .bottom-nav-calendar a{
+      color: #FFD859 !important;
+  }
+  .container-contents{
+    background-color: #F7F7F7;
+    margin: 4.5rem 0 !important;
+  }
+  .bottom-nav-search-stock a,
+  .bottom-nav-stock a,.bottom-nav-addlist a,
+  .bottom-nav-myinfo a{
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: #D1D6DA !important;
+  }
+  a {
+        text-decoration:none;
+        text-decoration-line: none;
+    }
+
+    a:link, a:visited, a:hover, a:active {
+    color: #202020;
+		text-decoration:none;
+    text-decoration-line: none;
+    }
+    html, body {
+        position: relative;
+        background-color: #F7F7F7;
+        height: 100%;
+    }
+    .swiper-container {
+        width: 100%;
+        height: 100%;
+        display: block;
+        }
+        .swiper-slide {
+        /*border: 1px solid pink;*/
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+        background: #F7F7F7;
+        padding: 0 -5px;
+        display: block;
+        /* Center slide text vertically 
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        flex-direction: column;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;*/
+        }
+        .swiper-pagination{
+          position: fixed;
+          border-radius: 20px;
+          width: 90%;
+          bottom:75px;
+          margin: 0 0 0 1.1rem;
+          text-align: center;
+          background-color: #F5F5F5;
+        }
+        .swiper-pagination-bullet {
+        color: #9599A3;
+        background-color: transparent;
+        float: left;
+        position: relative;
+        border-radius: 20px;
+        width: 25%;
+        height: 30px;
+        line-height: 20px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 13px;
+        padding-top: 5px;
+        }
+        .swiper-pagination-bullet-active {
+        transition-property: background-color;
+        transition-duration: 0.3s;
+        margin: auto;
+        width: 25%;
+        height: 28px;
+        border-radius: 2px;
+        color:#fff;
+        background-color: #4C8AE5;
+        border-radius: 20px;
+        padding-top: 5px;
+        }
+  .menu1{
+    border-radius: 15px;
+    text-align: left;
+    box-shadow: 2px 1px 6px 1px grey;
+    background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+  }
+  .amount-money{
+    padding: 0 5px;
+    background-color:#fff;
+    color:#3A3A3A;
+    border: 2px solid transparent;
+    box-shadow: 1px 1px 5px 1px gray;
+    border-radius:10px;
+    font-size: 35px;
+    font-weight:bold;
+
+  }
+  .amount-won{
+    margin-left:10px;
+    font-size:25px;
+    font-weight:bold;
+    color: #fff
+  }
+  .recom{
+    color: #808183;
+    font-weight: bold;
+    font-size: 30px;
+    margin-top: 5rem;
+  }
+  .modal-content{
+    margin-top: 50px;
+    border-radius: 30px;
+  }
+  .modal-title{
+    padding: 0 10px;
+    font-weight: bold;
+    border: 1.5px solid #32BC8B;
+    border-radius: 30px;
+    border-top: none;
+
+  }
+  .modal-header{
+    border-bottom: none;
+  }
+  .modal-body-text{
+    text-align: end;
+    margin: 10px 20px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    border-bottom: 1px solid;
+  }
+  .modal-footer{
+    border-top: none;
+    display: block;
+    text-align: center;
+  }
+  .addList-btn{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 25px;
+    color: #fff;
+    font-weight: bold;
+    width: 95%;
+    height: 75px;
+    border: 1px solid transparent;
+    border-radius: 15px;
+    box-shadow: 1px 1px 5px 1px gray;
+    background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+
+  }
+
+</style>
+
+<!-- Modal -->
+
+<div id="calendarModal" class="modal fade">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h3 id="modalTitle" class="modal-title"></h3>
+              <button type="button" onclick="close_btn()" id="close_btn" class="btn btn-default" data-dismiss="modal">X</button>
+
+          </div>
+          <div id="modalBody" class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" onclick="location.href='add_calendar'" id="add_event" class="addList-btn" data-dismiss="modal">내역추가</button>
+          </div>
+      </div>
+  </div>
+  </div>
+
+  <script>
+    function close_btn() {
+      $('#calendarModal').modal('hide');
+    }
+  </script>
+
+  <div class="addevent-btn">
+    <a style="color: #fff;" href="/add_calendar"><i class="fas fa-pencil-alt"></i></a>
+  </div>
+
+
+<div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+
+      <div class="swiper-slide" data-name="추천" data-hash="recom">
+
+      </div>
+
+      <div class="swiper-slide" data-name="요약" data-hash="summary">
+        <div class="menu1" style="margin: 5%; padding:10px;">
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-size: 22px; color:#fff; margin-top:10px; padding-left:1rem;"><strong>{{user.uid}}</strong>님의 <strong>{{month}}</strong> 누적금액</a><br>
+          
+          <div class="amountMoney" style="text-align:left; padding-left:15px; margin-top:0.5rem;">
+            <a id="amount-money1" style="display: none;">{{user.invest}}</a>
+            <a id="amount-money" class="amount-money"></a><a class="amount-won">won</a>
+          </div>
+
+          <script>
+            //DB에 저장된 usermoney에 천단위 ,(콤마) 찍어주는 스크립트
+            //1. display:none 상태인 amount-money1의 값을 가져온다.
+            var innerText = document.getElementById('amount-money1').innerText;
+            //2. 긁어온 값에 천단위 , 찍어주고 cn1 변수에 저장
+            const cn1 = innerText.toString()
+            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+            //3. cn1 변수에 저장된 값을 amount-money 값에 띄워줌
+            const cn1element = document.getElementById('amount-money');
+            cn1element.innerHTML = cn1;
+          </script>
+          
+          <div style="text-align:initial; padding-left:1rem;">
+            <div style="margin-top:0.5rem; margin-bottom:0.5rem; color: #fff;">
+              <a>지출</a> <a style="margin-left: 4rem; font-weight:bold;">{{Expenditure.amount__sum|intcomma}} won</a>
+            </div>
+            <div style="margin-bottom:2rem; color: #fff; width:fit-content; position:relative; padding-bottom:2px; border-bottom:1px solid #fff;">
+              <a>수익</a> <a style="margin-left: 4rem; font-weight:bold;">{{Income.amount__sum|intcomma}} won</a>
+            </div>
+          </div>
+      </div>
+
+      <div>
+      <div style="font-weight: bold;">소비 TOP5 카테고리</div>
+    <div>
+      <ol>
+        {% for category in Category %}
+        <li>
+          <span>{{ category.category }}</span>
+          <span>{{ category.amount|intcomma }}원</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div>
+  </div>
+
+    <div>
+    <div style="font-weight: bold;">소비 TOP5 카드사</div>
+    <div>
+      <ol>
+        {% for method in Method %}
+        <li>
+          <span>{{ method.card }}</span>
+          <span>{{ method.amount|intcomma }}원</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div>
+  </div>
+
+    
+  <div>
+    <div style="font-weight: bold;">소비 TOP5 기업명</div>
+    <div>
+      <ol>
+        {% for area in Area %}
+        <li>
+          <span>{{ area.place }}</span>
+          <span>{{ area.amount|intcomma }}원</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+
+    </div><!--- 요약 DIV 영역 끝-->
+
+      <div class="swiper-slide" data-name="내역" data-hash="list">
+  {% for detail in Detail_month %}
+    <div>
+      {% ifchanged detail.spend_date.day %}
+        <span style="font-weight: bold;">{{ detail.spend_date | date:'d D' }}</span>
+        <span class="money" style="font-weight: bold;">
+          {% if Income_day|find_income_money:detail.spend_date.day %}
+            <span style="color: blue;">+{{ Income_day|find_income_money:detail.spend_date.day|intcomma }}원</span>
+          {% endif %}
+          {% if Spend_day|find_spend_money:detail.spend_date.day %}
+            <span style="color: red;">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}원</span>
+          {% endif %}
+        </span>
+      {% endifchanged %}
+
+      <div>날짜: {{ detail.spend_date | date:'Y-m-d H:i' }}</div>
+      {% if detail.kind == '지출' %}
+        <div class="amount" style="color: red">-{{ detail.amount|intcomma }}원</div>
+      {% else %}
+        <div class="amount" style="color: blue">+{{ detail.amount|intcomma }}원</div>
+      {% endif %}
+    </div>
+    <br>
+  {% endfor %}
+  </div>
+
+
+      <div class="swiper-slide" data-name="달력" data-hash="calendar">
+        <script>
+
+          document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+            var date1 = (y+'-'+m+'-'+d);
+            console.log('date1=>>' + date1);
+
+          var calendar = new FullCalendar.Calendar(calendarEl, {
+            defaultDate: new Date(),
+            selectable: true,
+            edittalbe: true,
+            eventLimit: true,
+            themeSystem: 'standard',
+            displayEventTime: false,
+            eventColor: 'red',
+            borderColor: 'black',
+            headerToolbar: {
+              left: '',
+              center: 'prev title next',
+              right: ''
+            },
+            customButtons: {
+              add: {
+                text: '추가',
+                click: function() {
+                  var today = new Date();
+                  var year = today.getFullYear();
+                  var month = ('0' + (today.getMonth() + 1)).slice(-2);
+                  var day = ('0' + today.getDate()).slice(-2);
+                  var dateString = year + '-' + month  + '-' + day;
+
+                  //var dateStr = prompt('등록하실 날짜를 YYYY-MM-DD 포맷으로 입력해주세요.');
+                  var title1 = prompt('가격은?');
+                  //var date = new Date(dateStr + 'T00:00:00');
+                  var date = new Date(dateString);
+
+                  if (!isNaN(title1.valueOf())) {
+                    calendar.addEvent({
+                      title: title1,
+                      start: date,
+                      allDay: true
+                    });
+                    alert('등록이 완료되었습니다.');
+                } else {
+                  alert('error!');
+                }
+              }
+            }
+          },
+
+            height: 580,
+            locale: 'ko',
+            //events:'/all_events',
+            select: function(selectionInfo){
+              alert(startStr);
+            },
+            events: [
+            {% for i in spend_day_sum2 %}
+            {
+              title: "-{{i.amount}}원",
+              start: "{{i.spend_date | date:'Y-m-d'}}",
+              textColor: 'Red',
+              color:'transparent',
+              allday: 1,
+            },
+            {% endfor %}
+            {% for i in income_day_sum2 %}
+            {
+              title: "+{{i.amount}}원",
+              start: "{{i.income_date | date:'Y-m-d'}}",
+              textColor: 'Blue',
+              color:'transparent',
+              allday: 1,
+            },
+            {% endfor %}
+          ],
+          dateClick: function(event,info) {
+            moment.locale('ko');
+            click_date = event.dateStr; // 날짜
+            title_date= moment(click_date).format('YY. MM. DD');
+            click_title = event.dayEl;
+            console.log(click_title);
+            console.log(event);
+            document.getElementById('testtest').value = click_date;
+            $.ajax({
+              type: "POST",
+              url: "{% url 'accounts:ajax_pushdate' %}",
+              data: {
+                testtest: $('#testtest').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                dataType: "json",
+              },
+              success: function(data){
+                msg_value = data.msg1;
+                console.log(msg_value);
+                const reset = document.getElementById('modalBody');
+                reset.innerHTML = '';
+                for (var i = 0; i<10; i++) {
+                  const element = document.getElementById('modalBody');
+                  element.innerHTML += '<div class="modal-body-text"><a>'+ msg_value[i].title + '원'+ '</a></div>';
+                }
+              },
+              failure: function() {
+                console.log('ajax send error!');
+                alert('해당날짜의 내역을 불러오는 과정에서 오류가 발생했습니다');
+              },
+            });
+            $('#calendarModal').modal('show');
+            $('#modalTitle').text(title_date);
+          },
+          });
+          calendar.render();
+        });
+        </script>
+
+        <div class="cal-container">
+          <div class="cal-wrap">
+            <div id="test2"></div>
+            <input type="hidden" value="" id="testtest">
+            <div style="padding: 5px;" id='calendar' class="fullcal"></div>
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
+    <div class="swiper-pagination" ></div>
+  </div>
+
+  <!-- Swiper JS -->
+
+  <!-- Initialize Swiper -->
+  <script>
+    var bullet = ["추천", "요약", "내역" ,"달력"];
+
+    var swiper = new Swiper(".mySwiper", {
+      observer: true,
+      observeParents: true,
+      hashNavigation: {
+        watchState: true,
+        replaceState:true,
+      },
+      pagination : {
+        el : '.swiper-pagination',
+        clickable : true,
+        paginationType: "custom",
+        renderBullet: function (index, className) {
+          return '<div class="' + className + '"><span>' + (bullet[index]) + '</span></div>';
+        }
+        },
+    });swiper.update();
+
+    
+  </script>
+
+  <script>
+    var body_height = document.documentElement.clientHeight-149;
+    $('.swiper-wrapper').height(body_height)
+    $('.swiper-container').height(body_height)
+    swiper.update();
+  </script>
+
+  <script>
+    var swiper = new Swiper(".mySwiper", {
+    scrollbar: {
+        el: ".swiper-scrollbar",
+      },
+      hashNavigation: true,
+    });
+    function move_page(index) {
+    swiper.slideTo(index)
+    }
+  </script>
+
+
+<link rel = "stylesheet" href="{% static 'css/main.css' %}">
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/addevent.js' %}"></script>
+<script src="{% static 'js/ko.js' %}"></script>
+
+
+{% endblock %}
