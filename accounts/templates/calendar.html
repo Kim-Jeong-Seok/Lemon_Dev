@@ -284,11 +284,12 @@
 <div class="swiper mySwiper">
     <div class="swiper-wrapper">
 
-      <div class="swiper-slide" data-name="추천" data-hash="recom">
+      <div class="swiper-slide" data-name="추천" data-hash="recom"><!---------------------------- 추천 SWIPER div영역 시작------------------------------------------------>
+        공사중
+      </div><!------------------- 추천 SWIPER div영역 끝------------------------------->
 
-      </div>
-
-      <div class="swiper-slide" data-name="요약" data-hash="summary">
+      
+      <div class="swiper-slide" data-name="요약" data-hash="summary"><!---------------------------- 요약 SWIPER div영역 시작------------------------------------------------>
         <div class="menu1" style="margin: 5%; padding:10px;">
           <a style="font-family: 'Noto Sans KR', sans-serif; font-size: 22px; color:#fff; margin-top:10px; padding-left:1rem;"><strong>{{user.uid}}</strong>님의 <strong>{{month}}월</strong> 누적금액</a><br>
           
@@ -322,6 +323,7 @@
 
       <div>
       <div style="font-weight: bold;">소비 TOP5 카테고리</div>
+      <canvas id="pie-chart-amount"></canvas>
     <div>
       <ol>
         {% for category in Category %}
@@ -336,7 +338,21 @@
   <div>
   </div>
 
-    <div>
+
+  <div style="font-weight: bold;">건수 TOP5 카테고리</div>
+  <canvas id="pie-chart-count"></canvas>
+<div>
+  <ol>
+    {% for category in Category_count %}
+    <li>
+      <span>{{ category.category }}</span>
+      <span>{{ category.count|intcomma }}회</span>
+    </li>
+    {% endfor %}
+  </ol>
+</div>
+
+
     <div style="font-weight: bold;">소비 TOP5 카드사</div>
     <div>
       <ol>
@@ -377,12 +393,10 @@
         {% endfor %}
       </ol>
     </div>
-  </div>
-  <div>
-  </div>
+
 
     
-  <div>
+
     <div style="font-weight: bold;">소비 TOP5 기업명</div>
     <div>
       <ol>
@@ -394,66 +408,89 @@
         {% endfor %}
       </ol>
     </div>
-  </div>
+  
 
     
   <canvas id="myChart" width="200" height="200"></canvas>
-  <script>
-  const ctx = document.getElementById('myChart').getContext('2d');
-  const myChart = new Chart(ctx, {
-      type: 'doughnut',
-      locale: 'ko-kr',
-      data: {
-          labels: ['쿠팡', '한솥조대점', '경대컵밥', '롯대마트', '이마트'],
-          datasets: [{
-              label: '# of Votes',
-              data: [12, 19, 3, 5, 2],
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-              ],
-              borderColor: [
-                  'rgba(255, 99, 132, 1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-              ],
-              borderWidth: 1
-          }]
-      },
-      options: {
-        layout: {
-          padding: 50
-        },
-          scales: {
-              y: {
-                  beginAtZero: true
-              }
+<!-- chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+  const config1 = {
+    type: 'pie',
+    data: {
+      labels: {{ Category_amount_labels }},
+      datasets: [{
+        data: {{ Category_amount_data }},
+        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+      }],
+    },
+    options: {
+      responsive: true,
+      tooltips: {
+        callbacks: {
+          // this callback is used to create the tooltip label
+          label: function(tooltipItem, data) {
+            // get the data label and data value to display
+            // convert the data value to local string so it uses a comma seperated number
+            var dataLabel = data.labels[tooltipItem.index];
+            var value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].toLocaleString();
+  
+            // make this isn't a multi-line label (e.g. [["label 1 - line 1, "line 2, ], [etc...]])
+            if (Chart.helpers.isArray(dataLabel)) {
+              // show value on first line of multiline label
+              // need to clone because we are changing the value
+              dataLabel = dataLabel.slice();
+              dataLabel[0] += value;
+            } else {
+              dataLabel += value;
+            }
+  
+            // return the text to display on the tooltip
+            return dataLabel;
           }
+        }
       }
-  });
-  </script>
-    </div><!--- 요약 DIV 영역 끝-->
+    }
+  };
+  const config2 = {
+    type: 'pie',
+    data: {
+      labels: {{ Category_count_label }},
+      datasets: [{
+        data: {{ Category_count_data }},
+        backgroundColor: [
+          "#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"
+        ],
+      }],
+    },
+    options: {
+      responsive: true
+    }
+  };
+  window.onload = function() {
+    const ctx1 = document.getElementById('pie-chart-amount').getContext('2d');
+    const ctx2 = document.getElementById('pie-chart-count').getContext('2d');
+    window.myPie = new Chart(ctx1, config1), new Chart(ctx2, config2);
+  };
+</script>
+    </div><!---------------------------- 요약 SWIPER diov 영역 끝-------------------------------------------------------------->
 
-    <div class="swiper-slide" data-name="내역" data-hash="list">
+
+    <div class="swiper-slide" data-name="내역" data-hash="list"><!------------------- 내역 SWIPER div영역 시작------------------------------->
       {% for detail in Detail_month %}
-        <div>
-          {% ifchanged detail.spend_date.day %}
-            <span style="font-weight: bold;">{{ detail.spend_date | date:'d D' }}</span>
-            <span class="money" style="font-weight: bold;">
-              {% if Income_day|find_income_money:detail.spend_date.day %}
-                <span style="color: blue;">+{{ Income_day|find_income_money:detail.spend_date.day|intcomma }}원</span>
-              {% endif %}
-              {% if Spend_day|find_spend_money:detail.spend_date.day %}
-                <span style="color: red;">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}원</span>
-              {% endif %}
-            </span>
-          {% endifchanged %}
-    
+      <div>
+        {% ifchanged detail.spend_date.day %}
+          <span style="font-weight: bold;">{{ detail.spend_date | date:'d D' }}</span>
+          <span class="money" style="font-weight: bold;">
+            {% if Income_day|find_income_money:detail.spend_date.day %}
+              <span style="color: blue;">+{{Income_day|find_income_money:detail.spend_date.day|intcomma}} {% else %} <span style="color:blue;">+0원</span></span>
+            {% endif %}
+            {% if Spend_day|find_spend_money:detail.spend_date.day %}
+              <span style="color: red;">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}  {% else %} <span style="color:red;">-0원</span></span>
+            {% endif %}
+          </span>
+        {% endifchanged %}
+
           <div>날짜: {{ detail.spend_date | date:'Y-m-d H:i' }}</div>
           {% if detail.kind == '지출' %}
             <div class="amount" style="color: red">-{{ detail.amount|intcomma }}원</div>
@@ -463,8 +500,12 @@
         </div>
         <br>
       {% endfor %}
-      </div>
-      <div class="swiper-slide" data-name="달력" data-hash="calendar">
+      </div><!------------------- 내역 SWIPER div영역 끝------------------------------->
+
+
+
+
+      <div class="swiper-slide" data-name="달력" data-hash="calendar"><!------------------- 달력 SWIPER div영역 시작------------------------------->
         <script>
 
           document.addEventListener('DOMContentLoaded', function() {
@@ -545,7 +586,7 @@
                 reset.innerHTML = '';
                 for (var i = 0; i<10; i++) {
                   const element = document.getElementById('modalBody');
-                  element.innerHTML += '<div class="modal-body-text"><a>'+ msg_value[i].title + '원'+ '</a></div>';
+                  element.innerHTML += '<div class="modal-body-text"><a>'+ msg_value[i].amount + '원'+ '</a> <a>'+ msg_value[i].kind + '</a> </div>';
                 }
               },
               failure: function() {
@@ -570,7 +611,7 @@
         </div>
 
       </div> 
-    </div>
+    </div><!------------------- 달력 SWIPER div영역 끝------------------------------->
 
 
 
@@ -611,7 +652,6 @@
 
 <link rel = "stylesheet" href="{% static 'css/main.css' %}">
 <script src="{% static 'js/main.js' %}"></script>
-<script src="{% static 'js/addevent.js' %}"></script>
 <script src="{% static 'js/ko.js' %}"></script>
 
 
