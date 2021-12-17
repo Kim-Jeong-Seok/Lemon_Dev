@@ -29,7 +29,7 @@ from rest_framework.decorators import api_view
 #     serializer_class = LemonUserSerializer
 
 # class ReactAppView(View):
-    
+
 #     def get(self, request):
 #         try:
 #             with open(os.path.join(str(settings.ROOT_DIR),
@@ -41,13 +41,10 @@ from rest_framework.decorators import api_view
 #         except:
 #             return HttpResponse(status=501,)
 
-
 def main(request):
     return render(request, 'main.html')
-
 def home(request):
     return render(request, 'main.html')
-
 
 def calendar(request):
     #user = request.user.user_id
@@ -56,11 +53,11 @@ def calendar(request):
     # spend = Spend.objects.filter(user_id=user)
     events = Income.objects.all().values("amount", "income_date" ,"kind").union(Spend.objects.all().values("amount","spend_date", "kind"))
     total = AccountBook.objects.all().values_list("account_date").union()
-    
+
     now = datetime.datetime.now()
     year = now.strftime('%Y')
     month = now.strftime('%m')
-    
+
     # 월별 기간 필터링
     spend_month_filter = Spend.objects.filter(spend_date__year=year, spend_date__month=month).values('kind','spend_date','amount','place')
     income_month_filter = Income.objects.filter(income_date__year=year, income_date__month=month).values('kind','income_date','amount','income_way')
@@ -69,7 +66,7 @@ def calendar(request):
     # 일별 수입,지출값 합산
     spend_day_sum2 = spend_month_filter.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
     income_day_sum2 = income_month_filter.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
-    
+
     spend_day_sum = spend_month_filter.values('spend_date__day').annotate(amount=Sum('amount')).order_by('-spend_date__day')
     income_day_sum = income_month_filter.values('income_date__day').annotate(amount=Sum('amount')).order_by('-income_date__day')
 
@@ -167,7 +164,7 @@ def calendar(request):
     for item in category_amount_count:
         category_count_data.append(item['count'])
         category_count_label.append(item['category'])
-        
+
     return render(request, 'calendar.html', {
         'events':events,
         'Detail_month':detail_month,
@@ -205,7 +202,7 @@ def add_calendar(request):
                 memo = sform.cleaned_data['memo']
                 sform.save()
                 return redirect('/calendar#calendar')
-                
+
         elif 'incomebtn' in request.POST:
             iform = IncomeForm(request.POST)
             if iform.is_valid():
@@ -222,7 +219,7 @@ def add_calendar(request):
         iform = IncomeForm()
     return render(request, 'add_calendar.html')
 
-@csrf_exempt    
+@csrf_exempt
 def ajax_pushdate(request):
     if request.method == "POST":
         test = request.POST.get("testtest", None)
@@ -253,10 +250,10 @@ def all_events(request):
     for event in all_events:
         out.append({
             'title': event.title,
-            'start': event.start_date,                                                         
-            'end': event.end_date, 
+            'start': event.start_date,
+            'end': event.end_date,
         })
-        
+
     return JsonResponse(out, safe=False)
 
 def search_stock(request):
