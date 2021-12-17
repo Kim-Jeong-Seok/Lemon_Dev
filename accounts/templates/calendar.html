@@ -6,8 +6,14 @@
 {% block title %}레몬::가계부{% endblock title %}
 {% block container %}
 
-
 <style>
+  .cal-container{
+    border-radius: 20px !important;
+    /*border: 1px solid green !important;*/
+    box-shadow: 1px 1px 5px 1px rgb(202, 202, 202);
+    margin: 20px !important;
+    padding: 10px !important;
+  }
   /* fullcalendar CSS */
   .fc-toolbar-chunk{
     display: flex;
@@ -45,7 +51,6 @@
   }
   .fc-col-header-cell-cushion, .fc-daygrid-day-number {
     color: black;
-    font-weight: bold;
   }
   .fc-event-title-container{
     text-align: end;
@@ -279,13 +284,14 @@
 <div class="swiper mySwiper">
     <div class="swiper-wrapper">
 
-      <div class="swiper-slide" data-name="추천" data-hash="recom">
+      <div class="swiper-slide" data-name="추천" data-hash="recom"><!---------------------------- 추천 SWIPER div영역 시작------------------------------------------------>
+        공사중
+      </div><!------------------- 추천 SWIPER div영역 끝------------------------------->
 
-      </div>
-
-      <div class="swiper-slide" data-name="요약" data-hash="summary">
+      
+      <div class="swiper-slide" data-name="요약" data-hash="summary"><!---------------------------- 요약 SWIPER div영역 시작------------------------------------------------>
         <div class="menu1" style="margin: 5%; padding:10px;">
-          <a style="font-family: 'Noto Sans KR', sans-serif; font-size: 22px; color:#fff; margin-top:10px; padding-left:1rem;"><strong>{{user.uid}}</strong>님의 <strong>{{month}}</strong> 누적금액</a><br>
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-size: 22px; color:#fff; margin-top:10px; padding-left:1rem;"><strong>{{user.uid}}</strong>님의 <strong>{{month}}월</strong> 누적금액</a><br>
           
           <div class="amountMoney" style="text-align:left; padding-left:15px; margin-top:0.5rem;">
             <a id="amount-money1" style="display: none;">{{user.invest}}</a>
@@ -317,6 +323,7 @@
 
       <div>
       <div style="font-weight: bold;">소비 TOP5 카테고리</div>
+      <canvas id="pie-chart-amount"></canvas>
     <div>
       <ol>
         {% for category in Category %}
@@ -331,24 +338,65 @@
   <div>
   </div>
 
-    <div>
+
+  <div style="font-weight: bold;">건수 TOP5 카테고리</div>
+  <canvas id="pie-chart-count"></canvas>
+<div>
+  <ol>
+    {% for category in Category_count %}
+    <li>
+      <span>{{ category.category }}</span>
+      <span>{{ category.count|intcomma }}회</span>
+    </li>
+    {% endfor %}
+  </ol>
+</div>
+
+
     <div style="font-weight: bold;">소비 TOP5 카드사</div>
     <div>
       <ol>
         {% for method in Method %}
         <li>
-          <span>{{ method.card }}</span>
+          {% if method.card == 1 %}
+          <span>국민카드</span>
           <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 2 %}
+          <span>롯대카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 3 %}
+          <span>BC카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 4 %}
+          <span>삼성카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 6 %}
+          <span>신한카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 7 %}
+          <span>하나카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 8 %}
+          <span>현대카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 9 %}
+          <span>농협카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 10 %}
+          <span>시티카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 11 %}
+          <span>카카오뱅크카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% endif %}
         </li>
         {% endfor %}
       </ol>
     </div>
-  </div>
-  <div>
-  </div>
+
 
     
-  <div>
+
     <div style="font-weight: bold;">소비 TOP5 기업명</div>
     <div>
       <ol>
@@ -360,38 +408,104 @@
         {% endfor %}
       </ol>
     </div>
-  </div>
+  
 
-    </div><!--- 요약 DIV 영역 끝-->
+    
+  <canvas id="myChart" width="200" height="200"></canvas>
+<!-- chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+  const config1 = {
+    type: 'pie',
+    data: {
+      labels: {{ Category_amount_labels }},
+      datasets: [{
+        data: {{ Category_amount_data }},
+        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+      }],
+    },
+    options: {
+      responsive: true,
+      tooltips: {
+        callbacks: {
+          // this callback is used to create the tooltip label
+          label: function(tooltipItem, data) {
+            // get the data label and data value to display
+            // convert the data value to local string so it uses a comma seperated number
+            var dataLabel = data.labels[tooltipItem.index];
+            var value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].toLocaleString();
+  
+            // make this isn't a multi-line label (e.g. [["label 1 - line 1, "line 2, ], [etc...]])
+            if (Chart.helpers.isArray(dataLabel)) {
+              // show value on first line of multiline label
+              // need to clone because we are changing the value
+              dataLabel = dataLabel.slice();
+              dataLabel[0] += value;
+            } else {
+              dataLabel += value;
+            }
+  
+            // return the text to display on the tooltip
+            return dataLabel;
+          }
+        }
+      }
+    }
+  };
+  const config2 = {
+    type: 'pie',
+    data: {
+      labels: {{ Category_count_label }},
+      datasets: [{
+        data: {{ Category_count_data }},
+        backgroundColor: [
+          "#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"
+        ],
+      }],
+    },
+    options: {
+      responsive: true
+    }
+  };
+  window.onload = function() {
+    const ctx1 = document.getElementById('pie-chart-amount').getContext('2d');
+    const ctx2 = document.getElementById('pie-chart-count').getContext('2d');
+    window.myPie = new Chart(ctx1, config1), new Chart(ctx2, config2);
+  };
+</script>
+    </div><!---------------------------- 요약 SWIPER diov 영역 끝-------------------------------------------------------------->
 
-      <div class="swiper-slide" data-name="내역" data-hash="list">
-  {% for detail in Detail_month %}
-    <div>
-      {% ifchanged detail.spend_date.day %}
-        <span style="font-weight: bold;">{{ detail.spend_date | date:'d D' }}</span>
-        <span class="money" style="font-weight: bold;">
-          {% if Income_day|find_income_money:detail.spend_date.day %}
-            <span style="color: blue;">+{{ Income_day|find_income_money:detail.spend_date.day|intcomma }}원</span>
+
+    <div class="swiper-slide" data-name="내역" data-hash="list"><!------------------- 내역 SWIPER div영역 시작------------------------------->
+      {% for detail in Detail_month %}
+      <div>
+        {% ifchanged detail.spend_date.day %}
+          <span style="font-weight: bold;">{{ detail.spend_date | date:'d D' }}</span>
+          <span class="money" style="font-weight: bold;">
+            {% if Income_day|find_income_money:detail.spend_date.day %}
+              <span style="color: blue;">+{{Income_day|find_income_money:detail.spend_date.day|intcomma}} {% else %} <span style="color:blue;">+0원</span></span>
+            {% endif %}
+            {% if Spend_day|find_spend_money:detail.spend_date.day %}
+              <span style="color: red;">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}  {% else %} <span style="color:red;">-0원</span></span>
+            {% endif %}
+          </span>
+        {% endifchanged %}
+
+          <div>날짜: {{ detail.spend_date | date:'Y-m-d H:i' }}</div>
+          {% if detail.kind == '지출' %}
+            <div class="amount" style="color: red">-{{ detail.amount|intcomma }}원</div>
+          {% else %}
+            <div class="amount" style="color: blue">+{{ detail.amount|intcomma }}원</div>
           {% endif %}
-          {% if Spend_day|find_spend_money:detail.spend_date.day %}
-            <span style="color: red;">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}원</span>
-          {% endif %}
-        </span>
-      {% endifchanged %}
-
-      <div>날짜: {{ detail.spend_date | date:'Y-m-d H:i' }}</div>
-      {% if detail.kind == '지출' %}
-        <div class="amount" style="color: red">-{{ detail.amount|intcomma }}원</div>
-      {% else %}
-        <div class="amount" style="color: blue">+{{ detail.amount|intcomma }}원</div>
-      {% endif %}
-    </div>
-    <br>
-  {% endfor %}
-  </div>
+        </div>
+        <br>
+      {% endfor %}
+      </div><!------------------- 내역 SWIPER div영역 끝------------------------------->
 
 
-      <div class="swiper-slide" data-name="달력" data-hash="calendar">
+
+
+      <div class="swiper-slide" data-name="달력" data-hash="calendar"><!------------------- 달력 SWIPER div영역 시작------------------------------->
         <script>
 
           document.addEventListener('DOMContentLoaded', function() {
@@ -406,53 +520,29 @@
 
           var calendar = new FullCalendar.Calendar(calendarEl, {
             defaultDate: new Date(),
-            selectable: true,
-            edittalbe: true,
+            eventStart:false,
+            selectable: false,
+            dragScroll:false,
+            selectOverlap:false,
+            edittalbe: false,
+            dragable:false,
+            droppable:false,
             eventLimit: true,
             themeSystem: 'standard',
             displayEventTime: false,
             eventColor: 'red',
             borderColor: 'black',
+            dragScroll:'false',
+            eventRender: function(evnent, element) {
+              $(element).addTouch();
+            },
             headerToolbar: {
               left: '',
               center: 'prev title next',
               right: ''
             },
-            customButtons: {
-              add: {
-                text: '추가',
-                click: function() {
-                  var today = new Date();
-                  var year = today.getFullYear();
-                  var month = ('0' + (today.getMonth() + 1)).slice(-2);
-                  var day = ('0' + today.getDate()).slice(-2);
-                  var dateString = year + '-' + month  + '-' + day;
-
-                  //var dateStr = prompt('등록하실 날짜를 YYYY-MM-DD 포맷으로 입력해주세요.');
-                  var title1 = prompt('가격은?');
-                  //var date = new Date(dateStr + 'T00:00:00');
-                  var date = new Date(dateString);
-
-                  if (!isNaN(title1.valueOf())) {
-                    calendar.addEvent({
-                      title: title1,
-                      start: date,
-                      allDay: true
-                    });
-                    alert('등록이 완료되었습니다.');
-                } else {
-                  alert('error!');
-                }
-              }
-            }
-          },
-
             height: 580,
             locale: 'ko',
-            //events:'/all_events',
-            select: function(selectionInfo){
-              alert(startStr);
-            },
             events: [
             {% for i in spend_day_sum2 %}
             {
@@ -496,7 +586,7 @@
                 reset.innerHTML = '';
                 for (var i = 0; i<10; i++) {
                   const element = document.getElementById('modalBody');
-                  element.innerHTML += '<div class="modal-body-text"><a>'+ msg_value[i].title + '원'+ '</a></div>';
+                  element.innerHTML += '<div class="modal-body-text"><a>'+ msg_value[i].amount + '원'+ '</a> <a>'+ msg_value[i].kind + '</a> </div>';
                 }
               },
               failure: function() {
@@ -516,13 +606,15 @@
           <div class="cal-wrap">
             <div id="test2"></div>
             <input type="hidden" value="" id="testtest">
-            <div style="padding: 5px;" id='calendar' class="fullcal"></div>
+            <div style="padding: 5px; position:relative;" id='calendar' class="fullcal"></div>
           </div>
         </div>
 
-      </div>
-      
-    </div>
+      </div> 
+    </div><!------------------- 달력 SWIPER div영역 끝------------------------------->
+
+
+
     <div class="swiper-pagination" ></div>
   </div>
 
@@ -531,15 +623,20 @@
   <!-- Initialize Swiper -->
   <script>
     var bullet = ["추천", "요약", "내역" ,"달력"];
+    var body_height = document.documentElement.clientHeight-149;
+    $('.swiper-wrapper').height(body_height)
+    $('.swiper-container').height(body_height)
 
     var swiper = new Swiper(".mySwiper", {
-      observer: true,
-      observeParents: true,
+      speed: 200,
+      loopedSlides:1,
       hashNavigation: {
-        watchState: true,
+        watchState: false,
         replaceState:true,
-      },
+      },   
       pagination : {
+        observer: true,
+        observeParents: true,
         el : '.swiper-pagination',
         clickable : true,
         paginationType: "custom",
@@ -552,29 +649,9 @@
     
   </script>
 
-  <script>
-    var body_height = document.documentElement.clientHeight-149;
-    $('.swiper-wrapper').height(body_height)
-    $('.swiper-container').height(body_height)
-    swiper.update();
-  </script>
-
-  <script>
-    var swiper = new Swiper(".mySwiper", {
-    scrollbar: {
-        el: ".swiper-scrollbar",
-      },
-      hashNavigation: true,
-    });
-    function move_page(index) {
-    swiper.slideTo(index)
-    }
-  </script>
-
 
 <link rel = "stylesheet" href="{% static 'css/main.css' %}">
 <script src="{% static 'js/main.js' %}"></script>
-<script src="{% static 'js/addevent.js' %}"></script>
 <script src="{% static 'js/ko.js' %}"></script>
 
 

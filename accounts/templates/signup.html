@@ -122,40 +122,48 @@ color:white;
                                     name="cert_key" placeholder="인증번호 입력">
                         </div>
 
+
                         <div class="help_txt" id="phone_number_help"></div>
                     </div>
                     <div class="custom-control custom-checkbox" style="text-align: left;">
                         <!--<input type="checkbox" class="custom-control-input" id="agreement">-->
-                        <label class="custom-control-label" for="agreement">개인정보 수집 및 이용에 동의합니다.</label></div>
+
                     <div class="mb-4"></div>
-                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="move_page(1)">다음</button>
+
             </div>
         </div>
 
         <div class="swiper-slide">
             <div class="row">
                             <div class="input-form col-md-12 mx-auto" style="padding:20px;">
-                    <div class="col-md-6 mb-3">
-                        <input type="number" class="form-control"
-                                id="money" name="money" placeholder="월급" value="">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <input type="datetime"
-                                class="form-control"
-                                id="moneydate"
-                                name="moneydate"
-                                placeholder="월급 입금"
-                                value="">
-                    </div>
+
+
                     <div class="col-md-6 mb-3">
                         <input type="number"
                                 class="form-control"
-                                id="fakemoney"
-                                name="fakemoney"
+                                id="invest"
+                                name="invest"
                                 placeholder="모의 투자금액"
                                 value="">
                     </div>
                                 <div style="display:flex;justify-content: space-between;">
+
+
+                                        {% csrf_token %}
+                                        <div>
+                                            <label>
+                                                <input type="checkbox" name="u_chk" value ="1">
+                                                <span>이용약관에 동의합니다.</span>
+                                            </label>
+                                        </div>
+
+                                        <div>
+                                            <label>
+                                                <input type="checkbox" name="e_chk" value ="1">
+                                                <span>개인정보 수집 및 이용에 동의합니다.</span>
+                                             </label>
+                                        </div>
+
                 <button type="button" class="btn btn-primary btn-lg btn-block" onclick="move_page(0)" style="width:48%; background:lightgrey">뒤로가기</button>
                     <button class="btn btn-primary btn-lg btn-block" type="submit" value="signup" style="width:48%">회원가입</button>
                                     </div>
@@ -177,9 +185,11 @@ color:white;
         },
         allowTouchMove:false,
     });
-    
+
         function move_page(index) {
         swiper.slideTo(index)
         }
 </script>
+
+
 </html>
