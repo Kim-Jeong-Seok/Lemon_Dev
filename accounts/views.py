@@ -117,7 +117,7 @@ def calendar(request):
         'Area': area_amount,
         'month':month,
         'spend_day_sum2':spend_day_sum2,
-        'income_day_sum2':income_day_sum,
+        'income_day_sum2':income_day_sum2,
         'Category_amount_data': category_amount_data,
         'Category_amount_labels': category_amount_label,
         'Category_count_data': category_count_data,
