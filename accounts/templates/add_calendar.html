@@ -228,25 +228,39 @@
                         <option value='1'>식비</option>
                         <option value='2'>카페/간식</option>
                         <option value='3'>술/유흥</option>
-                        <option value='4'>생활</option>
-                        <option value='5'>쇼핑</option>
-                        <option value='6'>뷰티/미용</option>
-                        <option value='7'>교통</option>
-                        <option value='8'>자동차</option>
-                        <option value='9'>주거/통신</option>
-                        <option value='10'>의료/건강</option>
-                        <option value='11'>문화/여가</option>
-                        <option value='12'>여행/숙박</option>
-                        <option value='13'>교육/학습</option>
-                        <option value='14'>반려동물</option>
-                        <option value='15'>경조/선물</option>
-                        <option value='16'>기타</option>
+                        <option value='4' disabled>생활</option>
+                        <option value='5' disabled>쇼핑</option>
+                        <option value='6' disabled>뷰티/미용</option>
+                        <option value='7' disabled>교통</option>
+                        <option value='8' disabled>자동차</option>
+                        <option value='9' disabled>주거/통신</option>
+                        <option value='10' disabled>의료/건강</option>
+                        <option value='11' disabled>문화/여가</option>
+                        <option value='12' disabled>여행/숙박</option>
+                        <option value='13' disabled>교육/학습</option>
+                        <option value='14' disabled>반려동물</option>
+                        <option value='15' disabled>경조/선물</option>
+                        <option value='16' disabled>기타</option>
                         </select>
                     </th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="110" height="60"><a class="span_list_title">카드사</a></th>
-                    <th width="260" style="text-align: end;"> <input class="input_span" type="text" id="cardlist" name="card" value="{{form.card.value|default_if_none:''}}"></th>
+                    <th width="260" style="text-align: end;">
+                        <select class="span_list_select" name="card">
+                            <option style="text-align: center;" value='' selected>-------- 선택하세요 --------</option>
+                            <option value='1'>국민카드</option>
+                            <option value='2'>롯데카드</option>
+                            <option value='3'>BC카드</option>
+                            <option value='4'>삼성카드</option>
+                            <option value='6'>신한카드</option>
+                            <option value='7'>하나카드</option>
+                            <option value='8'>현대카드</option>
+                            <option value='9'>농협카드</option>
+                            <option value='10'>시티카드</option>
+                            <option value='11'>카카오뱅크카드</option>
+                        </select>
+                    </th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="110" height="60"><a class="span_list_title">메모</a></th>

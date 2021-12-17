@@ -6,8 +6,14 @@
 {% block title %}레몬::가계부{% endblock title %}
 {% block container %}
 
-
 <style>
+  .cal-container{
+    border-radius: 20px !important;
+    /*border: 1px solid green !important;*/
+    box-shadow: 1px 1px 5px 1px rgb(202, 202, 202);
+    margin: 20px !important;
+    padding: 10px !important;
+  }
   /* fullcalendar CSS */
   .fc-toolbar-chunk{
     display: flex;
@@ -45,7 +51,6 @@
   }
   .fc-col-header-cell-cushion, .fc-daygrid-day-number {
     color: black;
-    font-weight: bold;
   }
   .fc-event-title-container{
     text-align: end;
@@ -285,7 +290,7 @@
 
       <div class="swiper-slide" data-name="요약" data-hash="summary">
         <div class="menu1" style="margin: 5%; padding:10px;">
-          <a style="font-family: 'Noto Sans KR', sans-serif; font-size: 22px; color:#fff; margin-top:10px; padding-left:1rem;"><strong>{{user.uid}}</strong>님의 <strong>{{month}}</strong> 누적금액</a><br>
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-size: 22px; color:#fff; margin-top:10px; padding-left:1rem;"><strong>{{user.uid}}</strong>님의 <strong>{{month}}월</strong> 누적금액</a><br>
           
           <div class="amountMoney" style="text-align:left; padding-left:15px; margin-top:0.5rem;">
             <a id="amount-money1" style="display: none;">{{user.invest}}</a>
@@ -337,8 +342,37 @@
       <ol>
         {% for method in Method %}
         <li>
-          <span>{{ method.card }}</span>
+          {% if method.card == 1 %}
+          <span>국민카드</span>
           <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 2 %}
+          <span>롯대카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 3 %}
+          <span>BC카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 4 %}
+          <span>삼성카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 6 %}
+          <span>신한카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 7 %}
+          <span>하나카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 8 %}
+          <span>현대카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 9 %}
+          <span>농협카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 10 %}
+          <span>시티카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% elif method.card == 11 %}
+          <span>카카오뱅크카드</span>
+          <span>{{ method.amount|intcomma }}원</span>
+          {% endif %}
         </li>
         {% endfor %}
       </ol>
@@ -362,35 +396,74 @@
     </div>
   </div>
 
+    
+  <canvas id="myChart" width="200" height="200"></canvas>
+  <script>
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+      type: 'doughnut',
+      locale: 'ko-kr',
+      data: {
+          labels: ['쿠팡', '한솥조대점', '경대컵밥', '롯대마트', '이마트'],
+          datasets: [{
+              label: '# of Votes',
+              data: [12, 19, 3, 5, 2],
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+              ],
+              borderColor: [
+                  'rgba(255, 99, 132, 1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+        layout: {
+          padding: 50
+        },
+          scales: {
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+  </script>
     </div><!--- 요약 DIV 영역 끝-->
 
-      <div class="swiper-slide" data-name="내역" data-hash="list">
-  {% for detail in Detail_month %}
-    <div>
-      {% ifchanged detail.spend_date.day %}
-        <span style="font-weight: bold;">{{ detail.spend_date | date:'d D' }}</span>
-        <span class="money" style="font-weight: bold;">
-          {% if Income_day|find_income_money:detail.spend_date.day %}
-            <span style="color: blue;">+{{ Income_day|find_income_money:detail.spend_date.day|intcomma }}원</span>
+    <div class="swiper-slide" data-name="내역" data-hash="list">
+      {% for detail in Detail_month %}
+        <div>
+          {% ifchanged detail.spend_date.day %}
+            <span style="font-weight: bold;">{{ detail.spend_date | date:'d D' }}</span>
+            <span class="money" style="font-weight: bold;">
+              {% if Income_day|find_income_money:detail.spend_date.day %}
+                <span style="color: blue;">+{{ Income_day|find_income_money:detail.spend_date.day|intcomma }}원</span>
+              {% endif %}
+              {% if Spend_day|find_spend_money:detail.spend_date.day %}
+                <span style="color: red;">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}원</span>
+              {% endif %}
+            </span>
+          {% endifchanged %}
+    
+          <div>날짜: {{ detail.spend_date | date:'Y-m-d H:i' }}</div>
+          {% if detail.kind == '지출' %}
+            <div class="amount" style="color: red">-{{ detail.amount|intcomma }}원</div>
+          {% else %}
+            <div class="amount" style="color: blue">+{{ detail.amount|intcomma }}원</div>
           {% endif %}
-          {% if Spend_day|find_spend_money:detail.spend_date.day %}
-            <span style="color: red;">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}원</span>
-          {% endif %}
-        </span>
-      {% endifchanged %}
-
-      <div>날짜: {{ detail.spend_date | date:'Y-m-d H:i' }}</div>
-      {% if detail.kind == '지출' %}
-        <div class="amount" style="color: red">-{{ detail.amount|intcomma }}원</div>
-      {% else %}
-        <div class="amount" style="color: blue">+{{ detail.amount|intcomma }}원</div>
-      {% endif %}
-    </div>
-    <br>
-  {% endfor %}
-  </div>
-
-
+        </div>
+        <br>
+      {% endfor %}
+      </div>
       <div class="swiper-slide" data-name="달력" data-hash="calendar">
         <script>
 
@@ -406,53 +479,29 @@
 
           var calendar = new FullCalendar.Calendar(calendarEl, {
             defaultDate: new Date(),
-            selectable: true,
-            edittalbe: true,
+            eventStart:false,
+            selectable: false,
+            dragScroll:false,
+            selectOverlap:false,
+            edittalbe: false,
+            dragable:false,
+            droppable:false,
             eventLimit: true,
             themeSystem: 'standard',
             displayEventTime: false,
             eventColor: 'red',
             borderColor: 'black',
+            dragScroll:'false',
+            eventRender: function(evnent, element) {
+              $(element).addTouch();
+            },
             headerToolbar: {
               left: '',
               center: 'prev title next',
               right: ''
             },
-            customButtons: {
-              add: {
-                text: '추가',
-                click: function() {
-                  var today = new Date();
-                  var year = today.getFullYear();
-                  var month = ('0' + (today.getMonth() + 1)).slice(-2);
-                  var day = ('0' + today.getDate()).slice(-2);
-                  var dateString = year + '-' + month  + '-' + day;
-
-                  //var dateStr = prompt('등록하실 날짜를 YYYY-MM-DD 포맷으로 입력해주세요.');
-                  var title1 = prompt('가격은?');
-                  //var date = new Date(dateStr + 'T00:00:00');
-                  var date = new Date(dateString);
-
-                  if (!isNaN(title1.valueOf())) {
-                    calendar.addEvent({
-                      title: title1,
-                      start: date,
-                      allDay: true
-                    });
-                    alert('등록이 완료되었습니다.');
-                } else {
-                  alert('error!');
-                }
-              }
-            }
-          },
-
             height: 580,
             locale: 'ko',
-            //events:'/all_events',
-            select: function(selectionInfo){
-              alert(startStr);
-            },
             events: [
             {% for i in spend_day_sum2 %}
             {
@@ -516,13 +565,15 @@
           <div class="cal-wrap">
             <div id="test2"></div>
             <input type="hidden" value="" id="testtest">
-            <div style="padding: 5px;" id='calendar' class="fullcal"></div>
+            <div style="padding: 5px; position:relative;" id='calendar' class="fullcal"></div>
           </div>
         </div>
 
-      </div>
-      
+      </div> 
     </div>
+
+
+
     <div class="swiper-pagination" ></div>
   </div>
 
@@ -531,15 +582,20 @@
   <!-- Initialize Swiper -->
   <script>
     var bullet = ["추천", "요약", "내역" ,"달력"];
+    var body_height = document.documentElement.clientHeight-149;
+    $('.swiper-wrapper').height(body_height)
+    $('.swiper-container').height(body_height)
 
     var swiper = new Swiper(".mySwiper", {
-      observer: true,
-      observeParents: true,
+      speed: 200,
+      loopedSlides:1,
       hashNavigation: {
-        watchState: true,
+        watchState: false,
         replaceState:true,
-      },
+      },   
       pagination : {
+        observer: true,
+        observeParents: true,
         el : '.swiper-pagination',
         clickable : true,
         paginationType: "custom",
@@ -550,25 +606,6 @@
     });swiper.update();
 
     
-  </script>
-
-  <script>
-    var body_height = document.documentElement.clientHeight-149;
-    $('.swiper-wrapper').height(body_height)
-    $('.swiper-container').height(body_height)
-    swiper.update();
-  </script>
-
-  <script>
-    var swiper = new Swiper(".mySwiper", {
-    scrollbar: {
-        el: ".swiper-scrollbar",
-      },
-      hashNavigation: true,
-    });
-    function move_page(index) {
-    swiper.slideTo(index)
-    }
   </script>
 
 

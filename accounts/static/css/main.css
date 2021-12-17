@@ -38,6 +38,7 @@
   }
 .fc th,
   .fc td {
+    border-style: none !important;
     vertical-align: top;
     padding: 0;
   }
@@ -242,6 +243,9 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
   /* icons within buttons */
 
 }
+.fc .fc-scrollgrid{
+  font-size: 14px;
+}
 .fc .fc-button .fc-icon {
     vertical-align: middle;
     font-size: 1.5em; /* bump up the size (but don't make it bigger than line-height of button, which is 1.5em also) */
@@ -287,14 +291,14 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
     align-items: center;
   }
 .fc .fc-toolbar.fc-header-toolbar {
-    margin-bottom: 1.5em;
+    margin-bottom: 0.1em;
   }
 .fc .fc-toolbar.fc-footer-toolbar {
     margin-top: 1.5em;
   }
 .fc .fc-toolbar-title {
-    font-size: 1.75em;
-    margin: 0;
+    font-size: 1.1rem;
+    margin-top: 11px;
   }
 .fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
     margin-left: .75em; /* space between */
@@ -333,8 +337,8 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
     direction: rtl;
   }
 .fc-theme-standard .fc-scrollgrid {
-    border: 1px solid #ddd;
-    border: 1px solid var(--fc-border-color, #ddd); /* bootstrap does this. match */
+    border: none;
+    border: none; /* bootstrap does this. match */
   }
 .fc .fc-scrollgrid,
     .fc .fc-scrollgrid table { /* all tables (self included) */
@@ -708,11 +712,13 @@ A HORIZONTAL event
   display: table; }
 .fc .fc-daygrid-body { /* a <div> that wraps the table */
     position: relative;
+    height: 100%;
     z-index: 1; /* container inner z-index's because <tr>s can't do it */
   }
 .fc .fc-daygrid-day.fc-day-today {
-      background-color: rgba(255, 220, 40, 0.15);
-      background-color: var(--fc-today-bg-color, rgba(255, 220, 40, 0.15));
+      border: 1px solid #32BC8B !important;
+      /*background-color: #32BC8B;
+      background-color: var(--fc-today-bg-color, #32BC8B);*/
     }
 .fc .fc-daygrid-day-frame {
     position: relative;
@@ -968,7 +974,7 @@ A VERTICAL event
     top: 0;
     bottom: 0;
     max-height: 100%; /* clip overflow */
-    overflow: hidden;
+    overflow: visible;
   }
 
 .fc-v-event:not(.fc-event-start) {
@@ -1132,8 +1138,8 @@ A VERTICAL event
   left: 0;
   }
 .fc .fc-timegrid-col.fc-day-today {
-      background-color: rgba(255, 220, 40, 0.15);
-      background-color: var(--fc-today-bg-color, rgba(255, 220, 40, 0.15));
+      background-color: #32BC8B;
+      background-color: var(--fc-today-bg-color, #32BC8B);
     }
 .fc .fc-timegrid-col-frame {
     min-height: 100%; /* liquid-hack is below */

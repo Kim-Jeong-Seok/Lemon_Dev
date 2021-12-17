@@ -1,0 +1,31 @@
+{% load mytag %}
+{% load humanize %}
+<div class="list-wrap">
+    <input type="month"/>
+  </div>
+
+
+  {% for detail in Detail_month %}
+<div>
+{% ifchanged detail.spend_date.day %}
+<span style="font-weight: bold;">{{ detail.spend_date | date:'d D' }}</span>
+<span class="money" style="font-weight: bold;">
+{% if Income_day|find_income_money:detail.spend_date.day %}
+  <span style="color: blue;">+{{ Income_day|find_income_money:detail.spend_date.day|intcomma }}원</span>
+{% endif %}
+{% if Spend_day|find_spend_money:detail.spend_date.day %}
+  <span style="color: red;">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}원</span>
+{% endif %}
+</span>
+{% endifchanged %}
+
+<div>날짜: {{ detail.spend_date | date:'Y-m-d H:i' }}</div>
+{% if detail.kind == '지출' %}
+<div class="amount" style="color: red">-{{ detail.amount|intcomma }}원</div>
+{% else %}
+<div class="amount" style="color: blue">+{{ detail.amount|intcomma }}원</div>
+{% endif %}
+</div>
+<br>
+{% endfor %}
+</div>

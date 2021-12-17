@@ -49,12 +49,12 @@ def home(request):
     return render(request, 'main.html')
 
 def calendar(request):
-    #user = request.user.user_id
+    # user = request.user.user_id
     # events = AccountBook.objects.filter(user_id=user )
     # income = Income.objects.filter(user_id=user)
     # spend = Spend.objects.filter(user_id=user)
-    events = Income.objects.all().values("amount", "income_date" ,"kind").union(Spend.objects.all().values("amount","spend_date", "kind"))
-    total = AccountBook.objects.all().values_list("account_date").union()
+    # events = Income.objects.all().values("amount", "income_date" ,"kind").union(Spend.objects.all().values("amount","spend_date", "kind"))
+    # total = AccountBook.objects.all().values_list("account_date").union()
     
     now = datetime.datetime.now()
     year = now.strftime('%Y')
@@ -63,24 +63,17 @@ def calendar(request):
     # 월별 기간 필터링
     spend_month_filter = Spend.objects.filter(spend_date__year=year, spend_date__month=month).values('kind','spend_date','amount','place')
     income_month_filter = Income.objects.filter(income_date__year=year, income_date__month=month).values('kind','income_date','amount','income_way')
-    # 월별 쿼리셋 합치기
-    detail_month = spend_month_filter.union(income_month_filter).order_by('-spend_date')
-    # 일별 수입,지출값 합산
-    spend_day_sum2 = spend_month_filter.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
-    income_day_sum2 = income_month_filter.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
-    
+
     spend_day_sum = spend_month_filter.values('spend_date__day').annotate(amount=Sum('amount')).order_by('-spend_date__day')
     income_day_sum = income_month_filter.values('income_date__day').annotate(amount=Sum('amount')).order_by('-income_date__day')
-
     detail_day = income_day_sum.union(spend_day_sum)
+
+
 
 
     # 월별 기간 필터링
     spend_month_filter2 = Spend.objects.filter(spend_date__year=year, spend_date__month=month)
     income_month_filter2 = Income.objects.filter(income_date__year=year, income_date__month=month)
-    # 월 총 수입, 지출
-    spend_sum = spend_month_filter2.aggregate(Sum('amount'))
-    income_sum = income_month_filter2.aggregate(Sum('amount'))
     # 소비 TOP5 카테고리
     category_amount = spend_month_filter2.values('category').annotate(amount=Sum('amount')).order_by('-amount')[:5]
     # 소비 TOP5 카드
@@ -88,11 +81,40 @@ def calendar(request):
     # 소비 TOP5 거래처
     area_amount = spend_month_filter2.values('place').annotate(amount=Sum('amount')).order_by('-amount')[:5]
 
-    print('디테일데이 나와라 ->>>'+ str(spend_day_sum))
+    # 일별 수입,지출값 합산
+    spend_day_sum2 = spend_month_filter.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
+    income_day_sum2 = income_month_filter.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
 
-    return render(request, 'calendar.html' ,{'Spend_day':spend_day_sum,'Income_day':income_day_sum,'Detail_month':detail_month,'detail_day':detail_day,
-                'events':events, 'Expenditure': spend_sum, 'Income': income_sum, 'Category': category_amount, 'Method': method_amount, 'Area': area_amount, 'month':month
+
+    return render(request, 'calendar.html' ,{'detail_day':detail_day, 'Category': category_amount, 'Method': method_amount, 'Area': area_amount, 'month':month
                 ,'spend_day_sum2':spend_day_sum2, 'income_day_sum2':income_day_sum2})
+
+
+def cal_list(request):
+    now = datetime.datetime.now()
+    year = now.strftime('%Y')
+    month = now.strftime('%m')
+    
+    # 월별 기간 필터링
+    spend_month_filter = Spend.objects.filter(spend_date__year=year, spend_date__month=month).values('kind','spend_date','amount','place')
+    income_month_filter = Income.objects.filter(income_date__year=year, income_date__month=month).values('kind','income_date','amount','income_way')
+
+    
+    # 월별 쿼리셋 합치기
+    detail_month = spend_month_filter.union(income_month_filter).order_by('-spend_date')
+    spend_day_sum = spend_month_filter.values('spend_date__day').annotate(amount=Sum('amount')).order_by('-spend_date__day')
+    income_day_sum = income_month_filter.values('income_date__day').annotate(amount=Sum('amount')).order_by('-income_date__day')
+
+    # 월별 기간 필터링
+    spend_month_filter2 = Spend.objects.filter(spend_date__year=year, spend_date__month=month)
+    income_month_filter2 = Income.objects.filter(income_date__year=year, income_date__month=month)
+
+    # 월 총 수입, 지출
+    spend_sum = spend_month_filter2.aggregate(Sum('amount'))
+    income_sum = income_month_filter2.aggregate(Sum('amount'))
+    
+
+    return render(request, 'calendar.html', {'Spend_day':spend_day_sum,'Income_day':income_day_sum,'Detail_month':detail_month, 'Expenditure': spend_sum, 'Income': income_sum,})
 
 
 def add_calendar(request):
