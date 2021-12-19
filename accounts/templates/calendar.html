@@ -81,7 +81,7 @@
     text-align: center;
     z-index: 15;
   }
-  
+
   .bottom-nav-calendar{
       color: #FFD859 !important;
   }
@@ -128,7 +128,7 @@
         background: #F7F7F7;
         padding: 0 -5px;
         display: block;
-        /* Center slide text vertically 
+        /* Center slide text vertically
         display: -webkit-box;
         display: -ms-flexbox;
         display: -webkit-flex;
@@ -181,7 +181,7 @@
     text-align: left;
     box-shadow: 2px 1px 6px 1px grey;
     background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+    background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   }
   .amount-money{
     padding: 0 5px;
@@ -245,7 +245,7 @@
     border-radius: 15px;
     box-shadow: 1px 1px 5px 1px gray;
     background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+    background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   }
 
@@ -288,11 +288,11 @@
         공사중
       </div><!------------------- 추천 SWIPER div영역 끝------------------------------->
 
-      
+
       <div class="swiper-slide" data-name="요약" data-hash="summary"><!---------------------------- 요약 SWIPER div영역 시작------------------------------------------------>
         <div class="menu1" style="margin: 5%; padding:10px;">
           <a style="font-family: 'Noto Sans KR', sans-serif; font-size: 22px; color:#fff; margin-top:10px; padding-left:1rem;"><strong>{{user.uid}}</strong>님의 <strong>{{month}}월</strong> 누적금액</a><br>
-          
+
           <div class="amountMoney" style="text-align:left; padding-left:15px; margin-top:0.5rem;">
             <a id="amount-money1" style="display: none;">{{user.invest}}</a>
             <a id="amount-money" class="amount-money"></a><a class="amount-won">won</a>
@@ -310,7 +310,7 @@
             const cn1element = document.getElementById('amount-money');
             cn1element.innerHTML = cn1;
           </script>
-          
+
           <div style="text-align:initial; padding-left:1rem;">
             <div style="margin-top:0.5rem; margin-bottom:0.5rem; color: #fff;">
               <a>지출</a> <a style="margin-left: 4rem; font-weight:bold;">{{Expenditure.amount__sum|intcomma}} won</a>
@@ -395,7 +395,7 @@
     </div>
 
 
-    
+
 
     <div style="font-weight: bold;">소비 TOP5 기업명</div>
     <div>
@@ -408,9 +408,9 @@
         {% endfor %}
       </ol>
     </div>
-  
 
-    
+
+
   <canvas id="myChart" width="200" height="200"></canvas>
 <!-- chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
@@ -434,7 +434,7 @@
             // convert the data value to local string so it uses a comma seperated number
             var dataLabel = data.labels[tooltipItem.index];
             var value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].toLocaleString();
-  
+
             // make this isn't a multi-line label (e.g. [["label 1 - line 1, "line 2, ], [etc...]])
             if (Chart.helpers.isArray(dataLabel)) {
               // show value on first line of multiline label
@@ -444,7 +444,7 @@
             } else {
               dataLabel += value;
             }
-  
+
             // return the text to display on the tooltip
             return dataLabel;
           }
@@ -610,7 +610,7 @@
           </div>
         </div>
 
-      </div> 
+      </div>
     </div><!------------------- 달력 SWIPER div영역 끝------------------------------->
 
 
@@ -633,7 +633,7 @@
       hashNavigation: {
         watchState: false,
         replaceState:true,
-      },   
+      },
       pagination : {
         observer: true,
         observeParents: true,
@@ -646,7 +646,7 @@
         },
     });swiper.update();
 
-    
+
   </script>
 
 
