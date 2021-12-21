@@ -25,7 +25,7 @@ class LemonUserManager(BaseUserManager):
             email = self.normalize_email(email),
             uid = uid,
             phonenumber = phonenumber,
-            name = name,
+            name = username,
             u_chk= u_chk,
             e_chk=e_chk,
             # balance = balance,
@@ -40,7 +40,7 @@ class LemonUserManager(BaseUserManager):
             uid = uid,
             email = email,
             phonenumber = phonenumber,
-            name = name,
+            name = username,
             u_chk = True,
             e_chk = True,
             invest = invest,
@@ -57,7 +57,7 @@ class LemonUserManager(BaseUserManager):
 
 class user(AbstractBaseUser):
     user_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30, db_collation='utf8_general_ci',verbose_name= "사용자이름")
+    username = models.CharField(max_length=30, db_collation='utf8_general_ci',verbose_name= "사용자이름")
     uid = models.CharField(unique=True, max_length=30, db_collation='utf8_general_ci', verbose_name= "유저아이디")
     password = models.CharField(max_length=30, db_collation='utf8_general_ci')
     email = models.CharField(unique=True, max_length=15, db_collation='utf8_general_ci', verbose_name= "이메일")
