@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}레몬::로그인{% endblock title %}
 {% block container %}
+{% load socialaccount %}
 <style>
     body,html{
         padding: 0 !important;
@@ -47,14 +48,15 @@
             <span>아이디 비밀번호 찾기</span> / <a href="/signup"><span>회원가입</span></a>
         </div>
     </div>
-    
+
 
     <div class="sns-login-wrap">
         <div style="width:100%; margin: 0 auto 3rem auto; text-align: center;">
         <a>SNS 로그인을 통해 레몬 서비스를 이용하실수 있습니다.</a>
         </div>
+    
         <ul class="sign-button-list">
-            <li style="margin-right:15px;"><button class="kakako-btn"><i class="fas fa-comment"></i></button></li>
+            <li style="margin-right:15px;"><button class="kakako-btn"><i class="fas fa-comment" onclick="location.href='{% provider_login_url 'kakao' %}'"></i></button></li>
             <li style="margin-right:15px;"><button class="google-btn"><i class="fab fa-google"></i></button></li>
             <li><button class="google-btn"><img class="naver-btn" src="../../media/naverbtn1.png"></button></li>
         </ul>

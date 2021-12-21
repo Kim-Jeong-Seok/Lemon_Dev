@@ -18,6 +18,7 @@ from django.views.generic import View
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from .socialviews import KakaoSignInView, KakaoSignInCallbackView
 #from .serializers import LemonUserSerializers
 
 # @api_view(['GET'])

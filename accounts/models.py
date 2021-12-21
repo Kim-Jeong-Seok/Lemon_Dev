@@ -3,12 +3,12 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create your models here.
 class LemonUserManager(BaseUserManager):
-    def create_user(self,uid, email, name,u_chk,e_chk,  invest, phonenumber, password=None):
+    def create_user(self,uid, email, username,u_chk,e_chk,  invest, phonenumber, password=None):
         if not email:
             raise ValueError("이메일을 입력해주세요!")
         if not uid:
             raise ValueError("아이디를 입력해주세요!")
-        if not name:
+        if not username:
             raise ValueError("이름을 입력해주세요!")
         # if not balance:
         #     raise ValueError("월급을 입력해주세요!")
@@ -25,7 +25,7 @@ class LemonUserManager(BaseUserManager):
             email = self.normalize_email(email),
             uid = uid,
             phonenumber = phonenumber,
-            name = name,
+            username = username,
             u_chk= u_chk,
             e_chk=e_chk,
             # balance = balance,
@@ -35,18 +35,18 @@ class LemonUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self,uid, email,name, invest, phonenumber, password=None):
+    def create_superuser(self,uid, email,username, invest, phonenumber, password=None):
         user = self.create_user(
             uid = uid,
             email = email,
             phonenumber = phonenumber,
-            name = name,
+            username = username,
             u_chk = True,
             e_chk = True,
             invest = invest,
         )
         user.set_password(password)
-    
+
         user.is_admin = True
         user.is_active = True
         user.is_superuser = True
@@ -57,7 +57,7 @@ class LemonUserManager(BaseUserManager):
 
 class user(AbstractBaseUser):
     user_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30, db_collation='utf8_general_ci',verbose_name= "사용자이름")
+    username = models.CharField(max_length=30, db_collation='utf8_general_ci',verbose_name= "사용자이름")
     uid = models.CharField(unique=True, max_length=30, db_collation='utf8_general_ci', verbose_name= "유저아이디")
     password = models.CharField(max_length=30, db_collation='utf8_general_ci')
     email = models.CharField(unique=True, max_length=15, db_collation='utf8_general_ci', verbose_name= "이메일")
@@ -97,9 +97,9 @@ class user(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return self.is_admin
-    
-    
-    
+
+
+
 class AccountBook(models.Model):
     account_id = models.AutoField(primary_key=True)
     account_date = models.DateTimeField(blank=True, null=True)
