@@ -158,3 +158,20 @@ class Income(models.Model):
     class Meta:
         managed = False
         db_table = 'income'
+
+
+class Qna(models.Model):
+    qna_id = models.AutoField(primary_key=True)
+    datetime = models.DateTimeField()
+    status = models.IntegerField()
+    type = models.IntegerField()
+    email = models.CharField(max_length=45)
+    hp = models.CharField(max_length=45, blank=True, null=True)
+    subject = models.CharField(max_length=45)
+    content = models.TextField()
+    file = models.CharField(max_length=255, blank=True, null=True)
+    user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'qna'

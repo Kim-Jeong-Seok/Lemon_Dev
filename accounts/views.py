@@ -289,3 +289,12 @@ def signup(request):
             return redirect('/')
         return render(request, 'signup.html')
     return render(request, 'signup.html')
+
+def qna_write(request):
+    if request.method == 'POST':
+        
+        return redirect('/qna/list')
+    return render(request, 'qna_write.html')
+
+def qna_list(request):
+    return render(request, 'qna_list.html')

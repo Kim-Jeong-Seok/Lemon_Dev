@@ -1,0 +1,21 @@
+<h1>qna 작성 게시판</h1>
+<form method="POST">
+  {% csrf_token %}
+  <div>
+    답변 받을 이메일
+  </div>
+  <input type="text">
+
+  <div>
+    문의 유형
+  </div>
+  <input type="text">
+
+  <div>
+  문의 내용
+  </div>
+  <input type="text">
+
+  <button type="submit">등록하기</button>
+  <a href="/qna/list">문의내역</a>
+</form>
