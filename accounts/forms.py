@@ -5,7 +5,7 @@ class LemonSignupForm(forms.Form):
     uid = forms.CharField()
     password = forms.CharField()
     email = forms.CharField()
-    name = forms.CharField()
+    username = forms.CharField()
     phonenumber = forms.CharField()
     money = forms.CharField()
     fakemoney = forms.CharField()

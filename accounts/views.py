@@ -278,7 +278,7 @@ def signup(request):
                                             uid=request.POST['uid'],
                                             password=request.POST['password'],
                                             email=request.POST['email'],
-                                            name=request.POST['name'],
+                                            username=request.POST['name'],
                                             phonenumber=request.POST['phonenumber'],
                                             invest=request.POST['invest'],
                                             u_chk=request.POST['u_chk'],
