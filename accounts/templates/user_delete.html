@@ -1,0 +1,7 @@
+
+
+<form action = "{% url 'accounts:user_delete' user.user_id %}" method="POST">
+  {% csrf_token %}
+  비밀번호 확인: <input type = "password" name = "password">
+  <input type = "submit" value = "회원탈퇴">
+    </form>

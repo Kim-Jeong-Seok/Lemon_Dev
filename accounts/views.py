@@ -19,6 +19,8 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .socialviews import KakaoSignInView, KakaoSignInCallbackView
+
+from django.contrib.auth.hashers import check_password
 #from .serializers import LemonUserSerializers
 
 # @api_view(['GET'])
@@ -42,13 +44,20 @@ from .socialviews import KakaoSignInView, KakaoSignInCallbackView
 #         except:
 #             return HttpResponse(status=501,)
 
+def invest (request):
+    if request.method == 'POST':
+        user = get_user_model().objects.update_user( invest=request.POST['invest'])
+        return redirect('/calendar#calendar')
+
+    return render(request, 'invest.html')
+
 def main(request):
     return render(request, 'main.html')
 def home(request):
     return render(request, 'main.html')
 
 def calendar(request):
-    #user = request.user.user_id
+    user = request.user.user_id
     # events = AccountBook.objects.filter(user_id=user )
     # income = Income.objects.filter(user_id=user)
     # spend = Spend.objects.filter(user_id=user)
@@ -60,8 +69,8 @@ def calendar(request):
     month = now.strftime('%m')
 
     # 월별 기간 필터링
-    spend_month_filter = Spend.objects.filter(spend_date__year=year, spend_date__month=month).values('kind','spend_date','amount','place')
-    income_month_filter = Income.objects.filter(income_date__year=year, income_date__month=month).values('kind','income_date','amount','income_way')
+    spend_month_filter = Spend.objects.filter(user_id = user,spend_date__year=year, spend_date__month=month).values('kind','spend_date','amount','place')
+    income_month_filter = Income.objects.filter(user_id = user,income_date__year=year, income_date__month=month).values('kind','income_date','amount','income_way')
     # 월별 쿼리셋 합치기
     detail_month = spend_month_filter.union(income_month_filter).order_by('-spend_date')
     # 일별 수입,지출값 합산
@@ -75,8 +84,8 @@ def calendar(request):
 
 
     # 월별 기간 필터링
-    spend_month_filter2 = Spend.objects.filter(spend_date__year=year, spend_date__month=month)
-    income_month_filter2 = Income.objects.filter(income_date__year=year, income_date__month=month)
+    spend_month_filter2 = Spend.objects.filter(user_id = user,spend_date__year=year, spend_date__month=month)
+    income_month_filter2 = Income.objects.filter(user_id = user,income_date__year=year, income_date__month=month)
     # 월 총 수입, 지출
     spend_sum = spend_month_filter2.aggregate(Sum('amount'))
     income_sum = income_month_filter2.aggregate(Sum('amount'))
@@ -268,6 +277,13 @@ def addlist(request):
 
 def myinfo(request):
     return render(request, 'myinfo.html')
+
+def user_delete(request, user_id):
+    user2 = user_id
+    user1 = get_user_model().objects.get(user_id = user2)
+    user1.delete()
+    return redirect('/')
+    return render(request, 'user_delete.html')
 
 def signup(request):
     if request.method == 'POST':

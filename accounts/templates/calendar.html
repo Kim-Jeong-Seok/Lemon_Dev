@@ -297,7 +297,7 @@
             <a id="amount-money1" style="display: block;"></a>
             <a id="amount-money" class="amount-money">
               {% if user.invest == 0 %}
-              입력해주세요.
+              <a onclick="location.href= '{%url 'accounts:invest' %}'">입력해주세여. </a>
               {% else %}
               {{user.invest}}
               {% endif %}
