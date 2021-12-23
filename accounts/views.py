@@ -57,6 +57,9 @@ def home(request):
     return render(request, 'main.html')
 
 def calendar(request):
+    user_chk = user.objects.all()
+    if u_chk == 0:
+        return redirect('invest.html')
     user = request.user.user_id
     # events = AccountBook.objects.filter(user_id=user )
     # income = Income.objects.filter(user_id=user)
@@ -84,8 +87,8 @@ def calendar(request):
 
 
     # 월별 기간 필터링
-    spend_month_filter2 = Spend.objects.filter(user_id = user,spend_date__year=year, spend_date__month=month)
-    income_month_filter2 = Income.objects.filter(user_id = user,income_date__year=year, income_date__month=month)
+    spend_month_filter2 = Spend.objects.filter(user_id = user, spend_date__year=year, spend_date__month=month)
+    income_month_filter2 = Income.objects.filter(user_id = user, income_date__year=year, income_date__month=month)
     # 월 총 수입, 지출
     spend_sum = spend_month_filter2.aggregate(Sum('amount'))
     income_sum = income_month_filter2.aggregate(Sum('amount'))

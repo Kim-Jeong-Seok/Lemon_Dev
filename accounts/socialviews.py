@@ -65,7 +65,7 @@ class KakaoSignInCallbackView(View):
             print("success")
 
             return JsonResponse({"token" : token}, status=200)
-            return redirect('signup')
+            return redirect('/invest')
 
         else:
             member(social_account = kakao_id,
