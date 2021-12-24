@@ -264,7 +264,7 @@
           <div id="modalBody" class="modal-body">
           </div>
           <div class="modal-footer">
-            <button type="button" onclick="location.href='add_calendar'" id="add_event" class="addList-btn" data-dismiss="modal">내역추가</button>
+            <button type="button" onclick="location.href='/add_calendar.html'" id="add_event" class="addList-btn" data-dismiss="modal">내역추가</button>
           </div>
       </div>
   </div>
@@ -581,7 +581,7 @@
             document.getElementById('testtest').value = click_date;
             $.ajax({
               type: "POST",
-              url: "{% url 'accounts:ajax_pushdate' %}",
+              url: "{% url 'calendars:ajax_pushdate' %}",
               data: {
                 testtest: $('#testtest').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
