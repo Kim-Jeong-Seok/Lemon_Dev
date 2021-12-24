@@ -107,17 +107,18 @@ color:white;
                             <input type="text" id="phonenumber" class="form-control"
                                     name="phonenumber" placeholder="- 를 제외한 휴대폰번호"
                                     style="width:85%;display:inline;">
-                            <a class="sms_btn" href="#" onclick="click_sms">발송</a>
+                            <a class="sms_btn" id="send_btn"href="#" onclick="click_sms()">발송</a>
                         </div>
                         <div class="input-style has-icon input-style-1 input-required" id="sms_cert_div"
                                 style="display: none">
                             <span>인증번호</span>
-                            <d class="sms_btn" id="send_sms_cert_btn">확인</d>
+                            <a class="sms_btn" id="resend_sms_btn" href="#" onclick="resend_sms()">재발송</a>
+                            <a class="sms_btn" id="send_sms_cert_btn" href="#" onclick="chk_certKey()">확인</a>
                             <d class="sms_time">
                                 남은시간(<d id="time">00:00</d>)
                             </d>
                             <input type="hidden" id="cert_id" value="">
-                            <input type="number" oninput="maxLengthCheck(this)" class="form-control"
+                            <input type="number" class="form-control"
                                     style="padding-right: 140px;padding-left: 10px;" id="cert_key"
                                     name="cert_key" placeholder="인증번호 입력">
                         </div>
@@ -188,7 +189,93 @@ color:white;
 
         function move_page(index) {
         swiper.slideTo(index)
+    }
+</script>
+<script>
+    NUM = undefined;
+    KEY = undefined;
+    // [발송]버튼
+    function click_sms() {
+        if (chk_phoneNumber() === false) return false; // 휴대폰 유효성 검사
+        document.querySelector("#send_btn").style.display = "none";
+        document.querySelector("#sms_cert_div").style.display = "block";
+        document.querySelector("#resend_sms_btn").style.display = "block";
+        document.querySelector("#cert_key").style.display = "block";
+        document.querySelector("#cert_key").setAttribute("placeholder", "인증시간 입력");
+        document.querySelector("#cert_key").removeAttribute("disabled");
+
+        NUM = document.querySelector("#phonenumber").value;
+        KEY = makeRandomNum(4);  // 4자리 난수 설정
+        startTimer();  // 타이머 시작
+
+        // console.log(KEY);
+    }
+    
+    // 인증번호 [확인]버튼
+    function chk_certKey() {
+        if (document.querySelector("#cert_key").value == KEY) {
+            document.querySelector("#send_btn").style.display = "none";
+            document.querySelector("#sms_cert_div").style.display = "none";
+            document.querySelector("#resend_sms_btn").style.display = "none";
+            document.querySelector("#phonenumber").setAttribute("disabled", "true");
+            alert("인증 완료");
+            return true;
         }
+        else {
+            alert("인증번호를 확인해주세요");
+        }
+    }
+
+    // [재발송]버튼
+    function resend_sms() {
+        clearInterval(myInterv);
+        click_sms();
+        alert("인증번호 재발송");
+    }
+
+    // 휴대폰번호 유효성 검사
+    function chk_phoneNumber(){
+        const phonenumber = document.querySelector("#phonenumber");
+        const regex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+        if (!regex.test(phonenumber.value)) {
+            alert("올바른 번호를 입력해주세요");
+            phonenumber.value = "";
+            phonenumber.focus();
+            return false;
+        }
+        // ---Ajax통신 DB값 중복 비교(구현예정)---
+    }
+
+    // 난수 설정
+    function makeRandomNum(n) {
+        let value = '';
+        for(let i = 0; i < n; i++) {
+            value += Math.floor(Math.random() * 10);
+        }
+        return value;
+    }
+
+    // 타이머 시작
+    function startTimer() {
+        let num = 180; // 180초 설정
+        function timer() {
+            let min = num / 60;
+            min = Math.floor(min);
+            let sec = num - (min * 60);
+            min = min < 10 ? `0${min}` : min;
+            sec = sec < 10 ? `0${sec}` : sec;
+            document.querySelector("#time").innerText = `${min} : ${sec}`;
+            // 인증시간 만료시
+            if (num == 0) {
+                clearInterval(myInterv);
+                document.querySelector("#cert_key").setAttribute("placeholder", "인증시간 만료");
+                document.querySelector("#cert_key").setAttribute("disabled", "true");
+            }
+            num--;
+        }
+        timer();
+        myInterv = setInterval(timer, 1000)
+    }
 </script>
 
 
