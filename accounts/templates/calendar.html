@@ -251,6 +251,144 @@
 
 </style>
 
+{% if user.e_chk == 0 %}
+<style>
+    .signup-wrap::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera*/
+    }
+.form-control{
+    padding-left: 10px;
+    margin-bottom: 15px;
+    width:98%;
+    height: 40px;
+    border-bottom: 1px solid #4CBACF;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    }
+.sms_btn{
+padding:5px;
+float:right;
+color:white;
+background:#4cbacf;
+border-radius:10px;
+position:relative;
+}
+
+table{
+width:100%;
+height:40px;
+text-align:center;
+position: sticky;
+top: 0px;
+z-index: 2;
+background: white;
+}
+body{
+margin:0px;}
+
+button{
+width:100%;
+padding:20px;
+margin-top:20px;
+background:#4cbacf;
+border:0px;
+border-radius:10px;
+color:white;
+}
+
+button:disabled{
+    width:100%;
+    padding:20px;
+    margin-top:20px;
+    background:#a0a0a0;
+    border:0px;
+    border-radius:10px;
+    color:white;
+}
+textarea{
+    border: 1px solid #4CBACF;
+    background-color: #fff;
+    resize: none;
+    padding-left: 5px;
+    padding-top: 5px;
+}
+
+.all_chk_wrap{
+    margin-bottom: 15px;
+}
+
+.all_chk_font{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 400;
+    color: #3a3a3a;
+    font-size: 12pt; /*16px*/
+}
+
+</style>
+
+<body>
+    <div class="signup-wrap">
+
+        <div class="input-form col-md-12 mx-auto" style="height:100%; padding:20px; text-align:left;">
+            <div style="width: 100%; text-align:center; margin-bottom:20px; margin-top:30px;">
+                <img src="media/LEMON_LOGO_146x40.png" style="width: 146px; height:40px;">
+            </div>
+            <form class="validation-form" method="POST" action="{% url 'calendars:calendar' %}" id="signup-form">
+                {% csrf_token %}
+                <div class="service_access">
+                    <div class="all_chk-wrap">
+                    <label style="text-align:end;">
+                        <input type="checkbox" name="all_chk" value ="0" id="all_chk">
+                        <a class="all_chk_font">레몬서비스 이용약관, 개인정보 수집에 모두 동의 합니다.</a>
+                    </div>
+                    <div class="require_chk_wrap">
+                        </label>
+                        <a>레몬서비스 이용약관 동의(필수)</a><br>
+                        <textarea cols="30" rows="10" style="width:100%;" disabled="disabled">이부분은 이용약관관련된 내용이 들어갈 예정입니다.</textarea><br>
+                        <label style="text-align:end;">
+                            <input type="checkbox" name="u_chk" value ="1" id="require_chk">
+                            <span>이용약관에 동의합니다.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="persnal_info_access">
+                    <div class="require_chk_wrap" style="margin-top: 15px;">
+                        <a>개인정보 수집 동의(필수)</a><br>
+                        <textarea cols="30" rows="10" style="width:100%;" disabled="disabled">이부분은 개인정보 수집에 대한 내용이 들어갈 예정입니다.</textarea><br>
+                        <label style="text-align:end;">
+                            <input type="checkbox" name="e_chk" value ="1" id="require_chk">
+                            <span>이용약관에 동의합니다.</span>
+                        </label>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg btn-block" id="signupBtn" type="submit" value="signup" disabled style="width:100%">회원가입</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+
+    $('#all_chk').change(function () {
+        var checked = $(this).prop('checked');
+        $('input[id="require_chk"]').prop('checked', checked);
+        $('#signupBtn').removeAttr('disabled');
+    });
+
+    $('input[id="require_chk"]').change(function () {
+        var tmpLength = $('input[id="require_chk"]').length;
+        var checkedLength = $('input[id="require_chk"]:checked').length;
+        var selectAll = (tmpLength == checkedLength);
+        $('#all_chk').prop('checked', selectAll);
+        selectAll ? $('#signupBtn').removeAttr('disabled'):$('#signupBtn').attr('disabled','true');});
+</script>
+
+</html>
+{% else %}
+
 <!-- Modal -->
 
 <div id="calendarModal" class="modal fade">
@@ -662,5 +800,5 @@
 <script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/ko.js' %}"></script>
 
-
+{% endif %}
 {% endblock %}

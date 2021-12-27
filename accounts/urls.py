@@ -25,6 +25,7 @@ urlpatterns = [
     #path('add_calendar/', views.add_calendar, name='add_calendar'),
     path('invest', views.invest, name='invest'), #모의주식금액설정
     path('user_delete/<int:user_id>', views.user_delete, name='user_delete'), #회원탈퇴
+    path('signup2', views.signup2, name='signup2'),
     #path('ajax_pushdate/', views.ajax_pushdate, name='ajax_pushdate'),
     #path('all_events/', views.all_events, name='all_events'),
     #path('add_event', views.add_event, name='add_event'),

@@ -56,10 +56,33 @@ def main(request):
 def home(request):
     return render(request, 'main.html')
 
+def signup2(request):
+    # if request.method == 'POST':
+    #     user = request.user.user_id
+    #     user = get_user_model().objects.filter(user_id=user).update(
+    #
+    #                                         u_chk=request.POST['u_chk'],
+    #                                         e_chk=request.POST['e_chk'],
+    #
+    #                                         )
+    #
+    #     return redirect('/calendar')
+
+
+    return render(request, 'signup2.html')
+
 # def calendar(request):
-#     # user_chk = user.objects.all()
-#     # if u_chk == 0:
-#     #     return redirect('invest.html')
+#     if request.method == 'POST':
+#         user = request.user.user_id
+#         user = get_user_model().objects.filter(user_id=user).update(
+#
+#                                             u_chk=request.POST['u_chk'],
+#                                             e_chk=request.POST['e_chk'],
+#
+#                                             )
+#
+#         return redirect('/calendar#summary')
+#
 #     user = request.user.user_id
 #     # events = AccountBook.objects.filter(user_id=user )
 #     # income = Income.objects.filter(user_id=user)
