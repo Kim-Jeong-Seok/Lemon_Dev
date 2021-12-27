@@ -191,6 +191,8 @@ color:white;
         swiper.slideTo(index)
     }
 </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>
     NUM = undefined;
     KEY = undefined;
@@ -206,9 +208,20 @@ color:white;
 
         NUM = document.querySelector("#phonenumber").value;
         KEY = makeRandomNum(4);  // 4자리 난수 설정
-        startTimer();  // 타이머 시작
 
-        // console.log(KEY);
+        // ajax 비동기통신
+        $.ajax({
+            url: "ajax_sendSMS/",
+            method: "POST",
+            dataType: "JSON",
+            data: {
+                NUM: NUM,
+                KEY: KEY,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            }
+        });
+
+        startTimer();  // 타이머 시작
     }
     
     // 인증번호 [확인]버튼
@@ -236,7 +249,7 @@ color:white;
     // 휴대폰번호 유효성 검사
     function chk_phoneNumber(){
         const phonenumber = document.querySelector("#phonenumber");
-        const regex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+        const regex = /^01([0|1|6|7|8|9])([0-9]{3,4})([0-9]{4})$/;
         if (!regex.test(phonenumber.value)) {
             alert("올바른 번호를 입력해주세요");
             phonenumber.value = "";

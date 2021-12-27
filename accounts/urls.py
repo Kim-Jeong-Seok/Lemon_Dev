@@ -29,6 +29,7 @@ urlpatterns = [
     path('add_event', views.add_event, name='add_event'),
     path('qna/write', views.qna_write),
     path('qna/list', views.qna_list),
+    path('ajax_sendSMS/', views.ajax_sendSMS)
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

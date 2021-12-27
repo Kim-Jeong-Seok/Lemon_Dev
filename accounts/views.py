@@ -12,7 +12,7 @@ from datetime import datetime
 # Create your views here.
 import datetime
 from django.db.models import Sum, Count
-import os, json
+import os, json, requests
 from django.conf import settings
 from django.views.generic import View
 from rest_framework import viewsets
@@ -289,6 +289,37 @@ def signup(request):
             return redirect('/')
         return render(request, 'signup.html')
     return render(request, 'signup.html')
+
+
+@csrf_exempt
+def ajax_sendSMS(request):
+    NUM = request.GET['NUM']
+    KEY = request.GET['KEY']
+    
+    send_url = 'https://apis.aligo.in/send/' # 요청을 던지는 URL, 현재는 문자보내기
+
+    # ================================================================== 문자 보낼 때 필수 key값
+    # API key, userid, sender, receiver, msg
+    # API키, 알리고 사이트 아이디, 발신번호, 수신번호, 문자내용
+
+    sms_data={
+        'key': getattr(settings, 'ALIGO_SECRET_KEY'), #api key
+        'userid': getattr(settings, 'ALIGO_USERID'), # 알리고 사이트 아이디
+        'sender': getattr(settings, 'ALIGO_SENDER'), # 발신번호
+        'receiver': NUM, # 수신번호 (,활용하여 1000명까지 추가 가능)
+        'msg': f'[LEMON]인증번호 [{KEY}]를 입력해주세요.', #문자 내용
+        # 'testmode_yn' : 'N' #테스트모드 적용 여부 Y/N
+        # 'msg_type' : 'SMS', #메세지 타입 (SMS, LMS)
+        # 'title' : 'testTitle', #메세지 제목 (장문에 적용)
+        # 'destination' : '01000000000|고객명', # %고객명% 치환용 입력
+        #'rdate' : '예약날짜',
+        #'rtime' : '예약시간',
+    }
+    requests.post(send_url, data=sms_data)
+    data = {}
+    
+    return JsonResponse(data)
+
 
 def qna_write(request):
     if request.method == 'POST':
