@@ -29,7 +29,7 @@ def calendar(request):
                                             u_chk=request.POST['u_chk'],
                                             e_chk=request.POST['e_chk'],
                                     )
-        return redirect('/calendar#summary')
+        return redirect('/calendar#recom')
 
     user = request.user.user_id
     # events = AccountBook.objects.filter(user_id=user )
