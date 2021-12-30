@@ -23,7 +23,7 @@ urlpatterns = [
     path('login', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     #path('add_calendar', views.add_calendar, name='add_calendar'),
-    path('edit_calendar', views.add_calendar, name='add_calendar'),
+    #path('edit_calendar', views.add_calendar, name='add_calendar'),
     path('user_delete/<int:user_id>', views.user_delete, name='user_delete'), #회원탈퇴
     #path('ajax_pushdate/', views.ajax_pushdate, name='ajax_pushdate'),
     #path('all_events/', views.all_events, name='all_events'),

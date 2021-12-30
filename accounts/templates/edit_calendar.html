@@ -192,7 +192,7 @@
         font-size: 1.3rem;
         color: #fff;
         background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     }
 </style>
 
@@ -204,37 +204,40 @@
         <label for="income">수입</label>
     </div>
 
-    <form action="{%url 'accounts:add_calendar' %}" method="POST">
+    <form method="POST">
+        {% for i in spe %}
         {% csrf_token %}
     <div class="span_div" id="span_div">
+
+
         <div class="span_list">
                 <input type="text" style="display: none;" readonly name="user" value="{{user.user_id}}"/>
                 <input type="text" style="display: none;" readonly name="kind" value="지출"/>
             <table min-width="300">
                 <tr> <!-- 행선언 -->
                     <th width="110" height="60"><a class="span_list_title">금액</a></th>
-                    <th width="260" style="text-align: end;"><input class="input_span" type="number" name="amount" value="{{form.amount.value|default_if_none:''}}"></th>
+                    <th width="260" style="text-align: end;"><input class="input_span" type="number" name="amount" value="{ss}"> {{i.amount}}</th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="110" height="60"><a class="span_list_title">소비처</a></th>
-                    <th width="260" style="text-align: end;"><input class="input_span" type="text" name="place" value="{{form.place.value|default_if_none:''}}"></th>
+                    <th width="260" style="text-align: end;"><input class="input_span" type="text" name="place" value="{{form.place.value|default_if_none:''}}">{{i.place}}</th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="110" height="60"><a class="span_list_title">날짜</a></th>
-                    <th width="260" style="text-align: end;"><input class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{form.spend_date.value|default_if_none:''}}"></th>
+                    <th width="260" style="text-align: end;"><input class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{form.spend_date.value|default_if_none:''}}">{{i.spend_date}}</th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="110" height="60"><a class="span_list_title">결제수단</a></th>
                     <th width="260" style="text-align: end;"><select class="span_list_select" name="way">
-                            <option style="text-align: center;" value='' selected>-------- 선택하세요 --------</option>
+                            <option style="text-align: center;" value='' selected>-------- {{i.way}} --------</option>
                             <option value='1'>현금</option>
-                            <option value='2'>카드</option>    
+                            <option value='2'>카드</option>
                         </select></th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="110" height="60"><a class="span_list_title">카테고리</a></th>
                     <th width="260" style="text-align: end;"><select class="span_list_select" name="category">
-                        <option style="text-align: center;" value='' selected>-------- 선택하세요 --------</option>
+                        <option style="text-align: center;" value='' selected>-------- {{i.category}} --------</option>
                         <option value='1'>식비</option>
                         <option value='2'>카페/간식</option>
                         <option value='3'>술/유흥</option>
@@ -258,7 +261,7 @@
                     <th width="110" height="60"><a class="span_list_title">카드사</a></th>
                     <th width="260" style="text-align: end;">
                         <select class="span_list_select" name="card">
-                            <option style="text-align: center;" value='' selected>-------- 선택하세요 --------</option>
+                            <option style="text-align: center;" value='' selected>-------- {{i.card}} --------</option>
                             <option value='1'>국민카드</option>
                             <option value='2'>롯데카드</option>
                             <option value='3'>BC카드</option>
@@ -274,7 +277,7 @@
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="110" height="60"><a class="span_list_title">메모</a></th>
-                    <th width="260" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo"></textarea></th>
+                    <th width="260" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo"></textarea>{{i.memo}}</th>
                 </tr>
             </table>
         </div>
@@ -282,10 +285,12 @@
         <div style="text-align:center; margin-top:15px;">
         <button class="addBtn" name="spendbtn" value="spendbtn" type="submit">추가하기</button>
         </div>
-    </form>
-    </div>
 
-    <form action="{% url 'accounts:add_calendar' %}" method = "POST">
+        {% endfor %}
+    </form>
+
+    <form method = "POST">
+      {% for i in income%}
         {% csrf_token %}
     <div class="income_div" id="income_div">
         <div class="income_list">
@@ -311,7 +316,7 @@
                     <th width="260" style="text-align: end;"><input class="input_span" type="date" id="datepicker4" min="1900-01-01" max="2099-12-31" autocomplete="off" name="income_date" value="{{form.income_date.value|default_if_none:''}}"></th>
                 </tr>
                 <tr> <!-- 행선언 -->
-                    <th width="100" height="60"><a class="span_list_title">금액</a></th>
+                    <th width="100" height="60"><a class="span_list_title">금액</a>{{i.amount}}</th>
                     <th width="260" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" value="{{form.amount.value|default_if_none:''}}"/></th>
                 </tr>
                 <tr> <!-- 행선언 -->
@@ -326,6 +331,7 @@
             <button class="addBtn" value="incomebtn" name="incomebtn" type="submit">추가하기</button>
         </div>
     </div>
+      {% endfor %}
     </form>
 </div>
 
@@ -336,21 +342,21 @@
             if(chkValue){
                 $('#span_div').css('display','block');
                 $('#income_div').css('display','none');
-            }            
+            }
         });
         $('input[type="radio"][id="income"]').on('click', function(){
             var chkValue = $('input[type=radio][id="income"]:checked').val();
             if(chkValue){
                 $('#income_div').css('display','block');
                 $('#span_div').css('display','none');
-            }            
+            }
         });
-        
+
     });
 
     //textarea auto height increaze...
     $("textarea.input_textarea").on('keydown keyup', function () {
-        $(this).height(1).height( $(this).prop('scrollHeight')+12 );	
+        $(this).height(1).height( $(this).prop('scrollHeight')+12 );
       });
 
 
@@ -378,30 +384,30 @@
         $("#numcomma").bind('keyup keydown',function(){
             inputNumberFormat(this);
         });
-    
+
         //입력한 문자열 전달
         function inputNumberFormat(obj) {
             obj.value = comma(uncomma(obj.value));
         }
-          
+
         //콤마찍기
         function comma(str) {
             str = String(str);
             return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
         }
-    
+
         //콤마풀기
         function uncomma(str) {
             str = String(str);
             return str.replace(/[^\d]+/g, '');
         }
-    
+
         //숫자만 리턴(저장할때)
         //alert(cf_getNumberOnly('1,2./3g')); -> 123 return
         function cf_getNumberOnly (str) {
             var len      = str.length;
             var sReturn  = "";
-    
+
             for (var i=0; i<len; i++){
                 if ( (str.charAt(i) >= "0") && (str.charAt(i) <= "9") ){
                     sReturn += str.charAt(i);

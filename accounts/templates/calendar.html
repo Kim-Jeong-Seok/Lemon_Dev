@@ -96,7 +96,7 @@
     </div>
 </div>
 <script>
-    
+
   $('#all_chk').change(function () {
       var checked = $(this).prop('checked');
       $('input[id="require_chk"]').prop('checked', checked);
@@ -111,8 +111,9 @@
       selectAll ? $('#signupBtn').removeAttr('disabled'):$('#signupBtn').attr('disabled','true');});
 </script>
 
-  {% else %}
 
+  {% else %}
+{% endif %}
 <!-- Modal -->
 <div id="calendarModal" class="modal fade">
   <div class="modal-dialog">
@@ -120,9 +121,11 @@
       <div class="modal-header">
           <h3 id="modalTitle" class="modal-title"></h3>
           <button type="button" onclick="close_btn()" id="close_btn" class="btn btn-default" data-dismiss="modal">X</button>
+
       </div>
       <div id="modalBody" class="modal-body">
-      </div>
+
+            </div>
       <div class="modal-footer">
         <button type="button" onclick="location.href='add_calendar'" id="add_event" class="addList-btn" data-dismiss="modal">내역추가</button>
       </div>
@@ -138,7 +141,7 @@
 
 <!-- 소비내역추가하기버튼 -->
   <div class="addevent-btn">
-    <a style="color: #fff;font-size:22px;" href="/add_calendar"><i class="fas fa-pencil-alt"></i></a>
+    <a style="color: #fff;font-size:22px;" href="{% url 'calendars:add_calendar' %}"><i class="fas fa-pencil-alt"></i></a>
   </div>
 <!-- 소비내역추가하기버튼 끝 -->
 
@@ -148,9 +151,7 @@
 
     <!--- 추천 SWIPER div영역 시작 --->
     <div class="swiper-slide" data-name="추천" data-hash="recom">
-      <div style="height:600px; border:1px solid black;">
         <a>추천서비스가 들어갈 공간</a>
-      </div>
     </div>
     <!--- 추천 div영역 끝 --->
 
@@ -176,7 +177,7 @@
             //2. 긁어온 값에 천단위 , 찍어주고 cn1 변수에 저장
             const cn1 = innerText.toString()
             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-  
+
             //3. cn1 변수에 저장된 값을 amount-money 값에 띄워줌
             const cn1element = document.getElementById('amount-money');
             cn1element.innerHTML = cn1;
@@ -314,7 +315,7 @@
       </ol>
       </div>
       </div><!-- 건수 탑5 div 시작-->
-      
+
 
     </div><!--- 요약 SWIPER div영역 끝 --->
 
@@ -332,7 +333,7 @@
         {% ifchanged detail.spend_date.day %}
         <tr style="vertical-align:top;">
         <th style="text-align:left;padding-left:5px; border-bottom:1px solid #dddddd;">
-          <a style="font-weight: 400; color:#808183;font-size:13px">{{ detail.spend_date | date:'m월 d일' }}</a>
+          <a style="font-weight: 400; color:#808183;font-size:13px">{{detail.income_id}}{{ detail.spend_date | date:'m월 d일' }}</a>
         </th>
         <th style="text-align:right;font-size:13px; border-bottom:1px solid #dddddd;">
           <div style="display:flex;flex-direction:column;align-items:flex-end;">
@@ -348,7 +349,8 @@
             </div>
         </th>{% endifchanged %}
 </tr>
-        <tr>
+
+        <tr onclick="location.href='{% url 'calendars:edit_calendar' detail.spend_id detail.kind %}'">
           <td style="vertical-align:top;padding-bottom: 20px;">
             <div style="text-align:left;padding-left:5px;">
             <a style="font-weight:bold;display:block;">{{ detail.place }}</a>
@@ -453,8 +455,7 @@
                 reset.innerHTML = '';
                 for (var i = 0; i<10; i++) {
                   const element = document.getElementById('modalBody');
-                  element.innerHTML += '<div class="modal-body-text"><a href="/edit_calendar">'+ msg_value[i].amount + '원'+ '</a> <a>'+ msg_value[i].kind + '</a> </div>';
-                }
+                element.innerHTML += '<div class="modal-body-text"><a href="/edit_calendar">'+ msg_value[i].amount + '원'+ '</a> <a>'+ msg_value[i].kind + '</a> </div>';  }
               },
               failure: function() {
                 console.log('ajax send error!');
@@ -477,7 +478,7 @@
             <div style="padding: 5px; position:relative;" id='calendar' class="fullcal"></div>
           </div>
         </div>
- 
+
     </div><!------------------- 달력 SWIPER div영역 끝------------------------------->
 
 
@@ -495,14 +496,14 @@
       slidesPerView: 'auto',
       centeredSlides: true,
       autoHeight: true,
-      effect:'fade', 
+      effect:'fade',
       fadeEffect: { crossFade: true },
       mousewheel: false,
       speed: 100,
       hashNavigation: {
         watchState: false,
         replaceState:true,
-      },   
+      },
       pagination : {
         observer: true,
         observeParents: true,
@@ -513,7 +514,7 @@
           return '<div class="' + className + '"><span>' + (bullet[index]) + '</span></div>';
         }
         },
-        
+
         scrollbar: {
           el: '.swiper-scrollbar',
         },
@@ -542,5 +543,5 @@
 <script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/ko.js' %}"></script>
 
-{% endif %}
+
 {% endblock container %}

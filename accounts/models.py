@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
+from calendars.models import Spend
 # Create your models here.
 class LemonUserManager(BaseUserManager):
     def create_user(self,uid, email, username,u_chk,e_chk,  invest, phonenumber, password=None):
@@ -46,7 +46,7 @@ class LemonUserManager(BaseUserManager):
             invest = invest,
         )
         user.set_password(password)
-    
+
         user.is_admin = True
         user.is_active = True
         user.is_superuser = True

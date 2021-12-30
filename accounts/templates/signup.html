@@ -170,7 +170,7 @@ textarea{
                     </div>
                     <div class="signup-form">
                         <input type="text" class="form-control"
-                                id="name" name="name" placeholder="이름을 입력해주세요." value="">
+                                id="username" name="username" placeholder="이름을 입력해주세요." value="">
                     </div>
                     <div class="signup-form">
                         <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력해주세요." value="">
@@ -202,7 +202,7 @@ textarea{
 </body>
 
 <script>
-    
+
     $('#all_chk').change(function () {
         var checked = $(this).prop('checked');
         $('input[id="require_chk"]').prop('checked', checked);

@@ -32,9 +32,6 @@ def calendar(request):
         return redirect('/calendar#recom')
 
     user = request.user.user_id
-    # events = AccountBook.objects.filter(user_id=user )
-    # income = Income.objects.filter(user_id=user)
-    # spend = Spend.objects.filter(user_id=user)
     events = Income.objects.all().values("amount", "income_date" ,"kind").union(Spend.objects.all().values("amount","spend_date", "kind"))
     total = AccountBook.objects.all().values_list("account_date").union()
 
@@ -43,10 +40,11 @@ def calendar(request):
     month = now.strftime('%m')
 
     # 월별 기간 필터링
-    spend_month_filter = Spend.objects.filter(user_id = user,spend_date__year=year, spend_date__month=month).values('kind','spend_date','amount','place')
-    income_month_filter = Income.objects.filter(user_id = user,income_date__year=year, income_date__month=month).values('kind','income_date','amount','income_way')
+    spend_month_filter = Spend.objects.filter(user_id = user,spend_date__year=year, spend_date__month=month).values('spend_id','kind','spend_date','amount','place')
+    income_month_filter = Income.objects.filter(user_id = user,income_date__year=year, income_date__month=month).values('income_id','kind','income_date','amount','income_way')
     # 월별 쿼리셋 합치기
     detail_month = spend_month_filter.union(income_month_filter).order_by('-spend_date')
+    print('detail_month---->' + str(detail_month))
     # 일별 수입,지출값 합산
     spend_day_sum2 = spend_month_filter.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
     income_day_sum2 = income_month_filter.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
@@ -55,6 +53,7 @@ def calendar(request):
     income_day_sum = income_month_filter.values('income_date__day').annotate(amount=Sum('amount')).order_by('-income_date__day')
 
     detail_day = income_day_sum.union(spend_day_sum)
+
 
 
     # 월별 기간 필터링
@@ -107,22 +106,33 @@ def calendar(request):
         })
 
 
+
+
+
+
+
 def add_calendar(request):
     if request.method == "POST":
         if 'spendbtn' in request.POST:
             sform = SpendForm(request.POST)
             if sform.is_valid():
                 user_id = request.POST['user'],
-                kind = sform.cleaned_data['kind'],
                 amount = sform.cleaned_data['amount'],
+                kind = sform.cleaned_data['kind'],
                 place = sform.cleaned_data['place'],
-                spend_date = sform.cleaned_data['spend_date'],
+                #spend_date = sform.cleaned_data['spend_date'],
                 way = sform.cleaned_data['way'],
                 category = sform.cleaned_data['category'],
                 card = sform.cleaned_data['card'],
                 memo = sform.cleaned_data['memo']
                 sform.save()
+
+
+
+
                 return redirect('/calendar#calendar')
+
+
 
         elif 'incomebtn' in request.POST:
             iform = IncomeForm(request.POST)
@@ -143,14 +153,18 @@ def add_calendar(request):
 @csrf_exempt
 def ajax_pushdate(request):
     if request.method == "POST":
+        user = request.user.user_id
         test = request.POST.get("testtest", None)
-        spend = Spend.objects.filter(user_id = user,spend_date=test).values('kind','spend_date','amount','place')
-        income = Income.objects.filter(user_id = user,income_date=test).values('kind','income_date','amount','income_way')
-        detail_month = income.union(spend).order_by('kind')
-        even1 = list(detail_month.values('kind','income_date','amount'))
+        spend = Spend.objects.filter(user_id = user,spend_date=test).values('spend_id','kind','spend_date','amount','place')
+        income = Income.objects.filter(user_id = user,income_date=test).values('income_id','kind','income_date','amount','income_way')
+        # detail_month = income.union(spend).order_by('kind')
+        even1 = list(spend.values('kind','spend_id','amount'))
         evens = {'msg1':even1}
+        print(str(evens))
+
 
         return JsonResponse(evens)
+
 
 @csrf_exempt
 def add_event(request):
@@ -176,3 +190,13 @@ def all_events(request):
         })
 
     return JsonResponse(out, safe=False)
+
+def edit_calendar(request, spend_id, kind, income_id):
+
+    user = request.user.user_id
+    income = Income.object.filter(income_id=income_id, user_id = user)
+    spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
+
+
+
+    return render(request, 'edit_calendar.html', {'spe':spe , 'income':income})

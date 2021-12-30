@@ -63,7 +63,7 @@ ex. 12rem -> 120px;
         max-width: 768px;
         height: 50px;
         background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
         position: fixed;
         top: 0;
         left: 0;
@@ -192,7 +192,7 @@ ex. 12rem -> 120px;
 		align-content: center;
 		padding-left: 0px;
 	}
-	
+
 	.sign-button-list button{
 		font-family: 'Noto Sans KR', sans-serif;
 		font-size: 1.5rem;
@@ -212,7 +212,7 @@ ex. 12rem -> 120px;
 		align-items:center;
 		position: relative;
 	}
-	
+
 	.fa-qrcode
 	{
 		color:var(--naver-green-color);
@@ -231,16 +231,16 @@ ex. 12rem -> 120px;
 		color: transparent;
 		-webkit-text-fill-color: transparent;
 	}
-	
+
 	.fa-comment{
 		color:#343740;
 	}
-	
+
 	.naver-btn{
 		width: 26px;
 		height: 26px;
 	}
-	
+
 	.Easy-sgin-in-wrap .sign-button-list li button span{
 		padding-left: 20px;
 		font-size: 18px;
@@ -249,7 +249,7 @@ ex. 12rem -> 120px;
 		color:var(--font-color);
 		font-size: 14px;
 		padding-top: 10px;
-	
+
 	}
 
 	/* calendar 페이지 관련 css */
@@ -327,9 +327,9 @@ ex. 12rem -> 120px;
 		background-color: #fff;
 		border: 1px solid transparent;
 		border-radius: 15px;
-		background-image: linear-gradient(#fff, #fff), 
-		linear-gradient(to right,#31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */ 
-		background-image: linear-gradient(#fff, #fff), 
+		background-image: linear-gradient(#fff, #fff),
+		linear-gradient(to right,#31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+		background-image: linear-gradient(#fff, #fff),
 		-webkit-linear-gradient(to right, #31BC8A, #4C8AE5); /* Chrome 10-25, Safari 5.1-6 */
 		background-origin: border-box;
 		background-clip: content-box, border-box;
@@ -383,11 +383,12 @@ ex. 12rem -> 120px;
     }
     .swiper-wrapper{
     }
-  .swiper-slide{
-    margin-bottom: 50px !important;
-    position: static !important;
-    display: inline-block !important;
-  }
+		.swiper-slide{
+	   min-height:calc(100vh - 105px) !important;
+	    margin-bottom: 60px !important;
+	    position: static !important;
+	    display: inline-block !important;
+	  }
   .swiper-pagination{
     position: fixed;
     border-radius: 20px;
@@ -481,6 +482,6 @@ ex. 12rem -> 120px;
       color:blue;
       }
       .fc-day-sat a{ color:blue; }
-  
+
     /*End Fullcalendar CSS*/
 }

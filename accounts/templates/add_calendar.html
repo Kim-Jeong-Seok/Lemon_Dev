@@ -192,7 +192,7 @@
         font-size: 1.3rem;
         color: #fff;
         background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     }
 </style>
 
@@ -204,7 +204,7 @@
         <label for="income">수입</label>
     </div>
 
-    <form action="{%url 'accounts:add_calendar' %}" method="POST">
+    <form action="{%url 'calendars:add_calendar' %}" method="POST">
         {% csrf_token %}
     <div class="span_div" id="span_div">
         <div class="span_list">
@@ -228,7 +228,7 @@
                     <th width="260" style="text-align: end;"><select class="span_list_select" name="way">
                             <option style="text-align: center;" value='' selected>-------- 선택하세요 --------</option>
                             <option value='1'>현금</option>
-                            <option value='2'>카드</option>    
+                            <option value='2'>카드</option>
                         </select></th>
                 </tr>
                 <tr> <!-- 행선언 -->
@@ -285,7 +285,7 @@
     </form>
     </div>
 
-    <form action="{% url 'accounts:add_calendar' %}" method = "POST">
+    <form action="{% url 'calendars:add_calendar' %}" method = "POST">
         {% csrf_token %}
     <div class="income_div" id="income_div">
         <div class="income_list">
@@ -336,21 +336,21 @@
             if(chkValue){
                 $('#span_div').css('display','block');
                 $('#income_div').css('display','none');
-            }            
+            }
         });
         $('input[type="radio"][id="income"]').on('click', function(){
             var chkValue = $('input[type=radio][id="income"]:checked').val();
             if(chkValue){
                 $('#income_div').css('display','block');
                 $('#span_div').css('display','none');
-            }            
+            }
         });
-        
+
     });
 
     //textarea auto height increaze...
     $("textarea.input_textarea").on('keydown keyup', function () {
-        $(this).height(1).height( $(this).prop('scrollHeight')+12 );	
+        $(this).height(1).height( $(this).prop('scrollHeight')+12 );
       });
 
 
@@ -378,30 +378,30 @@
         $("#numcomma").bind('keyup keydown',function(){
             inputNumberFormat(this);
         });
-    
+
         //입력한 문자열 전달
         function inputNumberFormat(obj) {
             obj.value = comma(uncomma(obj.value));
         }
-          
+
         //콤마찍기
         function comma(str) {
             str = String(str);
             return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
         }
-    
+
         //콤마풀기
         function uncomma(str) {
             str = String(str);
             return str.replace(/[^\d]+/g, '');
         }
-    
+
         //숫자만 리턴(저장할때)
         //alert(cf_getNumberOnly('1,2./3g')); -> 123 return
         function cf_getNumberOnly (str) {
             var len      = str.length;
             var sReturn  = "";
-    
+
             for (var i=0; i<len; i++){
                 if ( (str.charAt(i) >= "0") && (str.charAt(i) <= "9") ){
                     sReturn += str.charAt(i);
