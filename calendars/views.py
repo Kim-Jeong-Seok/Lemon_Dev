@@ -165,7 +165,6 @@ def ajax_pushdate(request):
 
         return JsonResponse(evens)
 
-
 @csrf_exempt
 def add_event(request):
     start = request.POST.get("start_date", None)
