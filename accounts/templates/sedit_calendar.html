@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}레몬::추가하기{% endblock title %}
+{% block title %}레몬::내역수정페이지{% endblock title %}
 
 {% block nav %}
         <div id="nav">
@@ -77,27 +77,27 @@
         display: none;
     }
     th{
-        white-space: nowrap;
+        white-space: initial;
     }
     label {
-    width: 100px;
+    width: 90%;
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: 500;
     display: inline-block;
     border-radius: 15px;
     text-align: center;
     text-decoration: none;
-    border: solid 1px #4C8AE5;
+    /*border: solid 1px rgb(202, 202, 202);*/
     transition: 0.25s;
     padding: 6px 18px;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 16px;
     margin: 3px;
     }
     input[type="radio"]:checked + label {
-    width: 100px;
-    background: #4C8AE5;
-    color: #fff;
+    width: 90%;
+    background: #fff;
+    color: #202020;
     }
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
@@ -112,12 +112,12 @@
         text-decoration: none;
         font-family: 'Noto Sans KR', sans-serif;
         font-weight: 500;
-        font-size: 1.2rem;
+        font-size: 15px;
     }
     .input_span{
-        width: 250px;
+        width: 230px;
         padding-bottom: 5px;
-        font-size: 1.2rem;
+        font-size: 15px;
         font-family: 'Noto Sans KR', sans-serif;
         font-weight: 400;
         text-align: right;
@@ -139,10 +139,10 @@
         border-top: none;
         border-left: none;
         border-right: none;
-        width:250px;
+        width:230px;
         font-family: 'Noto Sans KR', sans-serif;
         font-weight:400;
-        font-size:1.3rem;
+        font-size:15px;
         /* ios 기능 */
         appearance: none;
         -moz-appearance: none;
@@ -162,7 +162,7 @@
         margin-right: 2rem;
     }
     .input_textarea{
-        width: 250px;
+        width: 230px;
         overflow:visible;
         font-size: 1.3rem;
         font-family: 'Noto Sans KR', sans-serif;
@@ -173,7 +173,6 @@
         border-bottom: 1px solid #767676;
         resize: none;
         /* ios 기능 */
-        -webkit-user-select:none;
         appearance: none;
         -moz-appearance: none;
         -webkit-appearance: none;
@@ -181,66 +180,90 @@
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         background-color: #fff;
+        -moz-user-select: auto;
+        -webkit-user-select: auto;
+        -ms-user-select: auto;
+        user-select: auto;
 
     }
     .addBtn{
+        margin-bottom: 20px;
         border: 1px solid transparent;
         border-radius: 10px;
         width: 100%;
-        height: 60px;
+        height: 40px;
         font-weight: bold;
         font-size: 1.3rem;
         color: #fff;
         background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
         background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     }
+    .delBtn{
+        border: 1px solid #FC615D;
+        border-radius: 10px;
+        width: 100%;
+        height: 40px;
+        font-weight: bold;
+        font-size: 1.3rem;
+        color: #FC615D;
+        background: #FFF;  /* Chrome 10-25, Safari 5.1-6 */
+
+    }
+    @media screen and (max-width: 420px) {
+        .span_table a{
+            font-size: 15px;
+        }
+        .input_span{
+            font-size: 15px;
+        }
+        .span_list_select{
+            font-size: 15px;
+        }
+    }
 </style>
 
 <div class="addEvent-wrap">
     <div class="list">
         <input type="radio" name="jtags" value="지출" id="span" checked>
-        <label for="span">지출</label>
-        <input type="radio" name="jtags" value="수입" id="income">
-        <label for="income">수입</label>
+        <label for="span">지출내역 수정하기</label>
     </div>
 
-    <form method="POST">
-        {% for i in spe %}
+    <form action="{%url 'calendars:add_calendar' %}" method="POST">
+      {% for i in spe %}
         {% csrf_token %}
     <div class="span_div" id="span_div">
-
-
         <div class="span_list">
                 <input type="text" style="display: none;" readonly name="user" value="{{user.user_id}}"/>
                 <input type="text" style="display: none;" readonly name="kind" value="지출"/>
-            <table min-width="300">
+            <table min-width="300" class="span_table">
                 <tr> <!-- 행선언 -->
-                    <th width="110" height="60"><a class="span_list_title">금액</a></th>
-                    <th width="260" style="text-align: end;"><input class="input_span" type="number" name="amount" value="{ss}"> {{i.amount}}</th>
+                    <th width="200" height="60"><a class="span_list_title">금액</a></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" type="number" name="amount" value="{{i.amount}}"></th>
                 </tr>
                 <tr> <!-- 행선언 -->
-                    <th width="110" height="60"><a class="span_list_title">소비처</a></th>
-                    <th width="260" style="text-align: end;"><input class="input_span" type="text" name="place" value="{{form.place.value|default_if_none:''}}">{{i.place}}</th>
+                    <th width="200" height="60"><a class="span_list_title">소비처</a></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" type="text" name="place" value="{{i.place}}"></th>
                 </tr>
                 <tr> <!-- 행선언 -->
-                    <th width="110" height="60"><a class="span_list_title">날짜</a></th>
-                    <th width="260" style="text-align: end;"><input class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{form.spend_date.value|default_if_none:''}}">{{i.spend_date}}</th>
+                    <th width="200" height="60"><a class="span_list_title">날짜</a></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{i.spend_date|date:'Y-m-d'}}"></th>
                 </tr>
                 <tr> <!-- 행선언 -->
-                    <th width="110" height="60"><a class="span_list_title">결제수단</a></th>
-                    <th width="260" style="text-align: end;"><select class="span_list_select" name="way">
-                            <option style="text-align: center;" value='' selected>-------- {{i.way}} --------</option>
-                            <option value='1'>현금</option>
-                            <option value='2'>카드</option>
+                    <th width="200" height="60"><a class="span_list_title">결제수단 </a></th>
+                    <th width="240" style="text-align: end;">
+                      <select class="span_list_select" name="way" id="spendlist_select">
+
+                        <option value="1" {% if i.way == 1 %} selected {% endif %}>현금</option>
+                        <option value="2" {% if i.way == 2 %} selected {% endif %}>카드</option>
                         </select></th>
                 </tr>
                 <tr> <!-- 행선언 -->
-                    <th width="110" height="60"><a class="span_list_title">카테고리</a></th>
-                    <th width="260" style="text-align: end;"><select class="span_list_select" name="category">
-                        <option style="text-align: center;" value='' selected>-------- {{i.category}} --------</option>
-                        <option value='1'>식비</option>
-                        <option value='2'>카페/간식</option>
-                        <option value='3'>술/유흥</option>
+                    <th width="200" height="60"><a class="span_list_title">카테고리</a></th>
+
+                    <th width="240" style="text-align: end;"><select class="span_list_select" name="category">
+                        <option value='1' {% if i.category.category_id == 1 %} selected {% endif %}>식비</option>
+                        <option value='2' {% if i.category.category_id == 2 %} selected {% endif %}>카페/간식</option>
+                        <option value='3' {% if i.category.category_id == 3 %} selected {% endif %}>술/유흥</option>
                         <option value='4' disabled>생활</option>
                         <option value='5' disabled>쇼핑</option>
                         <option value='6' disabled>뷰티/미용</option>
@@ -258,101 +281,39 @@
                     </th>
                 </tr>
                 <tr> <!-- 행선언 -->
-                    <th width="110" height="60"><a class="span_list_title">카드사</a></th>
-                    <th width="260" style="text-align: end;">
+                    <th width="200" height="60"><a class="span_list_title">카드사</a></th>
+                    <th width="240" style="text-align: end;">
                         <select class="span_list_select" name="card">
-                            <option style="text-align: center;" value='' selected>-------- {{i.card}} --------</option>
-                            <option value='1'>국민카드</option>
-                            <option value='2'>롯데카드</option>
-                            <option value='3'>BC카드</option>
-                            <option value='4'>삼성카드</option>
-                            <option value='6'>신한카드</option>
-                            <option value='7'>하나카드</option>
-                            <option value='8'>현대카드</option>
-                            <option value='9'>농협카드</option>
-                            <option value='10'>시티카드</option>
-                            <option value='11'>카카오뱅크카드</option>
+                            <option value='1' {% if i.card.card_id == 1 %} selected {% endif %}>국민카드</option>
+                            <option value='2' {% if i.card.card_id == 2 %} selected {% endif %}>롯데카드</option>
+                            <option value='3' {% if i.card.card_id == 3 %} selected {% endif %}>BC카드</option>
+                            <option value='4' {% if i.card.card_id == 4 %} selected {% endif %}>삼성카드</option>
+                            <option value='6' {% if i.card.card_id == 6 %} selected {% endif %}>신한카드</option>
+                            <option value='7' {% if i.card.card_id == 7 %} selected {% endif %}>하나카드</option>
+                            <option value='8' {% if i.card.card_id == 8 %} selected {% endif %}>현대카드</option>
+                            <option value='9' {% if i.card.card_id == 9 %} selected {% endif %}>농협카드</option>
+                            <option value='10' {% if i.card.card_id == 10 %} selected {% endif %} >시티카드</option>
+                            <option value='11' {% if i.card.card_id == 11 %} selected {% endif %}>카카오뱅크카드</option>
                         </select>
                     </th>
                 </tr>
                 <tr> <!-- 행선언 -->
-                    <th width="110" height="60"><a class="span_list_title">메모</a></th>
-                    <th width="260" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo"></textarea>{{i.memo}}</th>
+                    <th width="200" height="60"><a class="span_list_title">메모</a></th>
+                    <th width="240" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo">{{i.memo}}</textarea></th>
                 </tr>
             </table>
         </div>
 
         <div style="text-align:center; margin-top:15px;">
-        <button class="addBtn" name="spendbtn" value="spendbtn" type="submit">추가하기</button>
+        <button class="addBtn" name="spendbtn" value="spendbtn" type="submit">수정하기</button>
+        <button class="delBtn" value="delbtn" name="delbtn" type="button" onclick="return confirm('정말로 내역을 삭제하실건가요?')">내역삭제</button>
         </div>
-
-        {% endfor %}
+          {% endfor %}
     </form>
-
-    <form method = "POST">
-      {% for i in income %}
-        {% csrf_token %}
-    <div class="income_div" id="income_div">
-        <div class="income_list">
-
-                <input type="text" style="display: none;" readonly name="kind" id="kind" value="수입">
-                <input type="number" style="display: none;" readonly name="user" id="user_id" value="{{user.user_id}}">
-
-            <table min-width="300">
-                <tr> <!-- 행선언 -->
-                    <th width="100" height="60"><a class="span_list_title">수입수단</a></th>
-                    <th width="260" style="text-align: end;"><select class="span_list_select" name="income_way">
-                        <option style="text-align: center;" value='' selected>-------- 선택하세요 --------</option>
-                        <option value='1'>급여</option>
-                        <option value='2'>용돈</option>
-                        <option value='3'>금융수입</option>
-                        <option value='4'>사업수입</option>
-                        <option value='5'>기타</option>
-                    </select>
-                    </th>
-                </tr>
-                <tr> <!-- 행선언 -->
-                    <th width="100" height="60"><a class="span_list_title">날짜</a></th>
-                    <th width="260" style="text-align: end;"><input class="input_span" type="date" id="datepicker4" min="1900-01-01" max="2099-12-31" autocomplete="off" name="income_date" value="{{form.income_date.value|default_if_none:''}}"></th>
-                </tr>
-                <tr> <!-- 행선언 -->
-                    <th width="100" height="60"><a class="span_list_title">금액</a>{{i.amount}}</th>
-                    <th width="260" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" value="{{form.amount.value|default_if_none:''}}"/></th>
-                </tr>
-                <tr> <!-- 행선언 -->
-                <th width="100" height="60"><a class="span_list_title">메모</a></th>
-                <th width="260" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo"></textarea></th>
-            </tr>
-
-            </table>
-        </div>
-
-        <div style="text-align:center; margin-top:15px;">
-            <button class="addBtn" value="incomebtn" name="incomebtn" type="submit">추가하기</button>
-        </div>
     </div>
-      {% endfor %}
-    </form>
 </div>
 
 <script>
-    $(function (){
-        $('input[type="radio"][id="span"]').on('click', function(){
-            var chkValue = $('input[type=radio][id="span"]:checked').val();
-            if(chkValue){
-                $('#span_div').css('display','block');
-                $('#income_div').css('display','none');
-            }
-        });
-        $('input[type="radio"][id="income"]').on('click', function(){
-            var chkValue = $('input[type=radio][id="income"]:checked').val();
-            if(chkValue){
-                $('#income_div').css('display','block');
-                $('#span_div').css('display','none');
-            }
-        });
-
-    });
 
     //textarea auto height increaze...
     $("textarea.input_textarea").on('keydown keyup', function () {

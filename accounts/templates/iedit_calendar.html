@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}레몬::내역수정페이지{% endblock title %}
+
+{% block nav %}
+        <div id="nav">
+            <div>
+            <div style="margin-left:15px; float:left; width:35%;">
+                <a style="color: #fff;" href="javascript:history.back();"<i class="fas fa-arrow-left"></i></a><!--<img style="position: absolute; margin-left:15px;" onclick="location.href='calendar'" src="../../media/lemonlogo_white.png" width="200px"> -->
+            </div>
+        </div>
+        <div style="float:right; margin-right:20px;">
+            <i style="font-size: 30px;" class="fas fa-bell"></i>
+        </div>
+        </div>
+        {% endblock %}
+
+{% block container %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700;900&family=Pacifico&display=swap" rel="stylesheet"></head>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<style>
+    #container{
+        margin: 0 20px !important;
+    }
+      /* FOOTER에서 사용하는 CSS */
+  .bottom-nav-calendar{
+    color: #FFD859 !important;
+  }
+
+  .bottom-nav-calendar a{
+    color: #FFD859 !important;
+  }
+
+  .bottom-nav-search-stock a,
+  .bottom-nav-stock a,.bottom-nav-addlist a,
+  .bottom-nav-myinfo a{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: #D1D6DA !important;
+  }
+    ::-webkit-scrollbar{
+        width: 10px;
+        background-color: wheat;
+        display: block;
+      }
+      ::-webkit-scrollbar-thumb{
+        width: 30px;
+      }
+    .span_div{
+        display: none;
+    }
+    .addEvent-wrap{
+        background-color: #fff;
+        position: relative;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        max-width: 768px;
+        height: 100%;
+        border: 1px solid rgb(202, 202, 202);
+        box-shadow: 2px 3px 4px 1px rgb(202, 202, 202);
+        border-radius: 15px;
+        padding: 15px;
+    }
+    .list{
+        text-align: center;
+    }
+    input[type="radio"] {
+        display: none;
+    }
+    th{
+        white-space: initial;
+    }
+    label {
+    width: 90%;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    display: inline-block;
+    border-radius: 15px;
+    text-align: center;
+    text-decoration: none;
+    /*border: solid 1px rgb(202, 202, 202);*/
+    transition: 0.25s;
+    padding: 6px 18px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 3px;
+    }
+    input[type="radio"]:checked + label {
+    width: 90%;
+    background: #fff;
+    color: #202020;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+    .span_div,.income_div{
+        padding: 5px;
+    }
+    .span_list_title{
+        color: #000;
+        text-decoration: none;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 500;
+        font-size: 15px;
+    }
+    .input_span{
+        width: 230px;
+        padding-bottom: 5px;
+        font-size: 15px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        text-align: right;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid #767676;
+        /* ios 기능 */
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        background-color: #fff;
+
+    }
+    .span_list_select{
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        width:230px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight:400;
+        font-size:15px;
+        /* ios 기능 */
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        background-color: #fff;
+    }
+    .income_list_title{
+        float: left;
+        margin-top: 15px;
+        margin-left: 10px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 600;
+        font-size: 1.4rem;
+        margin-right: 2rem;
+    }
+    .input_textarea{
+        width: 230px;
+        overflow:visible;
+        font-size: 1.3rem;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid #767676;
+        resize: none;
+        /* ios 기능 */
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        background-color: #fff;
+        -moz-user-select: auto;
+        -webkit-user-select: auto;
+        -ms-user-select: auto;
+        user-select: auto;
+
+    }
+    .addBtn{
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        width: 100%;
+        height: 40px;
+        font-weight: bold;
+        font-size: 1.3rem;
+        color: #fff;
+        background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    }
+    .delBtn{
+        border: 1px solid #FC615D;
+        border-radius: 10px;
+        width: 100%;
+        height: 40px;
+        font-weight: bold;
+        font-size: 1.3rem;
+        color: #FC615D;
+        background: #FFF;  /* Chrome 10-25, Safari 5.1-6 */
+
+    }
+    @media screen and (max-width: 420px) {
+        .span_table a{
+            font-size: 15px;
+        }
+        .input_span{
+            font-size: 15px;
+        }
+        .span_list_select{
+            font-size: 15px;
+        }
+    }
+</style>
+
+<div class="addEvent-wrap">
+    <div class="list">
+        <input type="radio" name="jtags" value="수입" id="income" checked>
+        <label for="span">수입내역 수정하기</label>
+    </div>
+
+    <form action="{% url 'calendars:add_calendar' %}" method = "POST">
+        {% for i in income %}
+        {% csrf_token %}
+    <div class="income_div" id="income_div">
+        <div class="income_list">
+
+                <input type="text" style="display: none;" readonly name="kind" id="kind" value="수입">
+                <input type="number" style="display: none;" readonly name="user" id="user_id" value="{{user.user_id}}">
+
+            <table min-width="300">
+                <tr> <!-- 행선언 -->
+                    <th width="200" height="60"><a class="span_list_title">수입수단</a></th>
+                    <th width="240" style="text-align: end;"><select class="span_list_select" name="income_way">
+                      <option value="1" {% if i.income_way == 1 %} selected {% endif %}>급여</option>
+                      <option value="2" {% if i.income_way == 2 %} selected {% endif %}>용돈</option>
+                      <option value="1" {% if i.income_way == 3 %} selected {% endif %}>금융수입</option>
+                      <option value="2" {% if i.income_way == 4 %} selected {% endif %}>사업수입</option>
+                      <option value="1" {% if i.income_way == 5 %} selected {% endif %}>기타</option>                    
+                    </select>
+                    </th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="200" height="60"><a class="span_list_title">날짜</a></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" type="date" id="datepicker4" min="1900-01-01" max="2099-12-31" autocomplete="off" name="income_date" value="{{i.income_date|date:'Y-m-d'}}"></th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="200" height="60"><a class="span_list_title">금액</a></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" value="{{i.amount}}"/></th>
+                </tr>
+                <tr> <!-- 행선언 -->
+                <th width="200" height="60"><a class="span_list_title">메모</a></th>
+                <th width="240" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo" >{{i.memo}}</textarea></th>
+            </tr>
+
+            </table>
+        </div>
+
+        <div style="text-align:center; margin-top:15px;">
+            <button class="addBtn" value="incomebtn" name="incomebtn" type="submit">수정하기</button>
+            <button class="delBtn" value="delbtn" name="delbtn" type="button" onclick="return confirm('정말로 내역을 삭제하실건가요?')">내역삭제</button>
+        </div>
+    </div>
+    </form>
+</div>
+ {% endfor %}
+<script>
+
+    //textarea auto height increaze...
+    $("textarea.input_textarea").on('keydown keyup', function () {
+        $(this).height(1).height( $(this).prop('scrollHeight')+12 );
+      });
+
+
+    $(function() {
+        var cardlist_Tags = [
+        "국민카드",
+        "롯데카드",
+        "BC카드",
+        "삼성카드",
+        "신한카드",
+        "하나카드",
+        "현대카드",
+        "농협카드",
+        "시티카드",
+        "카카오뱅크카드"
+        ];
+        $('#cardlist').autocomplete({
+            source: cardlist_Tags
+        });
+    });
+
+    /*
+    $(document).ready(function(){
+        //키를 누르거나 떼었을때 이벤트 발생
+        $("#numcomma").bind('keyup keydown',function(){
+            inputNumberFormat(this);
+        });
+
+        //입력한 문자열 전달
+        function inputNumberFormat(obj) {
+            obj.value = comma(uncomma(obj.value));
+        }
+
+        //콤마찍기
+        function comma(str) {
+            str = String(str);
+            return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+        }
+
+        //콤마풀기
+        function uncomma(str) {
+            str = String(str);
+            return str.replace(/[^\d]+/g, '');
+        }
+
+        //숫자만 리턴(저장할때)
+        //alert(cf_getNumberOnly('1,2./3g')); -> 123 return
+        function cf_getNumberOnly (str) {
+            var len      = str.length;
+            var sReturn  = "";
+
+            for (var i=0; i<len; i++){
+                if ( (str.charAt(i) >= "0") && (str.charAt(i) <= "9") ){
+                    sReturn += str.charAt(i);
+                }
+            }
+            return sReturn;
+        }
+    });*/
+</script>
+
+{% endblock %}

@@ -349,11 +349,16 @@
             </div>
         </th>{% endifchanged %}
 </tr>
+        {% if detail.kind == "지출" %}
+        <tr onclick="location.href='{% url 'calendars:edit_calendar'  detail.kind detail.spend_id %}'">
+          {% else %}
+          <tr onclick="location.href='{% url 'calendars:edit_calendar' detail.kind detail.spend_id %}'">
 
-        <tr onclick="location.href='{% url 'calendars:edit_calendar' detail.spend_id detail.kind %}'">
+
+              {% endif %}
           <td style="vertical-align:top;padding-bottom: 20px;">
             <div style="text-align:left;padding-left:5px;">
-            <a style="font-weight:bold;display:block;">{{ detail.place }}</a>
+            <a style="font-weight:bold;display:block;">{{ detail.place }} {{detail.kind}} {{detail.spend_id}}</a>
             <a style="text-align:left;font-size: 13px; color:gray;display:block;">{{ detail.spend_date | date:'h:m' }}</a>
               </div>
           </td>

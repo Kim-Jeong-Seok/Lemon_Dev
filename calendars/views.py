@@ -191,12 +191,11 @@ def all_events(request):
 
     return JsonResponse(out, safe=False)
 
-def edit_calendar(request, spend_id, kind, income_id):
-
+def edit_calendar(request, spend_id, kind):
     user = request.user.user_id
-    income = Income.object.filter(income_id=income_id, user_id = user)
-    spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
-
-
-
-    return render(request, 'edit_calendar.html', {'spe':spe , 'income':income})
+    if kind == '지출':
+        spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
+        return render(request, 'sedit_calendar.html', {'spe':spe})
+    if kind == "수입":
+        income = Income.objects.filter(income_id=spend_id, user_id = user)
+        return render(request, 'iedit_calendar.html', {'income':income})
