@@ -185,7 +185,9 @@
 
           <div style="text-align:initial; padding-left:1rem;">
             <div>
-              <strong>{{user.uid}}</strong>님의 <strong>모의투자</strong>현황
+              <strong>{{user.uid}}</strong>님의     {% for i in Spend %}
+                    {{i.kind}} 샤발적
+                  {% endfor%}<strong>모의투자</strong>현황
               <img style="float:right; margin-right:20px;" src="media/refresh.png" width="25px" height="25px">
             </div>
             <div style="margin-top:0.5rem; margin-bottom:0.5rem;">
@@ -205,7 +207,8 @@
         </div>
         <div>
           <ol>
-            {% for method in Method %}
+
+            {% for method in TOP %}
             <li style="margin: 10pt 0;">
               {% if method.card == 1 %}
               <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">국민카드</a>
@@ -248,7 +251,7 @@
         <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;"><img style="width: 30px; height: 30px;" src="media/trophy.png"><a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">소비 Top5 기업명</a><img style="float:right; margin-right:20px;" src="media/refresh.png" width="25px" height="25px"></div>
         <div>
           <ol>
-            {% for area in Area %}
+            {% for area in TOP %}
             <li style="margin: 10pt 0;">
               <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">{{ area.place }}</a>
               <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; color:#3a3a3a">{{ area.amount|intcomma }}원</a>
@@ -263,7 +266,7 @@
         <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;"><img style="width: 30px; height: 30px;" src="media/trophy.png"><a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">소비 Top5 카테고리</a><img style="float:right; margin-right:20px;" src="media/refresh.png" width="25px" height="25px"></div>
       <div>
         <ol>
-          {% for category in Category %}
+          {% for category in TOP %}
           <li style="margin: 10pt 0;">
             {% if category.category == 1 %}
             <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">식비</a>
@@ -328,6 +331,9 @@
         <colgroup>
           <col width="50%"/>
           <col width="*"/>
+
+          2021-03
+
         </colgroup>
         {% for detail in Detail_month %}
         {% ifchanged detail.spend_date.day %}
@@ -380,166 +386,239 @@
 
       <!--- 달력 SWIPER div영역 시작--->
       <div class="swiper-slide" id="swiper-cal" data-name="달력" data-hash="calendar">
-        <script>
+    <script>
 
-          document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
 
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth() + 1;
-            var y = date.getFullYear();
-            var date1 = (y+'-'+m+'-'+d);
-            console.log('date1=>>' + date1);
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth() + 1;
+        var y = date.getFullYear();
+        var date1 = (y+'-'+m+'-'+d);
+        var date2 = (y+'-'+m);
+        console.log('date1=>>' + date1);
 
-          var calendar = new FullCalendar.Calendar(calendarEl, {
-            defaultDate: new Date(),
-            eventStart:false,
-            selectable: false,
-            dragScroll:false,
-            selectOverlap:false,
-            edittalbe: false,
-            dragable:false,
-            droppable:false,
-            eventLimit: true,
-            themeSystem: 'standard',
-            displayEventTime: false,
-            eventColor: 'red',
-            borderColor: 'black',
-            dragScroll:'false',
-            eventRender: function(evnent, element) {
-              $(element).addTouch();
-            },
-            headerToolbar: {
-              left: '',
-              center: 'prev title next',
-              right: ''
-            },
-            height: 580,
-            locale: 'ko',
-            events: [
-            {% for i in spend_day_sum2 %}
-            {
-              title: "-{{i.amount}}원",
-              start: "{{i.spend_date | date:'Y-m-d'}}",
-              textColor: 'Red',
-              color:'transparent',
-              allday: 1,
-            },
-            {% endfor %}
-            {% for i in income_day_sum2 %}
-            {
-              title: "+{{i.amount}}원",
-              start: "{{i.income_date | date:'Y-m-d'}}",
-              textColor: 'Blue',
-              color:'transparent',
-              allday: 1,
-            },
-            {% endfor %}
-          ],
-          dateClick: function(event,info) {
-            moment.locale('ko');
-            click_date = event.dateStr; // 날짜
-            title_date= moment(click_date).format('YY. MM. DD');
-            click_title = event.dayEl;
-            console.log(click_title);
-            console.log(event);
-            document.getElementById('testtest').value = click_date;
-            $.ajax({
-              type: "POST",
-              url: "{% url 'calendars:ajax_pushdate' %}",
-              data: {
-                testtest: $('#testtest').val(),
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-                dataType: "json",
-              },
-              success: function(data){
-                msg_value = data.msg1;
-                console.log(msg_value);
-                const reset = document.getElementById('modalBody');
-                reset.innerHTML = '';
-                for (var i = 0; i<10; i++) {
-                  const element = document.getElementById('modalBody');
-                element.innerHTML += '<div class="modal-body-text"><a href="/edit_calendar">'+ msg_value[i].amount + '원'+ '</a> <a>'+ msg_value[i].kind + '</a> </div>';  }
-              },
-              failure: function() {
-                console.log('ajax send error!');
-                alert('해당날짜의 내역을 불러오는 과정에서 오류가 발생했습니다');
-              },
-            });
-            $('#calendarModal').modal('show');
-            $('#modalTitle').text(title_date);
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        defaultDate: new Date(),
+        eventStart:false,
+        selectable: false,
+        dragScroll:false,
+        selectOverlap:false,
+        edittalbe: false,
+        dragable:false,
+        droppable:false,
+        eventLimit: true,
+        themeSystem: 'standard',
+        displayEventTime: false,
+        eventColor: 'red',
+        borderColor: 'black',
+        dragScroll:'false',
+        eventRender: function(evnent, element) {
+          $(element).addTouch();
+        },
+        headerToolbar: {
+          left: '',
+          center: 'prev title next',
+          right: ''
+        },
+        titleFormat: function (date) {
+          // YYYY년 MM월
+          return `${date.date.year}년 ${date.date.month + 1}월`;
+        },
+        dayHeaderContent: function (date) {
+          let weekList = ["일", "월", "화", "수", "목", "금", "토"];
+          return weekList[date.dow];
+        },
+        height: 460,
+        //locale: 'en',
+        events: [
+        {% for i in spend_day_sum2 %}
+        {
+          title: "-{{i.amount|intcomma}}",
+          start: "{{i.spend_date | date:'Y-m-d'}}",
+          textColor: 'Red',
+          color:'transparent',
+          allday: 1,
+        },
+        {% endfor %}
+        {% for i in income_day_sum2 %}
+        {
+          title: "+{{i.amount|intcomma}}",
+          start: "{{i.income_date | date:'Y-m-d'}}",
+          textColor: 'Blue',
+          color:'transparent',
+          allday: 1,
+        },
+        {% endfor %}
+      ],
+      dateClick: function(event,info) {
+        moment.locale('ko');
+        click_date = event.dateStr; // 날짜
+        title_date= moment(click_date).format('YY. MM. DD');
+        click_title = event.dayEl;
+        console.log(click_title);
+        console.log(event);
+        document.getElementById('testtest').value = click_date;
+        $.ajax({
+          type: "POST",
+          url: "{% url 'calendars:ajax_pushdate' %}",
+          data: {
+            testtest: $('#testtest').val(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            dataType: "json",
           },
-          });
-          calendar.render();
+          success: function(data){
+            msg_value = data.msg1;
+            console.log(msg_value);
+            const reset = document.getElementById('modalBody');
+            reset.innerHTML = '';
+            for (var i = 0; i<10; i++) {
+              const element = document.getElementById('modalBody');
+              element.innerHTML += '<div class="modal-body-text"><a href="/edit_calendar">'
+                + msg_value[i].amount + '원'+ '</a> <a>'+ msg_value[i].kind + '</a> </div>';
+            }
+          },
+          failure: function() {
+            console.log('ajax send error!');
+            alert('해당날짜의 내역을 불러오는 과정에서 오류가 발생했습니다');
+          },
         });
-        </script>
-
-
-        <div class="cal-container">
-          <div class="cal-wrap">
-            <div id="test2"></div>
-            <input type="hidden" value="" id="testtest">
-            <div style="padding: 5px; position:relative;" id='calendar' class="fullcal"></div>
-          </div>
-        </div>
-
-    </div><!------------------- 달력 SWIPER div영역 끝------------------------------->
-
-
-    </div><!--swiper-wrapper 선언끝-->
-    <div class="swiper-pagination" ></div>
-  </div><!--myswiper 선언끝-->
-
-  <!-- Swiper JS -->
-
-  <!-- Initialize Swiper -->
-  <script>
-    var bullet = ["추천", "요약", "내역" ,"달력"];
-
-    var swiper = new Swiper(".mySwiper", {
-      slidesPerView: 'auto',
-      centeredSlides: true,
-      autoHeight: true,
-      effect:'fade',
-      fadeEffect: { crossFade: true },
-      mousewheel: false,
-      speed: 100,
-      hashNavigation: {
-        watchState: false,
-        replaceState:true,
+        $('#calendarModal').modal('show');
+        $('#modalTitle').text(title_date);
       },
-      pagination : {
-        observer: true,
-        observeParents: true,
-        el : '.swiper-pagination',
-        clickable : true,
-        paginationType: "custom",
-        renderBullet: function (index, className) {
-          return '<div class="' + className + '"><span>' + (bullet[index]) + '</span></div>';
-        }
-        },
+      });
+      calendar.render();
 
-        scrollbar: {
-          el: '.swiper-scrollbar',
-        },
+      $('.fc-icon.fc-icon-chevron-left').on('click', function() {
+        current_date = document.getElementsByClassName("fc-daygrid-day")[15];
+        current_date2 = current_date.dataset.date;
+        const yearmonth = moment(current_date2,'YYYY');
+        const yearmonth2 = yearmonth.subtract(1,'month');
+        yearmonth3 = moment(yearmonth2).format('YYYY');
+        console.log('yearmonth3====>' +yearmonth3);
+        document.getElementById('titledate').value = yearmonth3;
+
+        $.ajax({
+          type:"POST",
+          url:"{% url 'calendars:calendar' %}",
+          data: {
+            titledate: $('#titledate').val(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            dataType: "",
+          },
+          success: function() {
+            console.log('ajax전송완료');
+          },
+          failure: function() {
+            console.log('ajax 실패');
+          },
+        });
     });
 
-    swiper.on('slideChange', function () {
-      window.scrollTo(0,0);
-      //console.log('slide changed');
+    $('.fc-icon.fc-icon-chevron-right').on('click', function() {
+      current_date = document.getElementsByClassName("fc-daygrid-day")[15];
+      current_date2 = current_date.dataset.date;
+      const yearmonth = moment(current_date2,'YYYY-MM');
+      const yearmonth2 = yearmonth.add(1,'month');
+      yearmonth3 = moment(yearmonth2).format('YYYY');
+      console.log('yearmonth3====>' +yearmonth3);
+      document.getElementById('titledate').value = yearmonth3;
+      $.ajax({
+        type:"POST",
+        url:"{% url 'calendars:calendar' %}",
+        data: {
+          titledate: $('#titledate').val(),
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          dataType: "",
+        },
+        success: function() {
+          console.log('ajax전송완료');
+        },
+        failure: function() {
+          console.log('ajax 실패');
+        },
+      });
+  });
     });
+    </script>
 
-    //var body_height = document.documentElement.clientHeight-200;
-    //$('.swiper-wrapper').height(body_height)
-    //swiper.update(true);
-    /*
-  var body_height = document.documentElement.clientHeight;
-  $('.swiper-slide').height(body_height)
-    $('.swiper mySwiper').height(body_height)
-    swiper.update(true);*/
 
-  </script>
+    <div class="cal-container">
+      <div class="cal-wrap">
+        <div id="test2"></div>
+        <input type="hidden" value="" id="testtest">
+        <div style="padding: 5px; position:relative;" id='calendar' class="fullcal">
+
+      </div>
+      <input value="" id="titledate">
+      <textarea name="name" rows="5" cols="40">
+
+
+      </textarea>
+    </div>
+
+
+
+</div><!------------------- 달력 SWIPER div영역 끝------------------------------->
+
+
+</div><!--swiper-wrapper 선언끝-->
+<div class="swiper-pagination" ></div>
+</div><!--myswiper 선언끝-->
+
+<!-- Swiper JS -->
+
+<!-- Initialize Swiper -->
+<script>
+var bullet = ["추천", "요약", "내역" ,"달력"];
+
+var swiper = new Swiper(".mySwiper", {
+  slidesPerView: 'auto',
+  centeredSlides: true,
+  autoHeight: true,
+  //effect:'fade',
+  fadeEffect: { crossFade: true },
+  mousewheel: false,
+  speed: 0,
+  hashNavigation: {
+    watchState: false,
+    replaceState:true,
+  },
+  pagination : {
+    observer: true,
+    observeParents: true,
+    el : '.swiper-pagination',
+    clickable : true,
+    paginationType: "custom",
+    renderBullet: function (index, className) {
+      return '<div class="' + className + '"><span>' + (bullet[index]) + '</span></div>';
+    }
+    },
+
+    scrollbar: {
+      el: '.swiper-scrollbar',
+    },
+});
+
+/*
+swiper.on('slideChange', function () {
+  window.scrollTo(0,0);
+  swiper.update(true);
+  //console.log('slide changed');
+});*/
+
+</script>
+
+<script>
+$(document).ready(function(){
+  startTitleDate = document.getElementsByClassName("fc-daygrid-day")[25];
+  startTitleDate_date = startTitleDate.dataset.date;
+  console.log(startTitleDate_date);
+  document.getElementById('titledate').value = startTitleDate_date;
+});
+</script>
 
 
 
