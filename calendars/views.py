@@ -102,7 +102,7 @@ def add_calendar(request):
                 card = sform.cleaned_data['card'],
                 memo = sform.cleaned_data['memo']
                 sform.save()
-                return redirect('/calendar#calendar')
+                return redirect('/calendar#list')
 
         elif 'incomebtn' in request.POST:
             iform = IncomeForm(request.POST)
@@ -114,20 +114,34 @@ def add_calendar(request):
                 income_way = iform.cleaned_data['income_way'],
                 memo = iform.cleaned_data['memo']
                 iform.save()
-                return redirect('/calendar#calendar')
+                return redirect('/calendar#list')
     else:
         sform = SpendForm()
         iform = IncomeForm()
     return render(request, 'add_calendar.html')
 
 def edit_calendar(request, spend_id, kind):
-    user = request.user.user_id
-    if kind == '지출':
-        spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
-        return render(request, 'sedit_calendar.html', {'spe':spe})
-    if kind == "수입":
-        income = Income.objects.filter(income_id=spend_id, user_id = user)
-        return render(request, 'iedit_calendar.html', {'income':income})
+    if request.method == "POST":
+        user = request.user.user_id
+        if kind == '지출':
+            spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
+            spe_list = spe.filter(user_id=user).update(
+
+
+        amount = request.POST['amount'],
+        place = request.POST['place'],
+        spend_date = request.POST['spend_date'],
+        way = request.POST['way'],
+        category = request.POST['category'],
+        card = request.POST['card'],
+        memo = request.POST['memo']
+        )
+            return redirect('/calendar#list')
+
+            return render(request, 'sedit_calendar.html', {'spe':spe})
+            if kind == "수입":
+                income = Income.objects.filter(income_id=spend_id, user_id = user)
+                return render(request, 'iedit_calendar.html', {'income':income})
 
 def sedit_calendar(request):
     return render(request, 'sedit_calendar.html')

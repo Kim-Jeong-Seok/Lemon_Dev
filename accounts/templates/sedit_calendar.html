@@ -228,7 +228,7 @@
         <label for="span">지출내역 수정하기</label>
     </div>
 
-    <form action="{%url 'calendars:add_calendar' %}" method="POST">
+    <form action="{%url 'calendars:edit_calendar' %}" method="POST">
       {% for i in spe %}
         {% csrf_token %}
     <div class="span_div" id="span_div">
