@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 # Create your views here.
 import datetime
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Max, Min, Avg
 import os, json
 from django.conf import settings
 from django.views.generic import View
@@ -20,8 +20,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 
+
 from django.contrib.auth.hashers import check_password
 # Create your views here.
+
+
+
+
 def calendar(request):
     if request.method == 'POST':
         user = request.user.user_id
@@ -31,16 +36,23 @@ def calendar(request):
                                     )
         return redirect('/calendar#recom')
 
+
+        months = months=request.POST['months']
+        print('months----->', str(months))
+
     user = request.user.user_id
     now = datetime.datetime.now()
     year = now.strftime('%Y')
     month = now.strftime('%m')
     # 월별 기간 필터링
-    spend_month_filter = Spend.objects.filter(user_id = user).values('spend_id','kind','spend_date','amount','place')
-    income_month_filter = Income.objects.filter(user_id = user).values('income_id','kind','income_date','amount','income_way')
+    spend_month_filter = Spend.objects.filter(user_id = user, spend_date__month=month ).values('spend_id','kind','spend_date','amount','place', 'category')
+    income_month_filter = Income.objects.filter(user_id = user, income_date__month=month).values('income_id','kind','income_date','amount','income_way', 'income_way')
     # 월별 쿼리셋 합치기
     detail_month = spend_month_filter.union(income_month_filter).order_by('-spend_date')
-    # 일별 수입,지출값 합산
+
+    # 달력 일별 수입,지출값 합산
+    spend_month_filter = Spend.objects.filter(user_id = user ).values('spend_id','kind','spend_date','amount','place')
+    income_month_filter = Income.objects.filter(user_id = user).values('income_id','kind','income_date','amount','income_way')
     spend_day_sum2 = spend_month_filter.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
     income_day_sum2 = income_month_filter.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
     spend_day_sum = spend_month_filter.values('spend_date__day').annotate(amount=Sum('amount')).order_by('-spend_date__day')
@@ -72,7 +84,7 @@ def calendar(request):
     return render(request, 'calendar.html' ,{
         'Spend_day':spend_day_sum,
         'Income_day':income_day_sum,
-        'Detail_month':detail_month,
+        #'Detail_month':detail_month,
         'detail_day':detail_day,
         'Expenditure': spend_sum,
         'Income': income_sum,
@@ -116,38 +128,53 @@ def add_calendar(request):
                 iform.save()
                 return redirect('/calendar#list')
     else:
+
+
+
         sform = SpendForm()
         iform = IncomeForm()
     return render(request, 'add_calendar.html')
 
 def edit_calendar(request, spend_id, kind):
+
+    user = request.user.user_id
+
+    if kind == '지출':
+        # spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
+        spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
+        #return redirect('/calendar#list')
+
+        return render(request, 'sedit_calendar.html', {'spe':spe})
+    if kind == "수입":
+        income = Income.objects.filter(income_id=spend_id, user_id = user)
+        return render(request, 'iedit_calendar.html', {'income':income})
+
+def sedit_calendar(request, spend_id):
     if request.method == "POST":
         user = request.user.user_id
-        if kind == '지출':
-            spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
-            spe_list = spe.filter(user_id=user).update(
-
-
-        amount = request.POST['amount'],
+        spe = Spend.objects.filter(spend_id=spend_id, user_id = user).update(
+        amount=request.POST['amount'],
         place = request.POST['place'],
-        spend_date = request.POST['spend_date'],
+        spend_date =request.POST['spend_date'],
         way = request.POST['way'],
         category = request.POST['category'],
         card = request.POST['card'],
-        memo = request.POST['memo']
-        )
-            return redirect('/calendar#list')
+        memo = request.POST['memo'])
+        return redirect('/calendar#list')
 
-            return render(request, 'sedit_calendar.html', {'spe':spe})
-            if kind == "수입":
-                income = Income.objects.filter(income_id=spend_id, user_id = user)
-                return render(request, 'iedit_calendar.html', {'income':income})
+def iedit_calendar(request,spend_id):
+    if request.method == "POST":
+        user = request.user.user_id
+        spe = Income.objects.filter(income_id=spend_id, user_id = user).update(
+        kind=request.POST['kind'],
+        amount = request.POST['amount'],
+        income_date =request.POST['income_date'],
+        income_way = request.POST['income_way'],
+        memo = request.POST['memo'],)
+        return redirect('/calendar#list')
 
-def sedit_calendar(request):
-    return render(request, 'sedit_calendar.html')
 
-def iedit_calendar(request):
-    return render(request, 'iedit_calendar.html')
+
 
 @csrf_exempt
 def ajax_pushdate(request):
@@ -186,3 +213,61 @@ def all_events(request):
         })
 
     return JsonResponse(out, safe=False)
+# @csrf_exempt
+# def load_list(request):
+#     if request.method == "POST":
+#         user = request.user.user_id
+#         year = request.POST.get('year')
+#         month = request.POST.get('month')
+#         json_year = json.loads(year)
+#         json_month = json.loads(month)
+#         print('year month->>' + str(json_year) + str(json_month))
+#
+#         spend = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_id','kind','spend_date','amount','place','category')
+#         print(str(spend))
+#         income = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_id','kind','income_date','amount','income_way','income_way')
+#         # 월별 쿼리셋 합치기
+#
+#         detail_month = spend.union(income).order_by('-spend_date')
+#         print("Dictionary Type : ", type(detail_month))
+#     #     print("Dictionary : ", detail_month)
+#     #     detail_month = dict(detail_month)
+#     #     print(str(detail_month))
+#     # return JsonResponse(detail_month, safe=False)
+#     return render(request, 'calendar.html' , {'Detail_month':detail_month})
+
+@csrf_exempt
+def load_list(request):
+    if request.method == "POST":
+        user = request.user.user_id
+        date = request.POST.get("year")
+        print('유저id->>' + str(date))
+
+
+        json_data = json.loads(request.date)
+        print('json_data---',str(json_data))
+        date2 = date.split('-')
+        year = date2[0]
+        month = date2[1]
+        spend = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_date','kind','spend_id','amount','place','category')
+        income = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_date','kind','income_id','amount','income_way','income_way')
+
+        # detail4 = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_date').annotate(spend= Sum('spend_date'))
+        # print('detail4---',str(detail4))
+        #spend2 = Spend.objects.values('spend_date').aggregate(good = Avg('spend_date')).values('good','spend_date').filter(user_id=user, spend_date__year=year, spend_date__month=month)
+        #print('spend2---',str(spend2))
+        spend3 = Spend.objects.values('spend_date','kind','spend_id','amount','place','category').aggregate(group = Avg('spend_date'))
+        print('spend3---',str(spend3))
+        # detail6 = Spend.objects.filter(spend_datey=[i['spend_date_'] for i in detail4])
+        # print('detail6---',str(detail6))
+        detail4 = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_date__day').annotate(income_date=Count('income_date'))
+        print('detail4----',str(detail4))
+
+        detail = detail4.union(spend3).order_by('spend_date')
+        print(str(detail))
+
+        # detail_month = detail.values('spend_id').annotate(spend_date=Sum('spend_date'))
+        # print(str(detail_month))
+        detail_month = list(detail)
+        #print(str(detail_month))
+    return JsonResponse(detail_month, safe=False)

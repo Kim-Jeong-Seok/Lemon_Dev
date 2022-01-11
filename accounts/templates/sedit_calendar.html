@@ -227,9 +227,9 @@
         <input type="radio" name="jtags" value="지출" id="span" checked>
         <label for="span">지출내역 수정하기</label>
     </div>
+  {% for i in spe %}
+    <form action="{%url 'calendars:sedit_calendar' i.spend_id %}" method="POST">
 
-    <form action="{%url 'calendars:edit_calendar' %}" method="POST">
-      {% for i in spe %}
         {% csrf_token %}
     <div class="span_div" id="span_div">
         <div class="span_list">

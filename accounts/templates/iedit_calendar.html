@@ -227,9 +227,9 @@
         <input type="radio" name="jtags" value="수입" id="income" checked>
         <label for="span">수입내역 수정하기</label>
     </div>
+  {% for i in income %}
+    <form action="{% url 'calendars:iedit_calendar' i.income_id %}" method = "POST">
 
-    <form action="{% url 'calendars:add_calendar' %}" method = "POST">
-        {% for i in income %}
         {% csrf_token %}
     <div class="income_div" id="income_div">
         <div class="income_list">
@@ -245,7 +245,7 @@
                       <option value="2" {% if i.income_way == 2 %} selected {% endif %}>용돈</option>
                       <option value="1" {% if i.income_way == 3 %} selected {% endif %}>금융수입</option>
                       <option value="2" {% if i.income_way == 4 %} selected {% endif %}>사업수입</option>
-                      <option value="1" {% if i.income_way == 5 %} selected {% endif %}>기타</option>                    
+                      <option value="1" {% if i.income_way == 5 %} selected {% endif %}>기타</option>
                     </select>
                     </th>
                 </tr>
