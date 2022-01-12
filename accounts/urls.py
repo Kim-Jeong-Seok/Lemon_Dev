@@ -11,7 +11,7 @@ app_name='accounts'
 urlpatterns = [
     #path('lemon/', LemonUserAPI),
     path('main', views.main, name='main'),
-    path('home', views.home, name='home'),
+
     #path('calendar', views.calendar, name='calendar'),
     #path('cal_list', views.cal_list, name='calendarList'),
     path('search_stock', views.search_stock, name='search_stock'),

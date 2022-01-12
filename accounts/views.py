@@ -33,8 +33,7 @@ def main(self):
 
     return render(request, 'main.html')
 
-def home(request):
-    return render(request, 'main.html')
+
 
 def search_stock(request):
     return render(request, 'search_stock.html')
