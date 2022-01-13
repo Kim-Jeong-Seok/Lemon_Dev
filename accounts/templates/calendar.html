@@ -148,7 +148,7 @@
     </div>
 </div>
 <script>
-    
+
   $('#all_chk').change(function () {
       var checked = $(this).prop('checked');
       $('input[id="require_chk"]').prop('checked', checked);
@@ -229,7 +229,7 @@
             //2. 긁어온 값에 천단위 , 찍어주고 cn1 변수에 저장
             const cn1 = innerText.toString()
             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-  
+
             //3. cn1 변수에 저장된 값을 amount-money 값에 띄워줌
             const cn1element = document.getElementById('amount-money');
             cn1element.innerHTML = cn1;
@@ -424,7 +424,7 @@
       </ol>
       </div>
       </div><!-- 건수 탑5 div 시작-->
-      
+
 
     </div><!--- 요약 SWIPER div영역 끝 --->
 
@@ -475,22 +475,22 @@
               const reset = document.getElementById('list-table-tbody');
               const date_title = document.getElementById('list-table-tbody');
               //const element = document.getElementById('trtr');
-              
+
               reset.innerHTML = '';
-              
+
               //date_title.innerHTML += total;
               $(document).ready(function(){
-              
+
                 for(var k=1; k<32; k++){
                 genRowspan(k);
-<<<<<<< HEAD
+
               };
-=======
+
                 };
-              
->>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
+
+
               });
-              
+
               function genRowspan(className){
                 $("."+className).each(function(){
                   var rows = $("."+className+":contains('"+$(this).text()+"')");
@@ -501,13 +501,13 @@
                       });
                     }
 <<<<<<< HEAD
-              
+
               for(var i=0; i<data.length; i++){
                 date_title.innerHTML +='<tr><td class="'+moment(data[i]['spend_date']).format('D')+'" style="border: 1px solid; vertical-align:top;">' + moment(data[i]['spend_date']).format('DD일') + '</td>'
                                       +'<td><a id="kind">' + (data[i]['kind'])+ '</a></td>'
 =======
 
-                            
+
               for(var i=0; i<data.length; i++){
                 date_title.innerHTML +='<tr><td class="'+moment(data[i]['spend_date']).format('D')+'" style="border: 1px solid; vertical-align:top;">' + moment(data[i]['spend_date']).format('DD일') + '</td>'
                                       +'<td style="display:none;"><a id="kind">' + (data[i]['kind'])+ '</a></td>'
@@ -552,8 +552,12 @@
                   };
                 };
               };
+<<<<<<< HEAD
 
 >>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
+=======
+              swiper.update();
+>>>>>>> d476e150c1b6f595764d30e0222f6b323415669f
             },
             fail: function() {
               console.log('ajax send error!');
@@ -570,7 +574,7 @@
             let ajax_date = moment(result_prev_val).format('YYYY-MM');
             $('#month_input2').val(ajax_date);
             $('#month_input').val(result_prev_val);
-  
+
             $.ajax({
               type: "POST",
               url: "{% url 'calendars:load_list' %}",
@@ -584,22 +588,22 @@
                 console.log(data);
                 console.log('공백');
                 console.log(typeof(data));
-  
-  
+
+
                 const reset = document.getElementById('list-table-tbody');
                 const date_title = document.getElementById('list-table-tbody');
                 //const element = document.getElementById('trtr');
-                
+
                 reset.innerHTML = '';
-                
+
                 //date_title.innerHTML += total;
                 $(document).ready(function(){
-                
+
                   for(var k=1; k<32; k++){
                   genRowspan(k);
                 };
                 });
-                
+
                 function genRowspan(className){
                   $("."+className).each(function(){
                     var rows = $("."+className+":contains('"+$(this).text()+"')");
@@ -609,26 +613,26 @@
                           }
                         });
                       }
-                
+
                 for(var i=0; i<data.length; i++){
                   date_title.innerHTML +='<tr><td class="'+moment(data[i]['spend_date']).format('D')+'" style="border: 1px solid; vertical-align:top;">' + moment(data[i]['spend_date']).format('DD일') + '</td>'
-<<<<<<< HEAD
+
                                         +'<td><a id="kind">' + (data[i]['kind'])+ '</a></td>'
-=======
+
                                         +'<td style="display:none;><a id="kind">' + (data[i]['kind'])+ '</a></td>'
->>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
+
                                         +'<td>' + (data[i]['place'])+ '</td>'
                                         +'<td id="won">' + (data[i]['amount'])+ '원</td>'
                                         '</tr>';
                 };
-<<<<<<< HEAD
+
                 /*
                 for(var j=0; j<data.length; j++){
                   if(document.getElementById("kind").text =='지출'){
                     document.getElementById("won").innerHTML += '+' + (data[j]['amount'])+ '원';
                   };
                 };*/
-=======
+
                 var table = document.getElementById('list-table');
                 for(var row=0; row<data.length; row++){
                   if(table.rows[row].cells[1].innerText == "지출"){
@@ -655,7 +659,10 @@
                     };
                   };
                 };
->>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
+
+
+                swiper.update();
+
               },
               fail: function() {
                 console.log('ajax send error!');
@@ -676,7 +683,7 @@
         <tbody id="list-table-tbody">
         {% for detail in Detail_month %}
         {% ifchanged detail.spend_date.day %}
-        
+
         <tr style="vertical-align:top;" id="date_title">
         <th style="text-align:left;padding-left:5px; border-bottom:1px solid #dddddd;">
           <img src="media/date.png" style="margin-right: 5px; width:30px; height:30px; vertical-align: -webkit-baseline-middle;">
@@ -748,7 +755,7 @@
       <script>
         document.addEventListener('DOMContentLoaded', function() {
           var calendarEl = document.getElementById('calendar');
-      
+
           var date = new Date();
           var d = date.getDate();
           var m = date.getMonth() + 1;
@@ -756,8 +763,8 @@
           var date1 = (y+'-'+m+'-'+d);
           var date2 = (y+'-'+m);
           console.log('Today is ' + date1);
-      
-      
+
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
           selectable: false,
           selectOverlap:false,
@@ -846,7 +853,7 @@
         <input type="hidden" value="" id="testtest">
       </div><!--- 달력 SWIPER div영역 끝 --->
     </div><!--swiper-wrapper 선언끝-->
-    
+
     <div class="swiper-pagination" ></div>
   </div><!--myswiper 선언끝-->
 
@@ -860,14 +867,14 @@
       slidesPerView: 'auto',
       centeredSlides: true,
       autoHeight: true,
-      //effect:'fade', 
+      //effect:'fade',
       fadeEffect: { crossFade: true },
       mousewheel: false,
       speed: 0,
       hashNavigation: {
         watchState: true,
         replaceState:true,
-      },   
+      },
       pagination : {
         observer: true,
         observeParents: true,
@@ -878,7 +885,7 @@
           return '<div class="' + className + '"><span>' + (bullet[index]) + '</span></div>';
         }
         },
-        
+
         scrollbar: {
           el: '.swiper-scrollbar',
         },
