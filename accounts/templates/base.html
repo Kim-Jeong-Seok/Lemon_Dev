@@ -61,6 +61,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.2/chart.min.js"
             integrity="sha512-tMabqarPtykgDtdtSqCL3uLVM0gS1ZkUAVhRFu1vSEFgvB73niFQWJuvviDyBGBH22Lcau4rHB5p2K2T0Xvr6Q=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<<<<<<< HEAD
 
     <!-- PC접속시 홍보페이지 이동 -->
     <!-- 홍보페이지 extends 'base.html' 구문때문에 무한 리다이렉트, 구문 삭제 후 코드 활성화 -->
@@ -69,6 +70,16 @@
         location.href = "/main"; // 추후 홍보페이지 주소 입력
         }
     </script> -->
+=======
+    
+    <!-- PC접속시 홍보페이지 이동 -->
+    <!-- 홍보페이지 extends 'base.html' 구문때문에 무한 리다이렉트, 구문 삭제 후 코드 활성화 -->
+    <script>
+        if(!navigator.userAgent.match(/Android|Mobile|iP(hone|od|ad)|BlackBerry|IEMobile|Kindle|NetFront|Silk-Accelerated|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune/)){
+        location.href = "/main"; // 추후 홍보페이지 주소 입력
+        }
+    </script>
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
     <title>{% block title %}{% endblock %}</title>
 
     <style>

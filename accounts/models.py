@@ -60,7 +60,7 @@ class user(AbstractBaseUser):
     username = models.CharField(max_length=30, db_collation='utf8_general_ci',verbose_name= "사용자이름")
     uid = models.CharField(unique=True, max_length=30, db_collation='utf8_general_ci', verbose_name= "유저아이디")
     password = models.CharField(max_length=30, db_collation='utf8_general_ci')
-    email = models.CharField(unique=True, max_length=15, db_collation='utf8_general_ci', verbose_name= "이메일")
+    email = models.CharField(unique=True, max_length=100, db_collation='utf8_general_ci', verbose_name= "이메일")
     phonenumber = models.CharField(unique=True, max_length=15, db_collation='utf8_general_ci', blank=True, null=True,verbose_name= "전화번호")
     invest = models.IntegerField(verbose_name="모의투자금",blank=True, null=True)
     invest_date = models.DateTimeField(verbose_name="투자금액설정일",blank=True, null=True)

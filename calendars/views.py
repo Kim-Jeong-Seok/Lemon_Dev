@@ -25,6 +25,10 @@ from django.contrib.auth.hashers import check_password
 # Create your views here.
 URL_LOGIN = '/login'
 
+<<<<<<< HEAD
+=======
+@login_required(login_url=URL_LOGIN)
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
 def home(request):
     return render(request, 'home.html')
 
@@ -212,6 +216,7 @@ def load_list(request):
 
         spend = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_id','kind','spend_date','amount','place','category')
         income = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_id','kind','income_date','amount','income_way','income_way')
+<<<<<<< HEAD
 
         # 월별 쿼리셋 합치기
         detail_month = spend.union(income).order_by('spend_date')
@@ -219,3 +224,12 @@ def load_list(request):
         data2 = list(detail_month)
         print(data2)
     return JsonResponse(data2, safe=False)
+=======
+        
+        # 월별 쿼리셋 합치기
+        detail_month = spend.union(income).order_by('-spend_date')
+        print(detail_month)
+        data2 = list(detail_month)
+        print(data2)
+    return JsonResponse(data2, safe=False)
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3

@@ -27,6 +27,10 @@ URL_LOGIN = '/login'
 def main(request):
     return render(request, 'main.html')
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
 def search_stock(request):
     return render(request, 'search_stock.html')
 

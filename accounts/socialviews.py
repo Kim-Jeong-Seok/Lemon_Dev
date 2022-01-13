@@ -15,8 +15,12 @@ from django.views import View
 class KakaoSignInView(View):
     def get(self, request):
         client_id = KAKAO_KEY['KAKAO_KEY']
+<<<<<<< HEAD
         redirect_uri = "http://127.0.0.1:8000/account/kakao/login/callback/"
         #redirect_uri = "https://192.168.0.26:8000/account/kakao/login/callback/"
+=======
+        redirect_uri = "https://192.168.0.26:8000/account/kakao/login/callback/"
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
         kakao_auth_api = 'http://kauth.kakao.com/pauth/author?response_type=code '
         return redirect(
                 f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={'http://127.0.0.1:8000/signup2'}&response_type=code"
@@ -27,8 +31,12 @@ class KakaoSignInCallbackView(View):
         try:
             code            = request.GET.get("code")
             client_id       = KAKAO_KEY['KAKAO_KEY']
+<<<<<<< HEAD
             redirect_uri    = "http://127.0.0.1:8000/account/kakao/login/callback/"
             #redirect_uri = "https://192.168.0.26:8000/account/kakao/login/callback/"
+=======
+            redirect_uri    = "https://192.168.0.26:8000/account/kakao/login/callback/"
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
             token_request   = requests.get(
                 f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={'http://127.0.0.1:8000/signup2'}&code={code}"
             )

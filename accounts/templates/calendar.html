@@ -483,7 +483,12 @@
               
                 for(var k=1; k<32; k++){
                 genRowspan(k);
+<<<<<<< HEAD
               };
+=======
+                };
+              
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
               });
               
               function genRowspan(className){
@@ -495,21 +500,60 @@
                         }
                       });
                     }
+<<<<<<< HEAD
               
               for(var i=0; i<data.length; i++){
                 date_title.innerHTML +='<tr><td class="'+moment(data[i]['spend_date']).format('D')+'" style="border: 1px solid; vertical-align:top;">' + moment(data[i]['spend_date']).format('DD일') + '</td>'
                                       +'<td><a id="kind">' + (data[i]['kind'])+ '</a></td>'
+=======
+
+                            
+              for(var i=0; i<data.length; i++){
+                date_title.innerHTML +='<tr><td class="'+moment(data[i]['spend_date']).format('D')+'" style="border: 1px solid; vertical-align:top;">' + moment(data[i]['spend_date']).format('DD일') + '</td>'
+                                      +'<td style="display:none;"><a id="kind">' + (data[i]['kind'])+ '</a></td>'
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
                                       +'<td>' + (data[i]['place'])+ '</td>'
                                       +'<td id="won">' + (data[i]['amount'])+ '원</td>'
                                       '</tr>';
 
               };
+<<<<<<< HEAD
               /*
               for(var j=0; j<data.length; j++){
                 if(document.getElementById("kind").text =='지출'){
                   document.getElementById("won").innerHTML += '+' + (data[j]['amount'])+ '원';
                 };
               };*/
+=======
+
+              var table = document.getElementById('list-table');
+              for(var row=0; row<data.length; row++){
+                if(table.rows[row].cells[1].innerText == "지출"){
+                  $(table.rows[row].cells[3]).prepend('-');
+                };
+                if(table.rows[row].cells[1].innerText == "수입"){
+                  $(table.rows[row].cells[3]).prepend('+');
+                };
+                if(table.rows[row].cells[1].innerText == "수입"){
+                  if(table.rows[row].cells[2].innerText == "1"){
+                    $(table.rows[row].cells[2]).text("급여")
+                  };
+                  if(table.rows[row].cells[2].innerText == "2"){
+                    $(table.rows[row].cells[2]).text("용돈")
+                  };
+                  if(table.rows[row].cells[2].innerText == "3"){
+                    $(table.rows[row].cells[2]).text("금융수입")
+                  };
+                  if(table.rows[row].cells[2].innerText == "4"){
+                    $(table.rows[row].cells[2]).text("사업수입")
+                  };
+                  if(table.rows[row].cells[2].innerText == "5"){
+                    $(table.rows[row].cells[2]).text("기타수입")
+                  };
+                };
+              };
+
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
             },
             fail: function() {
               console.log('ajax send error!');
@@ -568,17 +612,50 @@
                 
                 for(var i=0; i<data.length; i++){
                   date_title.innerHTML +='<tr><td class="'+moment(data[i]['spend_date']).format('D')+'" style="border: 1px solid; vertical-align:top;">' + moment(data[i]['spend_date']).format('DD일') + '</td>'
+<<<<<<< HEAD
                                         +'<td><a id="kind">' + (data[i]['kind'])+ '</a></td>'
+=======
+                                        +'<td style="display:none;><a id="kind">' + (data[i]['kind'])+ '</a></td>'
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
                                         +'<td>' + (data[i]['place'])+ '</td>'
                                         +'<td id="won">' + (data[i]['amount'])+ '원</td>'
                                         '</tr>';
                 };
+<<<<<<< HEAD
                 /*
                 for(var j=0; j<data.length; j++){
                   if(document.getElementById("kind").text =='지출'){
                     document.getElementById("won").innerHTML += '+' + (data[j]['amount'])+ '원';
                   };
                 };*/
+=======
+                var table = document.getElementById('list-table');
+                for(var row=0; row<data.length; row++){
+                  if(table.rows[row].cells[1].innerText == "지출"){
+                    $(table.rows[row].cells[3]).prepend('-');
+                  };
+                  if(table.rows[row].cells[1].innerText == "수입"){
+                    $(table.rows[row].cells[3]).prepend('+');
+                  };
+                  if(table.rows[row].cells[1].innerText == "수입"){
+                    if(table.rows[row].cells[2].innerText == "1"){
+                      $(table.rows[row].cells[2]).text("급여")
+                    };
+                    if(table.rows[row].cells[2].innerText == "2"){
+                      $(table.rows[row].cells[2]).text("용돈")
+                    };
+                    if(table.rows[row].cells[2].innerText == "3"){
+                      $(table.rows[row].cells[2]).text("금융수입")
+                    };
+                    if(table.rows[row].cells[2].innerText == "4"){
+                      $(table.rows[row].cells[2]).text("사업수입")
+                    };
+                    if(table.rows[row].cells[2].innerText == "5"){
+                      $(table.rows[row].cells[2]).text("기타수입")
+                    };
+                  };
+                };
+>>>>>>> e86d30bb8bc92771e7ce07c55069561ce8c393a3
               },
               fail: function() {
                 console.log('ajax send error!');
