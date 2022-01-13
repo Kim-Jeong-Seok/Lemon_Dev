@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+ibbfrom django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib import auth
 from django.contrib.auth import login, authenticate, get_user_model
@@ -140,11 +140,9 @@ def edit_calendar(request, spend_id, kind):
 
     user = request.user.user_id
 
-    if kind == '지출':
-        # spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
+    if kind == '지출':)
         spe = Spend.objects.filter(spend_id=spend_id, user_id = user)
         #return redirect('/calendar#list')
-
         return render(request, 'sedit_calendar.html', {'spe':spe})
     if kind == "수입":
         income = Income.objects.filter(income_id=spend_id, user_id = user)
