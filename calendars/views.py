@@ -212,9 +212,9 @@ def load_list(request):
 
         spend = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_id','kind','spend_date','amount','place','category')
         income = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_id','kind','income_date','amount','income_way','income_way')
-        
+
         # 월별 쿼리셋 합치기
-        detail_month = spend.union(income).order_by('-spend_date')
+        detail_month = spend.union(income).order_by('spend_date')
         print(detail_month)
         data2 = list(detail_month)
         print(data2)
