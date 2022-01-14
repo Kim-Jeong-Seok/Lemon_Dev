@@ -212,6 +212,7 @@
             cache: false,
             headers: {"cache-control": "no-cache","pragma": "no-cache"},
             success: function(data){
+              console.log(data);
               msg_value = data.msg1;
               const reset = document.getElementById('modalBody');
               reset.innerHTML = '';

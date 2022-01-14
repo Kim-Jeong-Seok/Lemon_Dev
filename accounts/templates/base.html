@@ -26,8 +26,6 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <meta http-equiv="Expires" content="-1">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Cache-Control" content="no-cache">
 
 
     <!-- <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script> -->
@@ -259,21 +257,25 @@
 
     </style>
 <script>
+$( document ).ready(function() {
+        $('#container').hide();
+        $('#container').fadeIn(150);
+    });
+
     $(window).on('load',function(){
-    $('.loader-main').fadeOut(550);
+        $('.loader-main').fadeOut(850);
+
     });
 </script>
 <body>
-    <div id="page-preloader">
+
+  <div id="page-preloader">
         <div class="loader-main">
             <div class="la-ball-clip-rotate">
                 <div></div>
             </div>
         </div>
     </div>
-<div id="wrap">
-    <!-- 로그인 검증 -->
-
     {% block nav %}
     <div id="nav">
         <div>
@@ -301,6 +303,10 @@
         </ul>
         {% endblock %}
     </div>
+<div id="wrap">
+    <!-- 로그인 검증 -->
+
+
 
     <div id="container">
         {% block container %}

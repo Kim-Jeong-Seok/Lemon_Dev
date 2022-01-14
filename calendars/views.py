@@ -24,6 +24,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.hashers import check_password
 # Create your views here.
 URL_LOGIN = '/login'
+
 def recom(request):
     return render(request, 'recom.html')
 
@@ -68,6 +69,57 @@ def summary(request):
         'Category_count_data': category_count_data,
         'Category_count_label': category_count_label,
         'Category_count': category_amount_count,})
+def list(request):
+    user = request.user.user_id
+    print('useruseruseruser',str(user))
+    input_year = request.POST.get('input_year',None)
+    input_month = request.POST.get("input_month",None)
+
+    now = datetime.datetime.now()
+    if input_year:
+        year = input_year
+    if input_month:
+        month = input_month
+    else:
+        month = now.strftime('%m')
+        year = now.strftime('%Y')
+
+        # 월별 기간 필터링
+    spend_month_filter = Spend.objects.filter(user_id = user, spend_date__month=month ).values('spend_id','kind','spend_date','amount','place', 'category')
+    income_month_filter = Income.objects.filter(user_id = user, income_date__month=month).values('income_id','kind','income_date','amount','income_way', 'income_way')
+        # 월 총 수입, 지출
+    spend_sum = spend_month_filter.aggregate(Sum('amount'))
+    income_sum = income_month_filter.aggregate(Sum('amount'))
+        # 월별 쿼리셋 합치기
+    detail_month = spend_month_filter.union(income_month_filter).order_by('-spend_date')
+
+
+    spend_day_sum2 = spend_month_filter.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
+    income_day_sum2 = income_month_filter.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
+
+    spend_day_sum = spend_month_filter.values('spend_date__day').annotate(amount=Sum('amount')).order_by('-spend_date__day')
+    income_day_sum = income_month_filter.values('income_date__day').annotate(amount=Sum('amount')).order_by('-income_date__day')
+
+    detail_day = income_day_sum.union(spend_day_sum)
+
+    last_spend = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_id','kind','spend_date','amount','place','category')    #.annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
+    last_income = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_id','kind','income_date','amount','income_way','income_way')
+
+    last_spend_sum = last_spend.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount','place')
+    spend_sum = last_spend.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount','place')
+
+    last_income_sum = last_income.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
+    detail_month_sum = last_spend.union(last_income).order_by('-spend_date')
+    return render(request, 'list.html',
+    {'Spend_day':spend_day_sum,
+    'Income_day':income_day_sum,
+    'Detail_month':detail_month,
+    'detail_day':detail_day,
+    'Expenditure': spend_sum,
+    'Income': income_sum,
+    # 'month':month,
+    'spend_day_sum2':spend_day_sum2,
+    'income_day_sum2':income_day_sum2,})
 @login_required(login_url=URL_LOGIN)
 def home(request):
     if request.method == 'POST':
@@ -82,28 +134,14 @@ def home(request):
 
 @login_required(login_url=URL_LOGIN)
 def calendar(request):
-    # if request.method == 'POST':
-    #     user = request.user.user_id
-    #     user = get_user_model().objects.filter(user_id=user).update(
-    #                                         u_chk=request.POST['u_chk'],
-    #                                         e_chk=request.POST['e_chk'],
-    #                                 )
-    #     return redirect('/calendar#recom')
 
-    input_year = request.POST.get('input_year','')
-    input_month = request.POST.get("input_month",'')
     user = request.user.user_id
     now = datetime.datetime.now()
 
-    if input_year:
-        year = input_year
-    if input_month:
-        month = input_month
-    else:
-        month = now.strftime('%m')
-        year = now.strftime('%Y')
-        #return redirect('/calendar#list')
-        print('=======', str(month))
+
+    month = now.strftime('%m')
+    year = now.strftime('%Y')
+
 
     # 월별 기간 필터링
     spend_month_filter = Spend.objects.filter(user_id = user, spend_date__month=month ).values('spend_id','kind','spend_date','amount','place', 'category')
@@ -128,10 +166,8 @@ def calendar(request):
 
 
     #전달 내역
-    input_year = request.POST.get('input_year','')
-    input_month = request.POST.get("input_month",'')
-    print('input_year',str(input_year))
-    print('input_month',str(input_month))
+
+
     last_spend = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_id','kind','spend_date','amount','place','category')    #.annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
     last_income = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_id','kind','income_date','amount','income_way','income_way')
 
@@ -139,7 +175,7 @@ def calendar(request):
     #print('spend_sumspend_sumspend_sumspend_sum',str(spend_sum))
     last_income_sum = last_income.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
     detail_month_sum = last_spend.union(last_income).order_by('-spend_date')
-    print('detail_month_sumdetail_month_sum',str(detail_month_sum))
+    #print('detail_month_sumdetail_month_sum',str(detail_month_sum))
 
 
 
@@ -233,11 +269,17 @@ def ajax_pushdate(request):
         test = request.POST.get("testtest", None)
         spend = Spend.objects.filter(user_id = user,spend_date=test).values('kind','spend_date','amount','place')
         income = Income.objects.filter(user_id = user,income_date=test).values('kind','income_date','amount','income_way')
-        detail_month = income.union(spend).order_by('kind')
-        even1 = list(detail_month.values('kind','income_date','amount'))
-        evens = {'msg1':even1}
+        print('detail_month',str(spend))
 
-        return JsonResponse(evens)
+        detail_month = spend.union(income).order_by('spend_date')
+        print('detail_month',str(detail_month))
+        print("detail_month2detail_month2detail_month2detail_month2 Type : ", type(detail_month))
+        detail_month = list(detail_month.values_list('kind','spend_date','amount'))
+        print("even1even1even1even1even1 Type : ", type(detail_month))
+        #evens = {'msg1':dict(detail_month2)}
+        #print('evensevensevensevensevens',str(evens))
+
+        return JsonResponse(evens, safe=False)
 
 @csrf_exempt
 def add_event(request):
@@ -263,70 +305,6 @@ def all_events(request):
         })
 
     return JsonResponse(out, safe=False)
-
-def list(request):
-    input_year = request.POST.get('input_year','')
-    input_month = request.POST.get("input_month",'')
-    user = request.user.user_id
-    now = datetime.datetime.now()
-
-    if input_year:
-        year = input_year
-    if input_month:
-        month = input_month
-    else:
-        month = now.strftime('%m')
-        year = now.strftime('%Y')
-            #return redirect('/calendar#list')
-        print('=======', str(month))
-
-    # 월별 기간 필터링
-    spend_month_filter = Spend.objects.filter(user_id = user, spend_date__month=month ).values('spend_id','kind','spend_date','amount','place', 'category')
-    income_month_filter = Income.objects.filter(user_id = user, income_date__month=month).values('income_id','kind','income_date','amount','income_way', 'income_way')
-    # 월 총 수입, 지출
-    spend_sum = spend_month_filter.aggregate(Sum('amount'))
-    income_sum = income_month_filter.aggregate(Sum('amount'))
-    # 월별 쿼리셋 합치기
-    detail_month = spend_month_filter.union(income_month_filter).order_by('-spend_date')
-
-
-    spend_month_filter = Spend.objects.filter(user_id = user ).values('spend_id','kind','spend_date','amount','place')
-    income_month_filter = Income.objects.filter(user_id = user).values('income_id','kind','income_date','amount','income_way')
-    spend_day_sum2 = spend_month_filter.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
-    income_day_sum2 = income_month_filter.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
-
-    spend_day_sum = spend_month_filter.values('spend_date__day').annotate(amount=Sum('amount')).order_by('-spend_date__day')
-    income_day_sum = income_month_filter.values('income_date__day').annotate(amount=Sum('amount')).order_by('-income_date__day')
-
-    detail_day = income_day_sum.union(spend_day_sum)
-    #spend_sum = last_spend.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount','place')
-    #print('spend_sumspend_sumspend_sumspend_sum',str(spend_sum))
-    #last_income_sum = last_income.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
-    #detail_month_sum = last_spend.union(last_income).order_by('-spend_date')
-    #print('detail_month_sumdetail_month_sum',str(detail_month_sum))
-
-    input_year = request.POST.get('input_year','')
-    input_month = request.POST.get("input_month",'')
-
-    last_spend = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_id','kind','spend_date','amount','place','category')    #.annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
-    last_income = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_id','kind','income_date','amount','income_way','income_way')
-
-    last_spend_sum = last_spend.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount','place')
-    spend_sum = last_spend.values('spend_date__day','kind').annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount','place')
-        #print('spend_sumspend_sumspend_sumspend_sum',str(spend_sum))
-    last_income_sum = last_income.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
-    detail_month_sum = last_spend.union(last_income).order_by('-spend_date')
-    return render(request, 'list.html',
-    {'Spend_day':spend_day_sum,
-    'Income_day':income_day_sum,
-    'Detail_month':detail_month,
-    'detail_day':detail_day,
-    'Expenditure': spend_sum,
-    'Income': income_sum,
-
-    'month':month,
-    'spend_day_sum2':spend_day_sum2,
-    'income_day_sum2':income_day_sum2,})
 
 @csrf_exempt
 def load_list(request):
