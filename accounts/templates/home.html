@@ -21,6 +21,46 @@
         font-size: 0.8rem;
         color: #D1D6DA !important;
     }
+    .social-wrap{
+      padding: 20px;
+    }
+    .social-textarea{
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 12px;
+      border: 1px solid #CACACA;
+      border-radius: 10px;
+      background-color: #fff;
+      resize: none;
+      padding-left: 5px;
+      padding-top: 5px;
+    }
+    .social-btn{
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: bold;
+      font-size: 16px;
+      text-align: center;
+      vertical-align: middle;
+      width:100%;
+      height: 50px;
+      margin-top:20px;
+      background:#31BC89;
+      border:0px;
+      border-radius:50px;
+      color:white;
+    }
+    .social-btn:disabled{
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: bold;
+      font-size: 16px;
+      text-align: center;
+      vertical-align: middle;
+      width:100%;
+      height: 50px;
+      background:#a0a0a0;
+      border:0px;
+      border-radius:50px;
+      color:white;
+    }
 
     .home-div1{
         margin: 50px auto;
@@ -53,6 +93,68 @@
         font-weight: 500;
     }
 </style>
+{% if user.e_chk == 0 %}
+<style>
+  #footer{
+    display: none;
+  }
+</style>
+<div class="social-wrap">
+  <div class="alert alert-danger" role="alert">
+    <a>소셜로그인을 통한 최초 로그인시, <strong>레몬서비스 이용약관</strong> 및 <strong>개인정보 수집 동의 </strong> 후 서비스 사용가능합니다.</a>
+  </div>
+      <form class="validation-form" method="POST" action="{% url 'calendars:home' %}" id="signup-form">
+          {% csrf_token %}
+          <div class="service_access">
+              <div class="all_chk-wrap">
+              <label style="text-align: -webkit-auto;">
+                <input type="checkbox" name="all_chk" value ="0" id="all_chk">
+                <a class="all_chk_font">레몬서비스 이용약관, 개인정보 수집에 모두 동의 합니다.</a>
+              </label>
+              </div>
+              <div class="require_chk_wrap" style="margin-top: 20px;">
+                  </label>
+                  <a>레몬서비스 이용약관 동의(필수)</a><br>
+                  <textarea class="social-textarea" cols="30" rows="10" style="width:100%;" disabled="disabled">이부분은 이용약관관련된 내용이 들어갈 예정입니다.</textarea><br>
+                  <label style="text-align:end;">
+                      <input type="checkbox" name="u_chk" value ="1" id="require_chk">
+                      <span>이용약관에 동의합니다.</span>
+                  </label>
+              </div>
+          </div>
+
+          <div class="persnal_info_access">
+              <div class="require_chk_wrap" style="margin-top: 15px;">
+                  <a>개인정보 수집 동의(필수)</a><br>
+                  <textarea class="social-textarea" cols="30" rows="10" style="width:100%;" disabled="disabled">이부분은 개인정보 수집에 대한 내용이 들어갈 예정입니다.</textarea><br>
+                  <label style="text-align:end;">
+                      <input type="checkbox" name="e_chk" value ="1" id="require_chk">
+                      <span>이용약관에 동의합니다.</span>
+                  </label>
+              </div>
+
+              <button class="social-btn" id="signupBtn" type="submit" value="signup" disabled style="width:100%">레몬서비스 시작하기</button>
+          </div>
+      </form>
+  </div>
+
+<script>
+
+$('#all_chk').change(function () {
+    var checked = $(this).prop('checked');
+    $('input[id="require_chk"]').prop('checked', checked);
+    $('#signupBtn').removeAttr('disabled');
+});
+
+$('input[id="require_chk"]').change(function () {
+    var tmpLength = $('input[id="require_chk"]').length;
+    var checkedLength = $('input[id="require_chk"]:checked').length;
+    var selectAll = (tmpLength == checkedLength);
+    $('#all_chk').prop('checked', selectAll);
+    selectAll ? $('#signupBtn').removeAttr('disabled'):$('#signupBtn').attr('disabled','true');});
+</script>
+
+{% else %}
 <h2>홈화면<h2>
 
     <div class="home-div1">
@@ -62,4 +164,5 @@
     <div class="home-div2">
         <a>모의주식</a>
     </div>
+{% endif %}
 {% endblock container %}

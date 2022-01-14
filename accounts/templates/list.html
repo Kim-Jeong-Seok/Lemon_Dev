@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}레몬::추천{% endblock title %}
+{% block container %}
+{% load humanize %}
+{% load mytag %}
+<div class="swiper-slide" data-name="내역" data-hash="list">
+  <div class="list-filter">
+      <form class="check_box_form" action="{% url 'calendars:list' %}" method="post">
+        {% csrf_token %}
+    <button class="prev_btn"  id="prev_btn">이{% for detail in detail_month%} {{detail}} {% endfor %}전</button>
+    <input type="text" name = "input_year" id="input_year" value="">
+    <input type="text" name="input_month" id="input_month" value="">
+    <button class="next_btn" id="next_btn">다음</button> <br>
+    </form>
+  </div>
+
+  <script>
+    let today = new Date();
+    year = moment(today).format('YYYY');
+    month = moment(today).format('MM');
+
+    $('#input_year').val(year);
+    $('#input_month').val(month);
+
+
+    document.getElementById('prev_btn1').addEventListener('click', prev_month);
+    function prev_month() {
+      console.log('이전버튼function on!');
+      let prev_val = document.getElementById('month_input').value;
+      console.log(prev_val);
+      let result_prev_val = moment(prev_val).subtract('1', 'month').format('YYYY-MM'); // 날짜에서 1달을 뺀다.
+      let ajax_date = moment(result_prev_val).format('YYYY-MM');
+      $('#month_input2').val(ajax_date);
+      $('#month_input').val(result_prev_val);
+
+      $.ajax({
+        type: "POST",
+        url: "{% url 'calendars:load_list' %}",
+        data: {
+          date: $("#month_input2").val(),
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          dataType: "json",
+        },
+        success: function(data){
+          console.log('통신성공');
+          console.log(data);
+          console.log('공백');
+          console.log(typeof(data));
+
+          var data2 = data.data2;
+          var data3 = data.data3;
+          var data4 = data.data4;
+
+          for (var k=0; k<data3.length; k++){
+
+            console.log(data3[k]['amount'])
+          }
+
+
+          const reset = document.getElementById('list-table-tbody');
+          const date_title = document.getElementById('list-table-tbody');
+          //const element = document.getElementById('trtr');
+
+          reset.innerHTML = '';
+
+          //date_title.innerHTML += total;
+          $(document).ready(function(){
+
+            for(var k=1; k<32; k++){
+            genRowspan(k);
+            };
+
+          });
+
+          function genRowspan(className){
+            $("."+className).each(function(){
+              var rows = $("."+className+":contains('"+$(this).text()+"')");
+              if(rows.length > 1){
+                rows.eq(0).attr("rowspan", rows.length);//중복되는 첫번째 td에 rowspan값 세팅
+                rows.not(":eq(0)").remove();//중복되는 td를 삭제
+                    }
+                  });
+                }
+
+
+          for(var i=0; i<data.length; i++){
+            date_title.innerHTML +='<tr><td class="'+moment(data[i]['spend_date']).format('D')+'" style="border: 1px solid; vertical-align:top;">' + moment(data[i]['spend_date']).format('DD일') + '</td>'
+                                  +'<td style="display:none;"><a id="kind">' + (data[i]['kind'])+ '</a></td>'
+                                  +'<td>' + (data[i]['place'])+ '</td>'
+                                  +'<td id="won">' + (data[i]['amount'])+ '원</td>'
+                                  '</tr>';
+
+          };
+
+          var table = document.getElementById('list-table');
+          for(var row=0; row<data.length; row++){
+            if(table.rows[row].cells[1].innerText == "지출"){
+              $(table.rows[row].cells[3]).prepend('-');
+            };
+            if(table.rows[row].cells[1].innerText == "수입"){
+              $(table.rows[row].cells[3]).prepend('+');
+            };
+            if(table.rows[row].cells[1].innerText == "수입"){
+              if(table.rows[row].cells[2].innerText == "1"){
+                $(table.rows[row].cells[2]).text("급여")
+              };
+              if(table.rows[row].cells[2].innerText == "2"){
+                $(table.rows[row].cells[2]).text("용돈")
+              };
+              if(table.rows[row].cells[2].innerText == "3"){
+                $(table.rows[row].cells[2]).text("금융수입")
+              };
+              if(table.rows[row].cells[2].innerText == "4"){
+                $(table.rows[row].cells[2]).text("사업수입")
+              };
+              if(table.rows[row].cells[2].innerText == "5"){
+                $(table.rows[row].cells[2]).text("기타수입")
+              };
+            };
+          };
+          swiper.update();
+        },
+        fail: function() {
+          console.log('ajax send error!');
+        },
+      })
+    }
+
+    document.getElementById('next_btn').addEventListener('click', next_month);
+    function next_month() {
+        console.log('function on!');
+        let prev_val = document.getElementById('month_input').value;
+        console.log(prev_val);
+        let result_prev_val = moment(prev_val).add('1', 'month').format('YYYY-MM'); // 날짜에서 1달을 뺀다.
+        let ajax_date = moment(result_prev_val).format('YYYY-MM');
+        $('#month_input2').val(ajax_date);
+        $('#month_input').val(result_prev_val);
+
+        $.ajax({
+          type: "POST",
+          url: "{% url 'calendars:load_list' %}",
+          data: {
+            date: $("#month_input2").val(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            dataType: "json",
+          },
+          success: function(data){
+            console.log('통신성공');
+            console.log(data);
+            console.log('공백');
+            console.log(typeof(data));
+
+
+            const reset = document.getElementById('list-table-tbody');
+            const date_title = document.getElementById('list-table-tbody');
+            //const element = document.getElementById('trtr');
+
+            reset.innerHTML = '';
+
+            //date_title.innerHTML += total;
+            $(document).ready(function(){
+
+              for(var k=1; k<32; k++){
+              genRowspan(k);
+            };
+            });
+
+            function genRowspan(className){
+              $("."+className).each(function(){
+                var rows = $("."+className+":contains('"+$(this).text()+"')");
+                if(rows.length > 1){
+                  rows.eq(0).attr("rowspan", rows.length);//중복되는 첫번째 td에 rowspan값 세팅
+                  rows.not(":eq(0)").remove();//중복되는 td를 삭제
+                      }
+                    });
+                  }
+
+            for(var i=0; i<data.length; i++){
+              date_title.innerHTML +='<tr><td class="'+moment(data[i]['spend_date']).format('D')+'" style="border: 1px solid; vertical-align:top;">' + moment(data[i]['spend_date']).format('DD일') + '</td>'
+                                    +'<td style="display:none;><a id="kind">' + (data[i]['kind'])+ '</a></td>'
+                                    +'<td>' + (data[i]['place'])+ '</td>'
+                                    +'<td id="won">' + (data[i]['amount'])+ '원</td>'
+                                    '</tr>';
+            };
+            var table = document.getElementById('list-table');
+            for(var row=0; row<data.length; row++){
+              if(table.rows[row].cells[1].innerText == "지출"){
+                $(table.rows[row].cells[3]).prepend('-');
+              };
+              if(table.rows[row].cells[1].innerText == "수입"){
+                $(table.rows[row].cells[3]).prepend('+');
+              };
+              if(table.rows[row].cells[1].innerText == "수입"){
+                if(table.rows[row].cells[2].innerText == "1"){
+                  $(table.rows[row].cells[2]).text("급여")
+                };
+                if(table.rows[row].cells[2].innerText == "2"){
+                  $(table.rows[row].cells[2]).text("용돈")
+                };
+                if(table.rows[row].cells[2].innerText == "3"){
+                  $(table.rows[row].cells[2]).text("금융수입")
+                };
+                if(table.rows[row].cells[2].innerText == "4"){
+                  $(table.rows[row].cells[2]).text("사업수입")
+                };
+                if(table.rows[row].cells[2].innerText == "5"){
+                  $(table.rows[row].cells[2]).text("기타수입")
+                };
+              };
+            };
+            swiper.update();
+          },
+          fail: function() {
+            console.log('ajax send error!');
+          },
+        })
+      }
+  </script>
+
+  <script>
+  </script>
+
+  <div>
+  <table class="list-table" id="list-table" style="background-color:#fff; border-radius:10px; margin: 15px 10px 60px 10px; padding:0 20px 60px 20px; border-collapse:separate; border-spacing:0 20px; "width="95%">
+    <colgroup>
+      <col width="*"/>
+      <col width="*"/>
+    </colgroup>
+    <tbody id="list-table-tbody">
+    {% for detail in Detail_month %}
+    {% ifchanged detail.spend_date.day %}
+
+    <tr style="vertical-align:top;" id="date_title">
+    <th style="text-align:left;padding-left:5px; border-bottom:1px solid #dddddd;">
+      <img src="media/date.png" style="margin-right: 5px; width:30px; height:30px; vertical-align: -webkit-baseline-middle;">
+      <a style="font-weight: 100; color:#3a3a3a;font-size:20pt; vertical-align: inherit;">{{detail.income_id}}{{ detail.spend_date | date:'d일' }}</a>
+    </th>
+    <th style="text-align:right;font-size:13px; border-bottom:1px solid #dddddd; vertical-align: middle;">
+     <!-- <div style="display:flex;flex-direction:column;align-items:flex-end;"> -->
+      <div>
+      {% if Income_day|find_income_money:detail.spend_date.day %}
+      <a style="font-family: 'Noto Sans KR', sans-serif; font-weight: bold; font-size:10pt; margin-right:5px; color: #4c8ae5;">+{{Income_day|find_income_money:detail.spend_date.day|intcomma}}원</a>
+        {% else %}
+        {% endif %}
+
+      {% if Spend_day|find_spend_money:detail.spend_date.day %}
+        <a style="font-family: 'Noto Sans KR', sans-serif; font-weight: bold; font-size:10pt; margin-right:5px; color: #ff5d51">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}원</a>
+          {% else %}
+      {% endif %}
+        </div>
+    </th>
+    {% endifchanged %}
+</tr>
+    {% if detail.kind == "지출" %}
+    <tr id="trtr" onclick="location.href='{% url 'calendars:edit_calendar'  detail.kind detail.spend_id %}'">
+      {% else %}
+      <tr onclick="location.href='{% url 'calendars:edit_calendar' detail.kind detail.spend_id %}'">
+
+
+          {% endif %}
+      <td style="vertical-align:top;">
+        <div style="text-align:left;padding-left:30px;">
+          {% if detail.kind == "지출" %}
+        <a id= "place" style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; font-size:12pt; color: #3a3a3a; display:block;">{{ detail.place }}</a>
+          {% elif detail.kind == "수입" %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '1' %} 급여 {% endif %}</a>
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '2' %} 용돈 {% endif %}</a>
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '3' %} 금융수입 {% endif %}</a>
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '4' %} 사업수입 {% endif %}</a>
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '5' %} 기타 {% endif %}</a>
+          {% endif %}
+        <!--<a style="text-align:left;font-size: 13px; color:gray;display:block;">{{ detail.spend_date | date:'h:m' }}</a>-->
+          </div>
+      </td>
+      <td style="vertical-align: top;">
+        <div style="text-align:right; padding-right:15px;">
+        {% if detail.kind == '지출' %}
+        <a class="amount" style="color: #2a2a2a">-{{ detail.amount|intcomma }}원</a>
+      {% else %}
+        <a class="amount" style="color: #2a2a2a">+{{ detail.amount|intcomma }}원</a>
+      {% endif %}
+        </div>
+      </td>
+    </tr>
+    {% empty %}
+    <style>
+      .list-table{display: none;}
+    </style>
+    <div class="list-empty-wrap">
+      <i class="fas fa-exclamation"></i><br>
+      <a>소비내역 및 지출내역이 없습니다.</a>
+    </div>
+    {% endfor %}
+  </tbody>
+  </table>
+</div>
+</div>
+<!--- 내역 SWIPER div영역 끝 --->
+<script>
+  var myElement = document.getElementById('container');
+
+  // create a simple instance
+  // by default, it only adds horizontal recognizers
+  var mc = new Hammer(myElement);
+
+  // listen to events...
+  mc.on("swipeleft", function(ev) {
+      window.location.href="/calendar";
+  });
+
+  mc.on("swiperight", function(ev) {
+      window.location.href="/summary";
+});
+</script>
+{% endblock container%}

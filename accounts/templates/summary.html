@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}레몬::추천{% endblock title %}
+{% block container %}
+{% load humanize %}
+<div class="swiper-slide" data-name="요약" data-hash="summary">
+  <div class="money-info-wrap">
+    <div class="money-info-container">
+      <a class="money-info-title">
+        <strong>{{user.uid}}</strong>님의 <strong>{{month}}월</strong> 가계부
+      </a><br>
+
+      <div class="amountMoney">
+        <a id="amount-money1" style="display: none;">{{user.invest|default_if_none:'0'}}</a>
+        <a class="amount-money-title">총자산</a> <a id="amount-money" class="amount-money"></a><a class="amount-won">원</a>
+        <div style="width: 95%; margin-top:15px; margin-bottom:10px; border-bottom:0.5px solid #c8c8c8;"></div>
+      </div>
+
+      <script>
+        //DB에 저장된 usermoney에 천단위 ,(콤마) 찍어주는 스크립트
+        //1. display:none 상태인 amount-money1의 값을 가져온다.
+        var innerText = document.getElementById('amount-money1').innerText;
+        //2. 긁어온 값에 천단위 , 찍어주고 cn1 변수에 저장
+        const cn1 = innerText.toString()
+        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+        //3. cn1 변수에 저장된 값을 amount-money 값에 띄워줌
+        const cn1element = document.getElementById('amount-money');
+        cn1element.innerHTML = cn1;
+      </script>
+
+      <div style="text-align:initial; padding-left:1rem;">
+        <div>
+          <strong>{{user.uid}}</strong>님의 <strong>모의투자</strong>현황
+          <img style="float:right; margin-right:20px;" src="media/refresh.png" width="25px" height="25px">
+        </div>
+        <div style="margin-top:0.5rem; margin-bottom:0.5rem;">
+          <a style="font-weight: bold;">매수금</a> <a style="margin-left: 10px; margin-right:10px; font-weight:400;">{{Expenditure.amount__sum|default_if_none:'0'|intcomma}} 원</a>
+          <a style="font-weight: bold;">수익률</a> <a style="margin-left: 10px; font-weight:400; color:#FF5E51;">21.76%</a>
+        </div>
+        <div style="margin-bottom:2rem;; width:fit-content; position:relative; padding-bottom:2px; border-bottom:1px solid #fff;">
+          <a style="font-weight: bold;">평가금</a> <a style="margin-left: 10px; margin-right:10px; font-weight:400; color:#FF5E51;">{{Income.amount__sum|default_if_none:'0'|intcomma}} 원</a>
+          <a style="font-weight: bold;">수익금</a> <a style="margin-left: 10px; font-weight:400; color:#FF5E51;">111,111,111원</a>
+        </div>
+      </div>
+    </div><!--money-info-container 끝-->
+  </div><!--money-info-wrap 끝-->
+
+  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);"><!-- 소비 탑5 카드사 div 시작-->
+    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;"><img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png"><a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">소비 Top5 카드사</a>
+    </div>
+    <div>
+      <ol style="padding-left: 1rem !important;">
+      <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+        {% for method in TOP %}
+        <tr>
+          <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
+          <td style="text-align: center;" width='50'>
+            {% if method.card == 1 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">국민카드</a>
+          {% elif method.card == 2 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">롯대카드</a>
+          {% elif method.card == 3 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">BC카드</a>
+          {% elif method.card == 4 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">삼성카드</a>
+          {% elif method.card == 6 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">신한카드</a>
+          {% elif method.card == 7 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">하나카드</a>
+          {% elif method.card == 8 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">현대카드</a>
+          {% elif method.card == 9 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">농협카드</a>
+          {% elif method.card == 10 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">시티카드</a>
+          {% elif method.card == 11 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">카카오뱅크카드</a>
+          {% endif %}
+          </td>
+          <td width='25' style="text-align: right;"><a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; color:#3a3a3a">{{ method.amount|truncatechars:100|intcomma }}원</a></td>
+          <td width='15' style="text-align: right;">
+            {% if method.card == 1 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#ff5d51">156,700</a>
+            {% elif method.card == 4 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#4c8ae5">34,200</a>
+            {% elif method.card == 7 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#4c8ae5">44,100</a>
+            {% endif %}
+          </td>
+          <!--
+          <td width='40'>
+            {% if method.card == 1 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#8e8e8e">주문</a>
+            <img style="width: 20px; height:20px;" src="media/arrow.png">
+            {% elif method.card == 4 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#8e8e8e">주문</a>
+            <img style="width: 20px; height:20px;" src="media/arrow.png">
+            {% elif method.card == 7 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#8e8e8e">주문</a>
+            <img style="width: 20px; height:20px;" src="media/arrow.png">
+            {% endif %}
+          </td>
+          -->
+        </tr>
+        {% empty %}
+        <div class="summary-nodata-wrap">
+          <a>소비내역 및 지출내역이 없습니다.</a>
+        </div>
+        {% endfor %}
+      </table>
+    </ol>
+    </div>
+  </div> <!-- 소비 탑5 카드사 div 끝-->
+
+  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);"><!-- 소비 탑5 기업명 div 시작-->
+    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;"><img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png"><a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">소비 Top5 기업명</a></div>
+    <div>
+      <ol style="padding-left: 1rem !important;">
+        <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+          {% for area in TOP %}
+          <tr>
+            <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
+            <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:50px; text-align: left;" width='50'>
+              <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">{{ area.place }}</a>
+            </td>
+            <td style="text-align: right;" width='25'>
+              <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; color:#3a3a3a">{{ area.amount|truncatechars:500|intcomma }}원</a>
+            </td>
+            <td width='10' style="text-align: right;">
+              <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#ff5d51">1,256,400</a>
+            </td>
+            <!--
+            <td width='40' style="text-align: right;">
+              <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#8e8e8e">주문</a>
+              <img style="width: 20px; height:20px;" src="media/arrow.png">
+            </td>
+            -->
+          </tr>
+          {% empty %}
+          <div class="summary-nodata-wrap">
+            <a>소비내역 및 지출내역이 없습니다.</a>
+          </div>
+            {% endfor %}
+        </table>
+      </ol>
+    </div>
+  </div><!-- 소비 탑5 기업명 div 끝-->
+
+  <!-- 카테고리 탑5 div 시작-->
+  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);">
+    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;"><img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png"><a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">소비 Top5 카테고리</a></div>
+  <div>
+    <ol style="padding-left: 1rem !important;">
+      <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+        {% for category in TOP %}
+        <tr>
+          <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
+          <td style="text-align: left;" width='60'>
+            {% if category.category == 1 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">식비</a>
+            {% elif category.category == 2 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">카페/간식</a>
+            {% elif category.category == 3 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">술/유흥</a>
+            {% elif category.category == 4 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">생활</a>
+            {% elif category.category == 5 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">쇼핑</a>
+            {% endif %}
+          </td>
+          <td style="text-align: right;" width='150'>
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; color:#3a3a3a">{{ category.amount|truncatechars:16|intcomma }}원</a>
+          </td>
+        </tr>
+        {% empty %}
+        <div class="summary-nodata-wrap">
+          <a>소비내역 및 지출내역이 없습니다.</a>
+        </div>
+        {% endfor %}
+      </table>
+    </ol>
+  </div>
+  </div> <!-- 카테고리 탑5 div 끝-->
+
+    <!-- 건수 탑5 div 시작-->
+  <div style="background-color:#fff; margin:20px 5% 80px 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);">
+    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;"><img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png"><a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">건수 Top5 카테고리</a></div>
+  <div>
+  <ol style="padding-left: 1rem !important;">
+    <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+      {% for category in Category_count %}
+      <tr>
+        <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
+        <td style="text-align: left;" width='60'>
+          {% if category.category == 1 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">식비</a>
+          {% elif category.category == 2 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">카페/간식</a>
+          {% elif category.category == 3 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">술/유흥</a>
+          {% elif category.category == 4 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">생활</a>
+          {% elif category.category == 5 %}
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:bold; color:#3a3a3a">쇼핑</a>
+          {% endif %}
+        </td>
+        <td style="text-align: right;" width='150'>
+          <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; color:#3a3a3a">{{ category.count|intcomma }}회</a>
+        </td>
+      </tr>
+      {% empty %}
+      <div class="summary-nodata-wrap">
+        <a>소비내역 및 지출내역이 없습니다.</a>
+      </div>
+    {% endfor %}
+    </table>
+  </ol>
+  </div>
+  </div><!-- 건수 탑5 div 시작-->
+
+
+</div><!--- 요약 SWIPER div영역 끝 --->
+<script>
+  var myElement = document.getElementById('container');
+
+  // create a simple instance
+  // by default, it only adds horizontal recognizers
+  var mc = new Hammer(myElement);
+
+  // listen to events...
+  mc.on("swipeleft", function(ev) {
+      window.location.href="/list";
+  });
+
+  mc.on("swiperight", function(ev) {
+      window.location.href="/recom";
+});
+</script>
+{% endblock container %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}레몬::추천{% endblock title %}
+{% block container %}
+
+
+<!--- 추천 SWIPER div영역 시작 --->
+<div id="recom" class="swiper-slide" data-name="추천" data-hash="recom">
+  <div class="list-empty-wrap">
+    <i class="fas fa-exclamation"></i><br>
+    <a>추천 페이지 공사중</a>
+  </div>
+</div>
+<!--- 추천 div영역 끝 --->
+<script>
+  var myElement = document.getElementById('container');
+
+  // create a simple instance
+  // by default, it only adds horizontal recognizers
+  var mc = new Hammer(myElement);
+
+  // listen to events...
+  mc.on("swipeleft", function(ev) {
+      window.location.href="/summary";
+  });
+
+  mc.on("swiperight", function(ev) {
+    console.log('swiperight!');
+});
+</script>
+{% endblock container %}

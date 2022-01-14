@@ -12,6 +12,10 @@ urlpatterns = [
 
     path('', views.home, name='home'),
     path('calendar', views.calendar, name='calendar'),
+    path('summary', views.summary, name='summary'), # 요약페이 지
+    path('recom', views.recom, name='recom'), # 추천페이지
+    path('list', views.list, name='list'), # 내역페이지
+    #path('calendar', views.list, name='list'),
     # path('cal_list', views.cal_list, name='calendarList'),
 
     # path('addlist', views.addlist, name='addlist'),
