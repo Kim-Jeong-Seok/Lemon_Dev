@@ -202,37 +202,36 @@
           console.log(click_date);
           document.getElementById('testtest').value = click_date;
           $.ajax({
-            type: "POST",
-            url: "{% url 'calendars:ajax_pushdate' %}",
-            data: {
-              testtest: $('#testtest').val(),
-              csrfmiddlewaretoken: '{{ csrf_token }}',
-              dataType: "json",
+                type: "POST",
+                url: "{% url 'calendars:ajax_pushdate' %}",
+                data: {
+                  testtest: $('#testtest').val(),
+                  csrfmiddlewaretoken: '{{ csrf_token }}',
+                  dataType: "json",
+                },
+                success: function(data){
+                  msg_value = data.msg1;
+                  console.log(msg_value);
+                  const reset = document.getElementById('modalBody');
+                  reset.innerHTML = '';
+                  for (var i = 0; i<10; i++) {
+                    const element = document.getElementById('modalBody');
+                    element.innerHTML += '<div class="modal-body-text"><a href="/edit_calendar">'
+                      + msg_value[i].amount + '원'+ '</a> <a>'+ msg_value[i].kind + '</a> </div>';
+                  }
+                },
+                failure: function() {
+                  console.log('ajax send error!');
+                  alert('해당날짜의 내역을 불러오는 과정에서 오류가 발생했습니다');
+                },
+              });
+              $('#calendarModal').modal('show');
+              $('#modalTitle').text(title_date);
             },
-            cache: false,
-            headers: {"cache-control": "no-cache","pragma": "no-cache"},
-            success: function(data){
-              msg_value = data.msg1;
-              const reset = document.getElementById('modalBody');
-              reset.innerHTML = '';
-              for (var i = 0; i<msg_value.length; i++) {
-                const element = document.getElementById('modalBody');
-                element.innerHTML += '<div class="modal-body-text"><a>'
-                + msg_value[i]['amount'] + '원' +  '</a> </div>';
-              }
-            },
-            fail: function() {
-              console.log('ajax send error!');
-              alert('해당날짜의 내역을 불러오는 과정에서 오류가 발생했습니다');
-            },
+            });
+            calendar.render();
           });
-          $('#calendarModal').modal('show');
-          $('#modalTitle').text(click_date);
-        },
-        });
-        calendar.render();
-      });
-      </script>
+          </script>
       <div class="swiper-slide" id="swiper-cal" data-name="달력" data-hash="calendar2">
         <div class="cal-container">
           <div id='calendar'></div>
@@ -299,7 +298,7 @@
     });
 
     mc.on("swiperight", function(ev) {
-        window.location.href="/list";
+        window.location.href="/listview";
   });
   </script>
 

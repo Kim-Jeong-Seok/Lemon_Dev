@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}레몬::추천{% endblock title %}
+{% block container %}
+{% load humanize %}
+{% load mytag %}
+
+<style>
+   /* FOOTER에서 사용하는 CSS */
+   .bottom-nav-calendar{
+    color: #FFD859 !important;
+  }
+
+  .bottom-nav-calendar a{
+    color: #FFD859 !important;
+  }
+
+  .bottom-nav-search-stock a,.bottom-nav-home a,
+  .bottom-nav-stock a,.bottom-nav-addlist a,
+  .bottom-nav-myinfo a{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: #D1D6DA !important;
+  }
+  ul{
+    list-style: none;
+    margin:0;
+    padding: 0;
+  }
+  .pagenation{
+    background-color: #f5f5f5;
+    z-index: 10;
+    padding:0;
+    bottom: 70px;
+    left: 28px;
+    position: fixed;
+    vertical-align: middle;
+    text-align: center;
+    width: 90%;
+    height: 30px;
+    border-radius: 20px;
+    margin: 0 auto;
+  }
+  .pagenation li{
+    padding-top: 2px;
+    font-weight: 500;
+    border-radius: 20px;
+    width : 24%;
+    height: 30px;
+    display:inline-block;
+  }
+
+  #pagenation_list{
+    background-color: #4C8AE5;
+  }
+  #pagenation_list a{
+    color: #fff;
+  }
+  #pagenation_recom a, #pagenation_summary a, #pagenation_calendar a{
+    color: #adadad;
+  }
+  .gotoday_btn,.prev_btn,.next_btn,.prev_btn i,.next_btn i{
+    color: #3a3a3a;
+    background-color: transparent;
+    outline: none;
+    border: none;
+  }
+  .filter-menu{
+    width: 95%;
+      background-color:#fff;
+      border-radius:10px;
+      margin: 10px 10px 20px 10px;
+      padding:10px 15px;
+  }
+</style>
+<!-- pagenation -->
+<div class="pagenation">
+  <ul>
+    <li id="pagenation_recom"><a href="{% url 'calendars:recom' %}">추천</a></li>
+    <li id="pagenation_summary"><a href="{% url 'calendars:summary' %}">요약</a></li>
+    <li id="pagenation_list"><a href="{% url 'calendars:listview' %}">내역</a></li>
+    <li id="pagenation_calendar"><a href="{% url 'calendars:calendar' %}">달력</a></li>
+  </ul>
+</div>
+<!-- pagenation 끝 -->
+
+<!-- 소비내역추가하기버튼 -->
+<div class="addevent-btn">
+  <a style="color: #fff;font-size:22px;" href="{% url 'calendars:add_calendar' %}"><i class="fas fa-pencil-alt"></i></a>
+</div>
+<!-- 소비내역추가하기버튼 끝 -->
+
+<div class="swiper-slide" data-name="내역" data-hash="list">
+  <div class="list-filter" style="text-align:center; padding-top:15px;" style="color: #3a3a3a;">
+      <form class="check_box_form" action="{% url 'calendars:listview' %}" method="post">
+        {% csrf_token %}
+        <div style="margin-bottom: 10px;">
+          <button style="margin-right: 15px;" class="prev_btn"  id="prev_btn">
+            <i style="color: #3a3a3a;" class="fas fa-chevron-left"></i></button>
+
+          <b><a style="color:#3a3a3a;" id="year_atag">{{year}}</a>
+            <a style="color:#3a3a3a;" id="year_atag2">년 </a>
+            <a style="color: #3a3a3a;" id="month_atag">{{month}}</a>
+            <a style="color: #3a3a3a;">월</a></b>
+          <input type="hidden" name ="input_year" id="input_year" value="">
+          <input type="hidden" name="input_month" id="input_month" value="">
+
+          <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right"></i></button> <br>
+        </div>
+  </form>
+  </div>
+
+  <script>
+    // 1. list 페이지 로딩완료시, year_atag, month_atag의 값을 변수에 저장
+    $( document ).ready(function() {
+      var today = new Date();
+      var today2 = moment(today).format('YYYY');
+      var getyear = document.getElementById('year_atag').innerText;
+      var getmonth = document.getElementById('month_atag').innerText;
+    // 2. views.py에 year와 month를 전달하기위해서 input 태그에 값을 각각 넣은뒤 버튼클릭(< , > 모양)시 form 태그 실행
+      $('#input_year').val(getyear);
+      $('#input_month').val(getmonth);
+
+    // year_atag의 값이 올해와 일치할경우 년도를 안보이게 숨기기(ex.2022년 1월이면 1월로 표시)
+    if(document.getElementById('year_atag').innerText == today2){
+      document.getElementById('year_atag').style.display="none";
+      document.getElementById('year_atag2').style.display="none";
+    }
+    });
+
+    //3. 이전버튼(<)클릭시 함수 실행
+    document.getElementById('prev_btn').addEventListener('click', prev_month);
+    function prev_month() {
+      let prevValYear = document.getElementById('input_year').value;
+      let prevValMonth = document.getElementById('input_month').value;
+      let temp_date = prevValYear+'-'+prevValMonth;
+      let result_prev_val = moment(temp_date).subtract('1', 'month').format('YYYY-MM'); // 날짜에서 1달을 뺀다.
+      let newYear = moment(result_prev_val).format('YYYY');
+      let newMonth = moment(result_prev_val).format('MM')
+      $('#input_year').val(newYear);
+      $('#input_month').val(newMonth);
+    }
+
+    document.getElementById('next_btn').addEventListener('click', next_month);
+    function next_month() {
+      let prevValYear = document.getElementById('input_year').value;
+      let prevValMonth = document.getElementById('input_month').value;
+      let temp_date = prevValYear+'-'+prevValMonth;
+      let result_prev_val = moment(temp_date).add('1', 'month').format('YYYY-MM'); // 날짜에서 1달을 더한다.
+      let newYear = moment(result_prev_val).format('YYYY');
+      let newMonth = moment(result_prev_val).format('MM')
+      $('#input_year').val(newYear);
+      $('#input_month').val(newMonth);
+      }
+  </script>
+
+  <div class="filter-menu">
+    <div class="filter-menu-title">
+      <a>상세검색</a>
+      <a style="float: right; display:none;" onclick="hideBtn()" id="hide-btn"><i style="margin-right: 5px;" class="fas fa-chevron-up"></i>숨기기</a>
+      <a style="float: right;" onclick="showBtn()" id="show-btn"><i style="margin-right: 5px;" class="fas fa-chevron-down"></i>보이기</a>
+    </div>
+
+    <script>
+      function hideBtn() {
+        document.getElementById('filter-contents').style.display="none";
+        document.getElementById('hide-btn').style.display="none";
+        document.getElementById('show-btn').style.display="";
+      }
+      function showBtn() {
+        document.getElementById('filter-contents').style.display="";
+        document.getElementById('hide-btn').style.display="";
+        document.getElementById('show-btn').style.display="none";
+      }
+    </script>
+    <form class="check_box_form" action="{% url 'calendars:detail_search' %}" method="post">
+      {% csrf_token %}
+    <div class="filter-menu-contents" id="filter-contents" style="display: none;">
+
+
+          <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right"></i></button> <br>
+        </div>
+
+      <a>기간으로 검색하기</a><br>
+      <input type="detail_month" name = "detail_month"> <a>부터</a> <input type="detail_month2" name = "detail_month2"><button>조회</button> <br>
+      <a>카테고리로 검색하기</a><br>
+      <select>
+        <option>-- 선택하세요 --</option>
+        <option>  <input type="category1" name = "category" value="1">식비</option>
+        <option>  <input type="category2" name = "category" value="2">식비더블</option>
+        <option>교통</option>
+        <option>이것저것...</option>
+        <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right"></i> </button>
+      </select>
+      <button type=submit>조회</button> <br>
+    </div>
+
+  </div>
+
+  <div>
+  <table class="list-table" id="list-table" style="background-color:#fff; border-radius:10px; margin: 15px 10px 60px 10px; padding:0 20px 60px 20px; border-collapse:separate; border-spacing:0 20px; "width="95%">
+    <colgroup>
+      <col width="*"/>
+      <col width="*"/>
+    </colgroup>
+    <tbody id="list-table-tbody">
+    {% for detail in Detail_month %}
+    {% ifchanged detail.spend_date.day %}
+    <tr style="vertical-align:top;" id="date_title">
+    <th style="text-align:left;padding-left:5px; border-bottom:1px solid #dddddd;">
+      <img src="media/date.png" style="margin-right: 5px; width:30px; height:30px; vertical-align: -webkit-baseline-middle;">
+      <a style="font-weight: 100; color:#3a3a3a;font-size:20pt; vertical-align: inherit;">{{detail.income_id}}{{ detail.spend_date | date:'d일' }}</a>
+    </th>
+    <th style="text-align:right;font-size:13px; border-bottom:1px solid #dddddd; vertical-align: middle;">
+     <!-- <div style="display:flex;flex-direction:column;align-items:flex-end;"> -->
+      <div>
+      {% if Income_day|find_income_money:detail.spend_date.day %}
+      <a style="font-weight: bold; font-size:10pt; margin-right:5px; color: #4c8ae5;">+{{Income_day|find_income_money:detail.spend_date.day|intcomma}}원</a>
+        {% else %}
+        {% endif %}
+
+      {% if Spend_day|find_spend_money:detail.spend_date.day %}
+        <a style="font-weight: bold; font-size:10pt; margin-right:5px; color: #ff5d51">-{{ Spend_day|find_spend_money:detail.spend_date.day|intcomma }}원</a>
+          {% else %}
+      {% endif %}
+        </div>
+    </th>
+    {% endifchanged %}
+</tr>
+    {% if detail.kind == "지출" %}
+    <tr id="trtr" onclick="location.href='{% url 'calendars:edit_calendar'  detail.kind detail.spend_id %}'">
+      {% else %}
+      <tr onclick="location.href='{% url 'calendars:edit_calendar' detail.kind detail.spend_id %}'">
+
+
+          {% endif %}
+      <td style="vertical-align:top;">
+        <div style="text-align:left;padding-left:30px;">
+          {% if detail.kind == "지출" %}
+        <a id= "place" style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; font-size:12pt; color: #3a3a3a; display:block;">{{ detail.place }}</a>
+          {% elif detail.kind == "수입" %}
+          <a style="font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '1' %} 급여 {% endif %}</a>
+          <a style="font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '2' %} 용돈 {% endif %}</a>
+          <a style="font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '3' %} 금융수입 {% endif %}</a>
+          <a style="font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '4' %} 사업수입 {% endif %}</a>
+          <a style="font-weight:400; font-size:12pt; color: #3a3a3a;display:block;">{% if detail.place == '5' %} 기타 {% endif %}</a>
+          {% endif %}
+        <!--<a style="text-align:left;font-size: 13px; color:gray;display:block;">{{ detail.spend_date | date:'h:m' }}</a>-->
+          </div>
+      </td>
+      <td style="vertical-align: top;">
+        <div style="text-align:right; padding-right:15px;">
+        {% if detail.kind == '지출' %}
+        <a class="amount" style="color: #2a2a2a">-{{ detail.amount|intcomma }}원</a>
+      {% else %}
+        <a class="amount" style="color: #2a2a2a">+{{ detail.amount|intcomma }}원</a>
+      {% endif %}
+        </div>
+      </td>
+    </tr>
+    {% empty %}
+    <style>
+      .list-table{display: none;}
+    </style>
+    <div class="list-empty-wrap">
+      <i class="fas fa-exclamation"></i><br>
+      <a>소비내역 및 지출내역이 없습니다.</a>
+    </div>
+    {% endfor %}
+  </tbody>
+  </table>
+</div>
+</div>
+<!--- 내역 SWIPER div영역 끝 --->
+<script>
+  var myElement = document.getElementById('container');
+
+  // create a simple instance
+  // by default, it only adds horizontal recognizers
+  var mc = new Hammer(myElement);
+
+  // listen to events...
+  mc.on("swipeleft", function(ev) {
+      window.location.href="/calendar";
+  });
+
+  mc.on("swiperight", function(ev) {
+      window.location.href="/summary";
+});
+</script>
+{% endblock container%}

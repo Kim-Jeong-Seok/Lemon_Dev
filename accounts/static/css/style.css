@@ -1,27 +1,8 @@
 /*
-font-family: 'Nanum Gothic', sans-serif;
 font-family: 'Noto Sans KR', sans-serif;
-
-폰트는 무조건 rem으로 적용할것 (모바일 디바이스 또는 확대등 각종 대응을 위해서)
-html { font-size: 62.5%; } // 기본 폰트는 16px이지만 이거 덕분에 10px로 변경됨
-ex. 12rem -> 120px;
-    1.2rem -> 12px;
+font-family: 'Noto Sans KR', sans-serif;
 */
-
 @media screen and (max-width: 769px) {
-
-	:root{
-		--body-background-color: #F3F4F6;
-		--font-color: #4e4e4e;
-		--border-gray-color : #dadada;
-		--naver-green-color: #04c75a;
-		--naver-green-border-color: #06b350;
-	}
-
-	*{
-		box-sizing: border-box;
-	}
-
 	a {
 		color:#202020;
         text-decoration:none;
@@ -37,7 +18,6 @@ ex. 12rem -> 120px;
 	html{
 		margin: 0;
 		padding: 0;
-		font-family: 'Noto Sans KR', sans-serif;
 		width: 100%;
 		height: 100%;
 		/*font-size: 62.5%;*/ /* 기본 폰트 10px로 고정*/
@@ -49,7 +29,7 @@ ex. 12rem -> 120px;
 		scrollbar-width: none;
 		-ms-overflow-style: none;
 		font-family: 'Noto Sans KR', sans-serif;
-		background:var(--body-background-color);
+		background:#F3F4F6;
 		/* no drag */
 		-webkit-touch-callout: none !important;
 		-webkit-user-select: none !important;
@@ -61,6 +41,154 @@ ex. 12rem -> 120px;
 	body::-webkit-scrollbar{
 		display: none;
 	}
+
+	li{
+		font-family: 'Noto Sans KR', sans-serif;
+	}
+
+	.loader-main{
+        position: fixed;
+        top: 50px;
+        left: 0px;
+        right: 0px;
+        bottom: 55px;
+        background-color: #F3F4F6;
+        will-change: opacity;
+        transition: all 250ms ease;
+        z-index: 999;
+        }
+
+    .la-ball-clip-rotate,
+    .la-ball-clip-rotate > div {
+        position: relative;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .la-ball-clip-rotate {
+        display: block;
+        font-size: 0;
+        color: #4C8AE5;
+        margin: 0 auto;
+        top: 46%;
+    }
+    .la-ball-clip-rotate.la-dark {
+        color: #333;
+    }
+    .la-ball-clip-rotate > div {
+        display: inline-block;
+        float: none;
+        background-color: currentColor;
+        border: 0 solid currentColor;
+    }
+    .la-ball-clip-rotate {
+        width: 40px;
+        height: 40px;
+    }
+    .la-ball-clip-rotate > div {
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border-width: 3px;
+        border-bottom-color: transparent;
+        border-radius: 100%;
+        -webkit-animation: ball-clip-rotate .75s linear infinite;
+        -moz-animation: ball-clip-rotate .75s linear infinite;
+        -o-animation: ball-clip-rotate .75s linear infinite;
+        animation: ball-clip-rotate .75s linear infinite;
+    }
+    .la-ball-clip-rotate.la-sm {
+        width: 16px;
+        height: 16px;
+    }
+    .la-ball-clip-rotate.la-sm > div {
+        width: 16px;
+        height: 16px;
+        border-width: 1px;
+    }
+    .la-ball-clip-rotate.la-2x {
+        width: 64px;
+        height: 64px;
+    }
+    .la-ball-clip-rotate.la-2x > div {
+        width: 64px;
+        height: 64px;
+        border-width: 4px;
+    }
+    .la-ball-clip-rotate.la-3x {
+        width: 96px;
+        height: 96px;
+    }
+    .la-ball-clip-rotate.la-3x > div {
+        width: 96px;
+        height: 96px;
+        border-width: 6px;
+    }
+    /*
+     * Animation
+     */
+    @-webkit-keyframes ball-clip-rotate {
+        0% {
+            -webkit-transform: rotate(0deg);
+                    transform: rotate(0deg);
+        }
+        50% {
+            -webkit-transform: rotate(180deg);
+                    transform: rotate(180deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+                    transform: rotate(360deg);
+        }
+    }
+    @-moz-keyframes ball-clip-rotate {
+        0% {
+            -moz-transform: rotate(0deg);
+                transform: rotate(0deg);
+        }
+        50% {
+            -moz-transform: rotate(180deg);
+                transform: rotate(180deg);
+        }
+        100% {
+            -moz-transform: rotate(360deg);
+                transform: rotate(360deg);
+        }
+    }
+    @-o-keyframes ball-clip-rotate {
+        0% {
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        50% {
+            -o-transform: rotate(180deg);
+            transform: rotate(180deg);
+        }
+        100% {
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+    @keyframes ball-clip-rotate {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                    transform: rotate(0deg);
+        }
+        50% {
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+                -o-transform: rotate(180deg);
+                transform: rotate(180deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                    transform: rotate(360deg);
+        }
+    }
 
 	#wrap{
         position: relative;
@@ -93,6 +221,7 @@ ex. 12rem -> 120px;
     }
 
 	#container{
+		background-color: #F3F4F6;
         -ms-overflow-style: none; /* IE, Edge */
         scrollbar-width: none; /* Firefox */
         padding-top: 50px;
@@ -219,18 +348,6 @@ ex. 12rem -> 120px;
 		align-items:center;
 		position: relative;
 	}
-	
-	.fa-qrcode
-	{
-		color:var(--naver-green-color);
-	}
-	.fa-line{
-		color:var(--naver-green-color);
-	}
-	.fa-facebook-square
-	{
-		color:#4064ac;
-	}
 	.fa-google {
 		background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
 		-webkit-background-clip: text;
@@ -348,14 +465,12 @@ ex. 12rem -> 120px;
 			padding-top: 10px;
 		}
 		.money-info-title{
-		font-family: 'Noto Sans KR', sans-serif;
 		font-size: 16pt;
 		color:#202020;
 		margin-top:10px;
 		padding-left:15px;
 		}
 		.amount-money-title{
-			font-family: 'Noto Sans KR', sans-serif;
 			font-size: 12pt;
 			color: #3a3a3a;
 			font-weight:bold;
@@ -394,7 +509,6 @@ ex. 12rem -> 120px;
 			text-align:center;
 			font-size: 14px;
 			font-weight:500;
-			font-family: 'Noto Sans KR', sans-serif;
 		}
 		.list-empty-wrap{
 			margin: 50px auto;
@@ -406,7 +520,6 @@ ex. 12rem -> 120px;
 			color: #ea4335;
 			text-align: center;
 			vertical-align: middle;
-			font-family: 'Noto Sans KR', sans-serif;
 			font-size: 20px;
 			font-weight: 500;
 		}

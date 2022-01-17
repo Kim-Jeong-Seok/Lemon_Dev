@@ -21,6 +21,26 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .socialviews import KakaoSignInView, KakaoSignInCallbackView
 
+
+def signup(request):
+    if request.method == 'POST':
+        if request.POST['password'] == request.POST['password1']:
+            user = get_user_model().objects.create_user(
+                                            uid=request.POST['uid'],
+                                            password=request.POST['password'],
+                                            email=request.POST['email'],
+                                            username=request.POST['username'],
+                                            phonenumber=request.POST['phonenumber'],
+                                            invest=request.POST['invest'],
+                                            u_chk=request.POST['u_chk'],
+                                            e_chk=request.POST['e_chk'],
+
+                                            )
+            auth.login(request, user)
+            return redirect('/')
+        return render(request, 'signup.html')
+    return render(request, 'signup.html')
+
 URL_LOGIN = '/login'
 
 def main(request):
@@ -42,24 +62,6 @@ def addlist(request):
 def myinfo(request):
     return render(request, 'myinfo.html')
 
-def signup(request):
-    if request.method == 'POST':
-        if request.POST['password'] == request.POST['password1']:
-            user = get_user_model().objects.create_user(
-                                            uid=request.POST['uid'],
-                                            password=request.POST['password'],
-                                            email=request.POST['email'],
-                                            username=request.POST['username'],
-                                            phonenumber=request.POST['phonenumber'],
-                                            invest=request.POST['invest'],
-                                            u_chk=request.POST['u_chk'],
-                                            e_chk=request.POST['e_chk'],
-
-                                            )
-            auth.login(request, user)
-            return redirect('/')
-        return render(request, 'signup.html')
-    return render(request, 'signup.html')
 
 def user_delete(request, user_id):
     user2 = user_id
@@ -78,5 +80,5 @@ def notice(request):
 # 공지사항 상세보기
 def notice_detail(request, pk):
     notice = Notice.objects.get(notice_id = pk)
-    
+
     return render(request, 'notice_detail.html', {'notice': notice})

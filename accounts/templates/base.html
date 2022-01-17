@@ -2,6 +2,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!------------ Google Fonts ------------>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Fontawesome 선언 -->
+    <script src="https://kit.fontawesome.com/51db22a717.js" crossorigin="anonymous"></script>
     <!--브라우저별 디바이스별 파비콘-->
     <link rel="apple-touch-icon" sizes="57x57" href="media/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="media/favicon/apple-icon-60x60.png">
@@ -27,9 +33,6 @@
           content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <meta http-equiv="Expires" content="-1">
 
-
-    <!-- <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script> -->
-
     <!-- fullcalendar에 사용되는 monent 함수(시간,날짜 관련 함수)-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <!-- Jquery 선언 -->
@@ -44,24 +47,18 @@
     <!-- style.css 및 swiper.css 선언 -->
     <link rel="stylesheet" href="{% static 'css/style.css'%}">
     <link rel="stylesheet" href="{% static 'css/swiper.css'%}">
-    <!-- Fontawesome 선언 -->
-    <script src="https://kit.fontawesome.com/51db22a717.js" crossorigin="anonymous"></script>
+
     <!-- Swiper 선언 -->
     <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
-    <!------------ Google Fonts ------------>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Pacifico&display=swap"
-          rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.2/chart.min.js"
             integrity="sha512-tMabqarPtykgDtdtSqCL3uLVM0gS1ZkUAVhRFu1vSEFgvB73niFQWJuvviDyBGBH22Lcau4rHB5p2K2T0Xvr6Q=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-            <!-- hammer.js -->
-            <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+    <!-- hammer.js -->
+    <script src="https://hammerjs.github.io/dist/hammer.js"></script>
 
     <!-- PC접속시 홍보페이지 이동 -->
     <!-- 홍보페이지 extends 'base.html' 구문때문에 무한 리다이렉트, 구문 삭제 후 코드 활성화 -->
@@ -99,7 +96,6 @@
     .bottom-nav-calendar a,.bottom-nav-search-stock a,
     .bottom-nav-stock a,.bottom-nav-addlist a,
     .bottom-nav-myinfo a, .bottom-nav-home a{
-        font-family: 'Noto Sans KR', sans-serif;
         font-weight: 500;
         font-size: 14px;
         color: #D1D6DA;
@@ -110,152 +106,8 @@
         width: 100%;
         z-index: 1024 !important;
     }
-
-    .loader-main{
-        position: fixed;
-        top: 50px;
-        left: 0px;
-        right: 0px;
-        bottom: 55px;
-        background-color: #F3F4F6;
-        will-change: opacity;
-        transition: all 250ms ease;
-        z-index: 999;
-        }
-
-    .la-ball-clip-rotate,
-    .la-ball-clip-rotate > div {
-        position: relative;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
-    .la-ball-clip-rotate {
-        display: block;
-        font-size: 0;
-        color: #4C8AE5;
-        margin: 0 auto;
-        top: 46%;
-    }
-    .la-ball-clip-rotate.la-dark {
-        color: #333;
-    }
-    .la-ball-clip-rotate > div {
-        display: inline-block;
-        float: none;
-        background-color: currentColor;
-        border: 0 solid currentColor;
-    }
-    .la-ball-clip-rotate {
-        width: 40px;
-        height: 40px;
-    }
-    .la-ball-clip-rotate > div {
-        width: 40px;
-        height: 40px;
-        background: transparent;
-        border-width: 3px;
-        border-bottom-color: transparent;
-        border-radius: 100%;
-        -webkit-animation: ball-clip-rotate .75s linear infinite;
-        -moz-animation: ball-clip-rotate .75s linear infinite;
-        -o-animation: ball-clip-rotate .75s linear infinite;
-        animation: ball-clip-rotate .75s linear infinite;
-    }
-    .la-ball-clip-rotate.la-sm {
-        width: 16px;
-        height: 16px;
-    }
-    .la-ball-clip-rotate.la-sm > div {
-        width: 16px;
-        height: 16px;
-        border-width: 1px;
-    }
-    .la-ball-clip-rotate.la-2x {
-        width: 64px;
-        height: 64px;
-    }
-    .la-ball-clip-rotate.la-2x > div {
-        width: 64px;
-        height: 64px;
-        border-width: 4px;
-    }
-    .la-ball-clip-rotate.la-3x {
-        width: 96px;
-        height: 96px;
-    }
-    .la-ball-clip-rotate.la-3x > div {
-        width: 96px;
-        height: 96px;
-        border-width: 6px;
-    }
-    /*
-     * Animation
-     */
-    @-webkit-keyframes ball-clip-rotate {
-        0% {
-            -webkit-transform: rotate(0deg);
-                    transform: rotate(0deg);
-        }
-        50% {
-            -webkit-transform: rotate(180deg);
-                    transform: rotate(180deg);
-        }
-        100% {
-            -webkit-transform: rotate(360deg);
-                    transform: rotate(360deg);
-        }
-    }
-    @-moz-keyframes ball-clip-rotate {
-        0% {
-            -moz-transform: rotate(0deg);
-                 transform: rotate(0deg);
-        }
-        50% {
-            -moz-transform: rotate(180deg);
-                 transform: rotate(180deg);
-        }
-        100% {
-            -moz-transform: rotate(360deg);
-                 transform: rotate(360deg);
-        }
-    }
-    @-o-keyframes ball-clip-rotate {
-        0% {
-            -o-transform: rotate(0deg);
-               transform: rotate(0deg);
-        }
-        50% {
-            -o-transform: rotate(180deg);
-               transform: rotate(180deg);
-        }
-        100% {
-            -o-transform: rotate(360deg);
-               transform: rotate(360deg);
-        }
-    }
-    @keyframes ball-clip-rotate {
-        0% {
-            -webkit-transform: rotate(0deg);
-               -moz-transform: rotate(0deg);
-                 -o-transform: rotate(0deg);
-                    transform: rotate(0deg);
-        }
-        50% {
-            -webkit-transform: rotate(180deg);
-               -moz-transform: rotate(180deg);
-                 -o-transform: rotate(180deg);
-                    transform: rotate(180deg);
-        }
-        100% {
-            -webkit-transform: rotate(360deg);
-               -moz-transform: rotate(360deg);
-                 -o-transform: rotate(360deg);
-                    transform: rotate(360deg);
-        }
-    }
-
     </style>
+
 <script>
 $( document ).ready(function() {
         $('#container').hide();
@@ -293,7 +145,7 @@ $( document ).ready(function() {
             <li class="bottom-nav-home" style="width: 20%; height:100%; text-align:center;"><a
                 href="{% url 'calendars:home' %}"><i class="fas fa-home"></i><br>홈</a></li>
             <li class="bottom-nav-calendar" style="width: 20%; height:100%; text-align:center;"><a
-                    href="{% url 'calendars:list' %}" ><i class="far fa-calendar-alt"></i><br>가계부</a></li>
+                    href="calendar" ><i class="far fa-calendar-alt"></i><br>가계부</a></li>
             <li class="bottom-nav-stock" style="width: 20%; height:100%; text-align:center;"><a
                     href="{% url 'accounts:stock' %}"><i class="fas fa-chart-area"></i><br>주식</a></li>
             <li class="bottom-nav-addlist" style="width: 20%; height:100%; text-align:center;"><a
