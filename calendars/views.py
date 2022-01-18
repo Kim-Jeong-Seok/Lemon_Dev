@@ -52,12 +52,57 @@ URL_LOGIN = '/login'
 #
 #
 def detail_search(request):
-    # pend = Spend.objects.all().order_by('-spend_date')
-    # detail_month = request.POST.getlist('detail_month','')
-    # detail_month2 = request.POST.getlist('detail_month2','')
-    category = request.POST.get('category',None)
-    spend_category = Spend.objects.filter(category = category)
-    print('_----->', str(spend_category))
+
+    user = request.user.user_id
+    start_date = request.POST.get('detail_month', None)
+    end_date = request.POST.get("detail_month2", None)
+    category = request.POST.get('category','')
+    print('categorycategorycategorycategorycategorycategory--->', str(category))
+
+    # spend = Spend.objects.filter(user_id = user).values('spend_id','kind','spend_date','amount','place', 'category')
+    # income = Income.objects.filter(user_id = user).values('income_id','kind','income_date','amount','income_way', 'income_way')
+    # total = spend.union(income).order_by('-spend_date')
+
+
+    if start_date:
+        spend_date = Spend.objects.filter(user_id = user, spend_date__range = (start_date, end_date)).values('spend_id','kind','spend_date','amount','place', 'category')
+        income_date = Income.objects.filter(user_id = user, income_date__range = (start_date, end_date)).values('income_id','kind','income_date','amount','income_way', 'income_way')
+        total_date = spend_date.union(income_date).order_by('-spend_date')
+        print('tatal_date--->', str(total_date))
+        return render(request, 'detail_search.html' , {'total_date':total_date})
+    if not start_date:
+        spend_category = Spend.objects.filter(user_id = user, category__in = category).values('spend_id','kind','spend_date','amount','place', 'category')
+        print('spend_categoryspend_categoryspend_categoryspend_category--->', str(spend_category))
+        return render(request, 'detail_search.html' , {'spend_category':spend_category})
+
+
+    # if category:
+    #     spend_category = Spend.objects.filter(user_id = user, category = category).values('spend_id','kind','spend_date','amount','place', 'category')
+
+    # spend = Spend.objects.filter(user_id = user).values('spend_id','kind','spend_date','amount','place', 'category')
+    # income = Income.objects.filter(user_id = user).values('income_id','kind','income_date','amount','income_way', 'income_way')
+    # total = spend.union(income).order_by('-spend_date')
+    # print('filterfilterfilterfilterfilter--->', str(filter))
+    #
+    #
+    # #기간 검색 필터
+    # spend_date = Spend.objects.filter(user_id = user, spend_date__range = (start_date, end_month)).values('spend_id','kind','spend_date','amount','place', 'category')
+    # income_date = Income.objects.filter(user_id = user, income_date__range = (start_date, end_month)).values('income_id','kind','income_date','amount','income_way', 'income_way')
+    # total_date = spend_date.union(income_date).order_by('-spend_date')
+    # print('tatal_date--->', str(total_date))
+
+    #카테고리 필터
+
+
+    # spend_category = Spend.objects.filter(user_id = user, category = category).values('spend_id','kind','spend_date','amount','place', 'category')
+        #print('spend_category--->', str(spend_category))
+    # return render(request, 'detail_search.html' , {'spend_category':spend_category})
+    return render(request, 'detail_search.html' , {'spend_category':spend_category})
+
+
+    # income_category = Income.objects.filter(user_id = user, category = category).values('income_id','kind','income_date','amount','income_way', 'income_way')
+    # tatal_category = spend_category.union(income_category).order_by('-spend_date')
+
 
     # q = Q()
     # if category:
@@ -67,7 +112,7 @@ def detail_search(request):
     # else:
     #     return redirect('/')
 
-    return render(request, 'detail_search.html' , {'spend_category':spend_category})
+
 def recom(request):
     return render(request, 'recom.html')
 
@@ -300,6 +345,7 @@ def listview(request):
 
     input_year = request.POST.get('input_year', None)
     input_month = request.POST.get("input_month", None)
+    print('input_yearinput_yearinput_year----->', type(input_year))
     user = request.user.user_id
     now = datetime.datetime.now()
     if input_year:

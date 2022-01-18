@@ -154,49 +154,52 @@
       $('#input_month').val(newMonth);
       }
   </script>
-
   <div class="filter-menu">
-    <div class="filter-menu-title">
-      <a>상세검색</a>
-      <a style="float: right; display:none;" onclick="hideBtn()" id="hide-btn"><i style="margin-right: 5px;" class="fas fa-chevron-up"></i>숨기기</a>
-      <a style="float: right;" onclick="showBtn()" id="show-btn"><i style="margin-right: 5px;" class="fas fa-chevron-down"></i>보이기</a>
-    </div>
-
-    <script>
-      function hideBtn() {
-        document.getElementById('filter-contents').style.display="none";
-        document.getElementById('hide-btn').style.display="none";
-        document.getElementById('show-btn').style.display="";
-      }
-      function showBtn() {
-        document.getElementById('filter-contents').style.display="";
-        document.getElementById('hide-btn').style.display="";
-        document.getElementById('show-btn').style.display="none";
-      }
-    </script>
-    <form class="check_box_form" action="{% url 'calendars:detail_search' %}" method="post">
-      {% csrf_token %}
-    <div class="filter-menu-contents" id="filter-contents" style="display: none;">
-
-
-          <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right"></i></button> <br>
-        </div>
-
-      <a>기간으로 검색하기</a><br>
-      <input type="detail_month" name = "detail_month"> <a>부터</a> <input type="detail_month2" name = "detail_month2"><button>조회</button> <br>
-      <a>카테고리로 검색하기</a><br>
-      <select>
-        <option>-- 선택하세요 --</option>
-        <option>  <input type="category1" name = "category" value="1">식비</option>
-        <option>  <input type="category2" name = "category" value="2">식비더블</option>
-        <option>교통</option>
-        <option>이것저것...</option>
-        <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right"></i> </button>
-      </select>
-      <button type=submit>조회</button> <br>
-    </div>
-
+  <div class="filter-menu-title">
+    <a>상세검색</a>
+    <a style="float: right; display:none;" onclick="hideBtn()" id="hide-btn"><i style="margin-right: 5px;" class="fas fa-chevron-up"></i>숨기기</a>
+    <a style="float: right;" onclick="showBtn()" id="show-btn"><i style="margin-right: 5px;" class="fas fa-chevron-down"></i>보이기</a>
   </div>
+
+  <script>
+    function hideBtn() {
+      document.getElementById('filter-contents').style.display="none";
+      document.getElementById('hide-btn').style.display="none";
+      document.getElementById('show-btn').style.display="";
+    }
+    function showBtn() {
+      document.getElementById('filter-contents').style.display="";
+      document.getElementById('hide-btn').style.display="";
+      document.getElementById('show-btn').style.display="none";
+    }
+  </script>
+
+  <div class="filter-menu-contents" id="filter-contents" style="display: none;">
+    <form class="check_box_form" action="{% url 'calendars:detail_search' %}" method="post">
+  {% csrf_token %}
+    <a>기간으로 검색하기</a><br>
+    <tr> <!-- 행선언 -->
+        <th width="200" height="60"><a class="span_list_title">날짜</a></th>
+        <th width="240" style="text-align: end;"><input class="input_span" type="date" id="detail_month" min="1900-01-01" max="2099-12-31" autocomplete="off" name="detail_month" value=""></th>
+    </tr>
+    <tr> <!-- 행선언 -->
+        <th width="200" height="60"><a class="span_list_title">날짜</a></th>
+        <th width="240" style="text-align: end;"><input class="input_span" type="date" id="detail_month2" min="1900-01-01" max="2099-12-31" autocomplete="off" name="detail_month2" value=""></th>
+    </tr>
+
+    <a>카테고리로 검색하기</a><br>
+    <select>
+      <option>-- 선택하세요 --</option>
+      <option input type="category" name = "category" value="1">식비</option>
+      <option input type="category" name = "category" value="2">교통</option>
+      <option>이것저것...</option>
+    </select>
+   <button type=submit>조회</button></form> <br>
+  </div>
+
+
+</div>
+
 
   <div>
   <table class="list-table" id="list-table" style="background-color:#fff; border-radius:10px; margin: 15px 10px 60px 10px; padding:0 20px 60px 20px; border-collapse:separate; border-spacing:0 20px; "width="95%">

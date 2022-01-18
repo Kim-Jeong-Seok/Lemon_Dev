@@ -1,3 +1,16 @@
- {% for i in detail_search %}
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}레몬::추천{% endblock title %}
+{% block container %}
+
+ {% for i in spend_category %}
  {{i}}
  {% endfor %}
+
+ {% for i in total_date %}
+ {{i}}
+ {% endfor %}
+
+
+  돌아가기 버튼이나 그런거?
+{% endblock container %}

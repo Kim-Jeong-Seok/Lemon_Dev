@@ -35,7 +35,7 @@ class Category(models.Model):
 class Spend(models.Model):
     spend_id = models.AutoField(primary_key=True)
     kind = models.CharField(max_length=10, blank=True, null=True)
-    spend_date = models.DateTimeField(blank=True, null=True)
+    spend_date = models.DateField(blank=True, null=True)
     amount = models.IntegerField(blank=True, null=True)
     place = models.TextField(blank=True, null=True)
     way = models.IntegerField(blank=True, null=True)
@@ -53,7 +53,7 @@ class Spend(models.Model):
 class Income(models.Model):
     income_id = models.AutoField(primary_key=True)
     kind = models.CharField(max_length=10, blank=True, null=True)
-    income_date = models.DateTimeField(blank=True, null=True)
+    income_date = models.DateField(blank=True, null=True)
     amount = models.IntegerField(blank=True, null=True)
     income_way = models.IntegerField(blank=True, null=True)
     memo = models.TextField(blank=True, null=True)
