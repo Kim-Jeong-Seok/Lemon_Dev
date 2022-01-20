@@ -15,11 +15,11 @@ from django.views import View
 class KakaoSignInView(View):
     def get(self, request):
         client_id = KAKAO_KEY['KAKAO_KEY']
-        redirect_uri = "http://127.0.0.1:8000/account/kakao/login/callback/"
+        redirect_uri = 'http://127.0.0.1:8000/account/kakao/login/callback/'
         #redirect_uri = "https://192.168.0.26:8000/account/kakao/login/callback/"
         kakao_auth_api = 'http://kauth.kakao.com/pauth/author?response_type=code '
         return redirect(
-                f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={'http://127.0.0.1:8000/signup2'}&response_type=code"
+                f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={'http://127.0.0.1:8000/account/kakao/login/'}&response_type=code"
             )
 
 class KakaoSignInCallbackView(View):
@@ -30,7 +30,7 @@ class KakaoSignInCallbackView(View):
             redirect_uri    = "http://127.0.0.1:8000/account/kakao/login/callback/"
             #redirect_uri = "https://192.168.0.26:8000/account/kakao/login/callback/"
             token_request   = requests.get(
-                f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={'http://127.0.0.1:8000/signup2'}&code={code}"
+                f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&code={code}"
             )
             token_json      = token_request.json()
             #print(token_json)
