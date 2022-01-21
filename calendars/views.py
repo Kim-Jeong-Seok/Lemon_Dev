@@ -25,6 +25,22 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.hashers import check_password
 # Create your views here.
 URL_LOGIN = '/login'
+
+
+
+def detail_search(request):
+
+    user = request.user.user_id
+    start_date = request.POST.get('start_date', None)
+    end_date = request.POST.get("end_date", None)
+    spend_date = Spend.objects.filter(user_id = user, spend_date__range = (start_date, end_date)).values('spend_id','kind','spend_date','amount','place', 'category')
+    income_date = Income.objects.filter(user_id = user, income_date__range = (start_date, end_date)).values('income_id','kind','income_date','amount','income_way', 'income_way')
+    total_date = spend_date.union(income_date).order_by('-spend_date')
+    print('tatal_date--->', str(total_date))
+
+    return render(request, 'detail_search.html' , {'total_date':total_date})
+
+
 def recom(request):
     return render(request, 'recom.html')
 
@@ -69,10 +85,10 @@ def summary(request):
         'Category_count_data': category_count_data,
         'Category_count_label': category_count_label,
         'Category_count': category_amount_count,})
-    
+
 
 def listview(request):
-    
+
     input_year = request.POST.get('input_year', None)
     input_month = request.POST.get("input_month", None)
     user = request.user.user_id
@@ -111,7 +127,7 @@ def listview(request):
 
     last_income_sum = last_income.values('income_date__day','kind').annotate(amount=Sum('amount')).order_by('-income_date__day').values('income_date', 'kind', 'amount')
     detail_month_sum = last_spend.union(last_income).order_by('-spend_date')
-    
+
     return render(request, 'listview.html',
     {'year':year,
     'month':month,
@@ -143,7 +159,7 @@ def ajax_sendSMS(request):
         NUM = request.POST.get("NUM", None)
         KEY = request.POST.get("KEY", None)
     print(str(NUM)+ '그리고' + str(KEY))
-    
+
     send_url = 'https://apis.aligo.in/send/' # 요청을 던지는 URL, 현재는 문자보내기
     # ================================================================== 문자 보낼 때 필수 key값
     # API key, userid, sender, receiver, msg
@@ -163,7 +179,7 @@ def ajax_sendSMS(request):
     }
     requests.post(send_url, data=sms_data)
     data = {}
-    
+
     return JsonResponse(data,safe=False)
 
 @login_required(login_url=URL_LOGIN)
@@ -205,10 +221,10 @@ def calendar(request):
 
 
     #전달 내역
-    
+
     input_year = request.POST.get('input_year','')
     input_month = request.POST.get("input_month",'')
-    
+
     last_spend = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_id','kind','spend_date','amount','place','category')    #.annotate(amount=Sum('amount')).order_by('-spend_date__day').values('spend_date', 'kind', 'amount')
     last_income = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_id','kind','income_date','amount','income_way','income_way')
 
@@ -309,7 +325,7 @@ def ajax_pushdate(request):
         detail_month = income.union(spend).order_by('kind')
         even1 = list(detail_month.values('kind','income_date','amount'))
         evens = {'msg1':even1}
-        
+
 
         return JsonResponse(evens)
 

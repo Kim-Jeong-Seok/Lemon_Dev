@@ -105,10 +105,10 @@
             <a style="color: #3a3a3a;">월</a></b>
           <input type="hidden" name ="input_year" id="input_year" value="">
           <input type="hidden" name="input_month" id="input_month" value="">
-          
+
           <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right"></i></button> <br>
         </div>
-  </form>    
+  </form>
   </div>
 
   <script>
@@ -159,7 +159,10 @@
     <div class="filter-menu-title">
       <a>상세검색</a>
       <a style="float: right; display:none;" onclick="hideBtn()" id="hide-btn"><i style="margin-right: 5px;" class="fas fa-chevron-up"></i>숨기기</a>
+
       <a style="float: right;" onclick="showBtn()" id="show-btn"><i style="margin-right: 5px;" class="fas fa-chevron-down"></i>보이기</a>
+
+
     </div>
 
     <script>
@@ -176,16 +179,20 @@
     </script>
 
     <div class="filter-menu-contents" id="filter-contents" style="display: none;">
+      <form class="check_box_form" action="{% url 'calendars:detail_search' %}" method="post">
+    {% csrf_token %}
       <a>기간으로 검색하기</a><br>
-      <input type="month"> <a>부터</a> <input type="month"><button>조회</button> <br>
-      <a>카테고리로 검색하기</a><br>
-      <select>
-        <option>-- 선택하세요 --</option>
-        <option>식비</option>
-        <option>교통</option>
-        <option>이것저것...</option>
-      </select>
-      <button>조회</button> <br>
+      <tr> <!-- 행선언 -->
+          <th width="200" height="60"><a class="span_list_title">날짜</a></th>
+          <th width="240" style="text-align: end;"><input class="input_span" type="date" id="start_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="start_date" value=""></th>
+      </tr>
+      <tr> <!-- 행선언 -->
+          <th width="200" height="60"><a class="span_list_title">날짜</a></th>
+          <th width="240" style="text-align: end;"><input class="input_span" type="date" id="end_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="end_date" value=""></th>
+      </tr>
+
+    
+     <button type=submit>조회</button></form> <br>
     </div>
 
   </div>
@@ -199,7 +206,7 @@
     <tbody id="list-table-tbody">
     {% for detail in Detail_month %}
     {% ifchanged detail.spend_date.day %}
-    <tr style="vertical-align:top;" id="date_title"> 
+    <tr style="vertical-align:top;" id="date_title">
     <th style="text-align:left;padding-left:5px; border-bottom:1px solid #dddddd;">
       <img src="media/date.png" style="margin-right: 5px; width:30px; height:30px; vertical-align: -webkit-baseline-middle;">
       <a style="font-weight: 100; color:#3a3a3a;font-size:20pt; vertical-align: inherit;">{{detail.income_id}}{{ detail.spend_date | date:'d일' }}</a>
