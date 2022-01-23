@@ -4,6 +4,17 @@
 {% block title %}레몬::홈{% endblock title %}
 {% block container %}
 <style>
+    select {
+        -webkit-appearance:none; /* for chrome */
+        -moz-appearance:none; /*for firefox*/
+        appearance:none;
+    }
+    select::-ms-expand{
+        display:none;/*for IE10,11*/
+    }
+    body{
+        background-color: #F3F4F6;
+    }
     /* FOOTER에서 사용하는 CSS */
     .bottom-nav-home{
         color: #FFD859 !important;
@@ -52,14 +63,390 @@
         font-size: 20px;
         font-weight: 500;
     }
+
+    .add_info_title{
+        font-weight: 500;
+    }
+    .add_info_input{
+        margin-bottom: 10px;
+        padding-left: 10px;
+        border: 1px solid #D1D6DA;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        width: 100%;
+        height: 35px;
+    }
+    .add_info_phone{
+        margin-bottom: 10px;
+        padding-left: 10px;
+        border: 1px solid #D1D6DA;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        width: 70%;
+        height: 35px;
+    }
+    .phone_code_btn{
+        width: 29%;
+        height: 35px;
+        background:#31BC89;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: bold;
+        font-size: 14px;
+        text-align: center;
+        vertical-align: top;
+        border:0px;
+        border-radius:1px;
+        color:white;
+    }
+    .phone_code_btn:disabled{
+        background:#a0a0a0;
+    }
+    .add_info_phonecode{
+        margin-bottom: 10px;
+        padding-left: 10px;
+        border: 1px solid #D1D6DA;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        width: 50%;
+        height: 35px;
+    }
+    .count{
+        margin-left: 15px;
+        position: relative;
+
+    }
+    .add_info_select{
+        margin-bottom: 10px;
+        padding-left: 10px;
+        background-color: #fff;
+        border: 1px solid #D1D6DA;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        width: 100%;
+        height: 35px;
+    }
+    .add_info_year{
+        padding-left: 10px;
+        border: 1px solid #D1D6DA;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        width: 100%;
+        height: 35px;
+    }
+    .access_btn{
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: bold;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+        width:100%;
+        height: 50px;
+        margin-top:20px;
+        background:#31BC89;
+        border:0px;
+        border-radius:10px;
+        color:white;
+    }
+    .access_btn:disabled{
+        background:#a0a0a0;
+    }
 </style>
-<h2>홈화면<h2>
+{% if user.e_chk == 0 %}
+<style>
+    #footer{
+        display:none;
+    }
+</style>
+  <div class="signup-wrap">
+    <div class="alert alert-danger" role="alert">
+        <a>소셜로그인을 통한 최초 로그인시, <strong>레몬서비스 이용약관</strong> 및 <strong>개인정보 수집 동의 </strong>와
+        <strong>추가정보 입력</strong> 후 서비스 사용가능합니다.</a>
+    </div>
+    <div class="input-form col-md-12 mx-auto" style="height:100%; padding:0 20px; text-align:left;">
 
-    <div class="home-div1">
-        <a>1월 소비</a>
+        <div style="width: 100%; text-align:center; margin-top:10px;">
+            <img src="media/LEMON_LOGO_146x40.png" style="width: 146px; height:40px;">
+        </div>
+        <form class="validation-form" method="POST" action="{% url 'calendars:home' %}" id="signup-form">
+            {% csrf_token %}
+            <div class="service_access">
+                <div class="all_chk-wrap">
+                <label style="text-align:end;">
+                    <input type="checkbox" name="all_chk" value ="0" id="all_chk">
+                    <a class="all_chk_font">레몬서비스 이용약관, 개인정보 수집에 모두 동의 합니다.</a>
+                </div>
+                <div class="require_chk_wrap">
+                    </label>
+                    <a>레몬서비스 이용약관 동의(필수)</a><br>
+                    <textarea cols="30" rows="5" style="width:100%;" disabled="disabled">이부분은 이용약관관련된 내용이 들어갈 예정입니다.</textarea><br>
+                    <label style="text-align:end;">
+                        <input type="checkbox" name="u_chk" value ="1" id="require_chk">
+                        <span>이용약관에 동의합니다.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="persnal_info_access">
+                <div class="require_chk_wrap" style="margin-top: 15px;">
+                    <a>개인정보 수집 동의(필수)</a><br>
+                    <textarea cols="30" rows="5" style="width:100%;" disabled="disabled">이부분은 개인정보 수집에 대한 내용이 들어갈 예정입니다.</textarea><br>
+                    <label style="text-align:end;">
+                        <input type="checkbox" name="e_chk" value ="1" id="require_chk">
+                        <span>이용약관에 동의합니다.</span>
+                    </label>
+                </div>
+
+            <div class="add_info">
+                <input type="text" class="add_info_title"
+                        id="name" name="username" placeholder="이름을 입력해주세요." value=""> <br>
+                <a class="add_info_title">성별</a><br>
+
+                <select name="gender" class="add_info_select">
+                  <option value="M">남자</option>
+                  <option value="F">여자</option>
+                    <option value=""> 성별 </option>
+
+                </select> <br>
+                <a class="add_info_title">직업군</a><br>
+                <select name = job class="add_info_select">
+                    <option value=""> 직업군 </option>
+                    <option value="1">학생</option>
+                    <option value="2">자영업자</option>
+                    <option value="3">회사원</option>
+                    <option value="4">의사</option>
+
+                </select> <br>
+                <a class="add_info_title">휴대전화</a><br>
+                <input type="integrity" id="phonenumber" class="form-control"
+                        name="phonenumber" placeholder="- 를 제외한 휴대폰번호"
+                        style="width:85%;display:inline;">
+                <button type="button" id="codeBtn" class="phone_code_btn">인증번호 받기</button><br>
+                <input id="inputCode" class="add_info_phonecode" type="number" placeholder="인증번호 입력" disabled> <a id="count" class="count"></a>
+                <button style="float: right;" type="button" id="certBtn" onclick="certfun();" class="phone_code_btn" disabled >인증번호 확인</button><br>
+                <a class="add_info_title">생년월일</a><br>
+                    <input class="add_info_year" name = birthday type="integrity" id="year" maxlength="8" placeholder="예시)19801210">
+            </div>
+
+                <button class="access_btn" id="signupBtn" type="submit" value="signup" disabled style="width:100%">레몬 시작하기</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+
+$('#all_chk').change(function () {
+    var checked = $(this).prop('checked');
+    $('input[id="require_chk"]').prop('checked', checked);
+    $('#signupBtn').removeAttr('disabled');
+});
+
+$('input[id="require_chk"]').change(function () {
+    var tmpLength = $('input[id="require_chk"]').length;
+    var checkedLength = $('input[id="require_chk"]:checked').length;
+    var selectAll = (tmpLength == checkedLength);
+    $('#all_chk').prop('checked', selectAll);
+    selectAll ? $('#signupBtn').removeAttr('disabled'):$('#signupBtn').attr('disabled','true');});
+</script>
+
+<script>
+    document.getElementById('codeBtn').addEventListener('click', codebtn);
+
+    KEY = undefined;
+    function codebtn(){
+        KEY = makeRandomNum(4);
+        var timer = null;
+        var isRunning = false;
+        var display = $('#count');
+        var leftSec = 180;
+        var phoneInput = document.getElementById('phoneinput');
+        if(phoneInput.value == '' || phoneInput.value == null){
+            alert('휴대전화번호를 입력하세요.');
+            return false;
+        }
+        if(phoneInput.value.length != 11){
+            alert('휴대전화번호 11자리를 입력하세요.');
+            return false;
+        }
+
+        if((phoneInput.value != '' || phoneInput.value != null) && phoneInput.value.length == 11 ){
+            alert('입력하신 휴대번호로 인증번호를 전송하였습니다.');
+            $('#inputCode').removeAttr('disabled');
+            $('#certBtn').removeAttr('disabled');
+            $('#codeBtn').attr('disabled',true);
+            if (isRunning){
+                clearInterval(timer);
+                display.html("");
+                startTimer(leftSec, display);
+            }else{
+                startTimer(leftSec, display);
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'calendars:ajax_sendSMS' %}",
+                data: {
+                    NUM: $('#phoneinput').val(),
+                    KEY: KEY,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function(data){
+                    console.log('성공');
+                },
+                fail: function(data) {
+                    console('실패');
+                },
+            });
+            return 0;
+        }
+        else{
+
+        }
+        // 난수 설정
+        function makeRandomNum(n) {
+            let value = '';
+            for(let i = 0; i < n; i++) {
+                value += Math.floor(Math.random() * 10);
+            }
+            return value;
+        }
+    }
+
+    function certfun() {
+        if(document.querySelector("#inputCode").value == KEY){
+            alert('확인되었습니다.');
+            clearInterval(timer);
+            $('#phoneinput').attr('disabled', true);
+            $('#inputCode').attr('disabled', true);
+            $('#codeBtn').attr('disabled', true);
+            $('#certBtn').attr('disabled', true);
+            document.querySelector("#count").style.display = "none";
+        }
+        else{
+            alert('알수없는 오류가 발생하였습니다. 다시 진행해주세요.');
+        }
+    }
+
+    function startTimer(count, display) {
+        var minutes, seconds;
+        timer = setInterval(function () {
+            minutes = parseInt(count / 60, 10);
+            seconds = parseInt(count % 60, 10);
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+            display.html(minutes + ":" + seconds);
+        // 타이머 끝
+        if (--count < 0) {
+            clearInterval(timer);
+            alert("입력시간이 초과되었습니다.");
+            display.html("00:00");
+            $('#certBtn').attr('disabled', true);
+            $('#codeBtn').removeAttr('disabled');
+            $('.btn_chk').attr("disabled","disabled");
+            isRunning = false;
+            }
+        }, 1000);
+            isRunning = true;
+    }
+
+
+</script>
+
+
+{% else %}
+<div class="home-wrap">
+    <div class="home-title">
+        <a>{{user.username}}님의 <br> 소비와 투자 현황입니다.</a>
     </div>
 
-    <div class="home-div2">
-        <a>모의주식</a>
+    <div class="home-chart">
+        <canvas id="myChart2" width="100" height="100"></canvas>
+        <script>
+        const ctx = document.getElementById('myChart2').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['가계부지출','가계부수입','모의투자금액','주식수입'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [30, 20, 40, 10],
+                    backgroundColor: [
+                        '#5989DD',
+                        '#D46A84',
+                        '#4ACBD7',
+                        '#F3CD55',
+
+                    ],
+                    borderColor: [
+                        '#5989DD',
+                        '#D46A84',
+                        '#4ACBD7',
+                        '#F3CD55',
+
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+              rotation: -90,
+              circumference: 180,
+              cutout: 120,
+            }
+        });
+        </script>
     </div>
+
+    <div class="home-spand-div">
+        <div class="home-spand-title">
+            <a>1월 소비</a>
+            <a style="font-size:14px; float: right;">22.01.21</a>
+        </div>
+
+        <div class="home-spand-input">
+            <a>지출 2,234,500원</a>
+        </div>
+
+        <div class="home-spand-buttons">
+            <button style="margin-right:15px;" class="home-spand-button">소비 내역</button>
+            <button style="margin-left:15px;" class="home-spand-button">소비 분석</button>
+        </div>
+    </div>
+
+    <div class="home-stock-div">
+        <div class="home-stock-title">
+            <a>주식</a>
+            <a style="font-size:14px; float: right;">22.01.21</a>
+        </div>
+
+        <div class="home-stock-input">
+            <a>50,500원</a>
+        </div>
+
+        <div class="home-stock-input2">
+            <a>10,250(+5%)</a>
+        </div>
+
+
+        <div class="home-stock-buttons">
+            <button style="margin-right:15px;" class="home-stock-button">보유 주식</button>
+            <button style="margin-left:15px;" class="home-stock-button">포트폴리오</button>
+        </div>
+
+    </div>
+
+    <div class="home-property-div">
+        <div class="home-property-title">
+            <a>총 자산</a>
+            <a style="font-size:14px; float: right;">금일기준</a>
+        </div>
+    </div>
+</div>
+
+
+{% endif %}
 {% endblock container %}

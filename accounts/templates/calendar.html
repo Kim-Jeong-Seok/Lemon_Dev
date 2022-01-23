@@ -100,191 +100,293 @@
     box-shadow: 1px 1px 5px 1px rgb(202, 202, 202);
     margin: 20px !important;
   }
+
+  ul{
+    list-style: none;
+    margin:0;
+    padding: 0;
+  }
+  .pagenation{
+    background-color: #f5f5f5;
+    z-index: 99;
+    padding:0;
+    bottom: 70px;
+    left: 28px;
+    position: fixed;
+    vertical-align: middle;
+    text-align: center;
+    width: 90%;
+    height: 30px;
+    border-radius: 20px;
+    margin: 0 auto;
+  }
+  .pagenation li{
+    padding-top: 2px;
+    font-weight: 500;
+    border-radius: 20px;
+    width : 24%;
+    height: 30px;
+    display:inline-block;
+  }
+
+  #pagenation_calendar{
+    background-color: #4C8AE5;
+  }
+  #pagenation_calendar a{
+    color: #fff;
+  }
+  #pagenation_recom a, #pagenation_summary a, #pagenation_list a{
+    color: #adadad;
+  }
   </style>
 
+  <!-- pagenation -->
+<div class="pagenation">
+  <ul>
+    <li id="pagenation_recom"><a href="{% url 'calendars:recom' %}">추천</a></li>
 
-<!-- Modal -->
-<div id="calendarModal" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-          <h3 id="modalTitle" class="modal-title"></h3>
-          <button type="button" onclick="close_btn()" id="close_btn" class="btn btn-default" data-dismiss="modal">X</button>
-      </div>
-      <div id="modalBody" class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="location.href='add_calendar'" id="add_event" class="addList-btn" data-dismiss="modal">내역추가</button>
-      </div>
-    </div>
-  </div>
+    <li id="pagenation_summary"><a href="{% url 'calendars:summary' %}">요약</a></li>
+    <li id="pagenation_list"><a href="{% url 'calendars:listview' %}">내역</a></li>
+    <li id="pagenation_calendar"><a href="{% url 'calendars:calendar' %}">TOP 5</a></li>
+  </ul>
 </div>
-  <script>
-    function close_btn() {
-      $('#calendarModal').modal('hide');
+
+<div class="swiper-slide">
+
+  <!-- 카테고리차트 탑5 -->
+
+
+
+  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);"><!-- 소비 탑5 카드사 div 시작-->
+    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;">
+      <img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png">
+      <a style="font-weight: bold; font-size:16pt;">카테고리 Top5</a>
+
+      <a href = "{% url 'calendars:category_detail' "1" %}"> 식비</a>
+
+    </div>
+    <canvas id="myChart" width="300" height="300"></canvas>
+<script>
+const ctx = document.getElementById('myChart').getContext('2d');
+const myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['쇼핑', '생활', '컨텐츠', '여행', '교통비', '교육비'],
+        datasets: [{
+            label: '# of Votes',
+            data: [30, 30, 5, 2, 15, 15],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+      rotation: -90,
+      circumference: 180,
     }
-  </script>
-<!-- Modal관련끝 -->
+});
+</script>
+    </div><!-- 카테고리차트 탑5 div 끝-->
 
-<!-- 소비내역추가하기버튼 -->
-  <div class="addevent-btn">
-    <a style="color: #fff;font-size:22px;" href="{% url 'calendars:add_calendar' %}"><i class="fas fa-pencil-alt"></i></a>
-  </div>
-<!-- 소비내역추가하기버튼 끝 -->
-
-
-<div class="swiper mySwiper">
-  <div class="swiper-wrapper">
-
-
-
-      <!--- 달력 SWIPER div영역 시작--->
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          var calendarEl = document.getElementById('calendar');
-
-          var date = new Date();
-          var d = date.getDate();
-          var m = date.getMonth() + 1;
-          var y = date.getFullYear();
-          var date1 = (y+'-'+m+'-'+d);
-          var date2 = (y+'-'+m);
-          console.log('Today is ' + date1);
-
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          selectable: false,
-          selectOverlap:false,
-          editable: false,
-          droppable:false,
-          themeSystem: 'standard',
-          dragScroll:false,
-          headerToolbar: {
-            left: '',
-            center: 'prev title next',
-            right: ''
-          },
-          titleFormat: function (date) {
-            // YYYY년 MM월
-            return `${date.date.year}년 ${date.date.month + 1}월`;
-          },
-          dayHeaderContent: function (date) {
-            let weekList = ["일", "월", "화", "수", "목", "금", "토"];
-            return weekList[date.dow];
-          },
-          height: 460,
-          //locale: 'en',
-          events: [
-          {% for i in spend_day_sum2 %}
-          {
-            title: "-{{i.amount|intcomma}}",
-            start: "{{i.spend_date | date:'Y-m-d'}}",
-            textColor: 'Red',
-            color:'transparent',
-            allday: 1,
-          },
-          {% endfor %}
-          {% for i in income_day_sum2 %}
-          {
-            title: "+{{i.amount|intcomma}}",
-            start: "{{i.income_date | date:'Y-m-d'}}",
-            textColor: 'Blue',
-            color:'transparent',
-            allday: 1,
-          },
-          {% endfor %}
-        ],
-        eventClick: function(info) {
-          console.log(info.event);
-          click_date = info.event.startStr; // 날짜
-          title_date = moment(click_date).format('YY. MM. DD');
-          //click_title = event.dayEl.innerText;
-          console.log(click_date);
-          document.getElementById('testtest').value = click_date;
-          $.ajax({
-            type: "POST",
-            url: "{% url 'calendars:ajax_pushdate' %}",
-            data: {
-              testtest: $('#testtest').val(),
-              csrfmiddlewaretoken: '{{ csrf_token }}',
-              dataType: "json",
-            },
-            cache: false,
-            headers: {"cache-control": "no-cache","pragma": "no-cache"},
-            success: function(data){
-              msg_value = data.msg1;
-              const reset = document.getElementById('modalBody');
-              reset.innerHTML = '';
-              for (var i = 0; i<msg_value.length; i++) {
-                const element = document.getElementById('modalBody');
-                element.innerHTML += '<div class="modal-body-text"><a>'
-                + msg_value[i]['amount'] + '원' +  '</a> </div>';
-              }
-            },
-            fail: function() {
-              console.log('ajax send error!');
-              alert('해당날짜의 내역을 불러오는 과정에서 오류가 발생했습니다');
-            },
-          });
-          $('#calendarModal').modal('show');
-          $('#modalTitle').text(click_date);
-        },
-        });
-        calendar.render();
-      });
-      </script>
-      <div class="swiper-slide" id="swiper-cal" data-name="달력" data-hash="calendar2">
-        <div class="cal-container">
-          <div id='calendar'></div>
+  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);"><!-- 소비 탑5 카드사 div 시작-->
+    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;">
+      <img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png">
+      <a style="font-weight: bold; font-size:16pt;">소비 Top5 카드사</a>
+    </div>
+    <div>
+      <ol style="padding-left: 1rem !important;">
+      <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+        {% for method in TOP %}
+        <tr>
+          <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
+          <td style="text-align: center;" width='50'>
+            {% if method.card == 1 %}
+          <a style="font-weight:bold; color:#3a3a3a">국민카드</a>
+          {% elif method.card == 2 %}
+          <a style="font-weight:bold; color:#3a3a3a">롯대카드</a>
+          {% elif method.card == 3 %}
+          <a style="font-weight:bold; color:#3a3a3a">BC카드</a>
+          {% elif method.card == 4 %}
+          <a style="font-weight:bold; color:#3a3a3a">삼성카드</a>
+          {% elif method.card == 6 %}
+          <a style="font-weight:bold; color:#3a3a3a">신한카드</a>
+          {% elif method.card == 7 %}
+          <a style="font-weight:bold; color:#3a3a3a">하나카드</a>
+          {% elif method.card == 8 %}
+          <a style="font-weight:bold; color:#3a3a3a">현대카드</a>
+          {% elif method.card == 9 %}
+          <a style="font-weight:bold; color:#3a3a3a">농협카드</a>
+          {% elif method.card == 10 %}
+          <a style="font-weight:bold; color:#3a3a3a">시티카드</a>
+          {% elif method.card == 11 %}
+          <a style="font-weight:bold; color:#3a3a3a">카카오뱅크카드</a>
+          {% endif %}
+          </td>
+          <td width='25' style="text-align: right;"><a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; color:#3a3a3a">{{ method.amount|truncatechars:100|intcomma }}원</a></td>
+          <td width='15' style="text-align: right;">
+            {% if method.card == 1 %}
+            <a style="font-size:9pt; font-weight:300; color:#ff5d51">156,700</a>
+            {% elif method.card == 4 %}
+            <a style="font-size:9pt; font-weight:300; color:#4c8ae5">34,200</a>
+            {% elif method.card == 7 %}
+            <a style="font-size:9pt; font-weight:300; color:#4c8ae5">44,100</a>
+            {% endif %}
+          </td>
+          <!--
+          <td width='40'>
+            {% if method.card == 1 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#8e8e8e">주문</a>
+            <img style="width: 20px; height:20px;" src="media/arrow.png">
+            {% elif method.card == 4 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#8e8e8e">주문</a>
+            <img style="width: 20px; height:20px;" src="media/arrow.png">
+            {% elif method.card == 7 %}
+            <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#8e8e8e">주문</a>
+            <img style="width: 20px; height:20px;" src="media/arrow.png">
+            {% endif %}
+          </td>
+          -->
+        </tr>
+        {% empty %}
+        <div class="summary-nodata-wrap">
+          <a>소비내역 및 지출내역이 없습니다.</a>
         </div>
-        <input type="hidden" value="" id="testtest">
-      </div><!--- 달력 SWIPER div영역 끝 --->
-    </div><!--swiper-wrapper 선언끝-->
+        {% endfor %}
+      </table>
+    </ol>
+    </div>
+  </div> <!-- 소비 탑5 카드사 div 끝-->
 
-    <div class="swiper-pagination" ></div>
-  </div><!--myswiper 선언끝-->
+  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);"><!-- 소비 탑5 기업명 div 시작-->
+    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;">
+      <img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png">
+      <a style="font-weight: bold; font-size:16pt;">소비 Top5 기업명</a></div>
+    <div>
+      <ol style="padding-left: 1rem !important;">
+        <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+          {% for area in TOP %}
+          <tr>
+            <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
+            <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:50px; text-align: left;" width='50'>
+              <a style="font-weight:bold; color:#3a3a3a">{{ area.place }}</a>
+            </td>
+            <td style="text-align: right;" width='25'>
+              <a style="font-weight:400; color:#3a3a3a">{{ area.amount|truncatechars:500|intcomma }}원</a>
+            </td>
+            <td width='10' style="text-align: right;">
+              <a style="font-size:9pt; font-weight:300; color:#ff5d51">1,256,400</a>
+            </td>
+            <!--
+            <td width='40' style="text-align: right;">
+              <a style="font-family: 'Noto Sans KR', sans-serif; font-size:9pt; font-weight:300; color:#8e8e8e">주문</a>
+              <img style="width: 20px; height:20px;" src="media/arrow.png">
+            </td>
+            -->
+          </tr>
+          {% empty %}
+          <div class="summary-nodata-wrap">
+            <a>소비내역 및 지출내역이 없습니다.</a>
+          </div>
+            {% endfor %}
+        </table>
+      </ol>
+    </div>
+  </div><!-- 소비 탑5 기업명 div 끝-->
 
-  <!-- Swiper JS -->
+  <!-- 카테고리 탑5 div 시작-->
+  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);">
+    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;">
+      <img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png">
+      <a style="font-weight: bold; font-size:16pt;">소비 Top5 카테고리</a></div>
+  <div>
+    <ol style="padding-left: 1rem !important;">
+      <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+        {% for category in TOP %}
+        <tr>
+          <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
+          <td style="text-align: left;" width='60'>
+            {% if category.category == 1 %}
+            <a herf = "{% url 'calendars:category_detail' category.category %}" style="font-weight:bold; color:#3a3a3a">식비</a>
+            {% elif category.category == 2 %}
+            <a style="font-weight:bold; color:#3a3a3a">카페/간식</a>
+            {% elif category.category == 3 %}
+            <a style="font-weight:bold; color:#3a3a3a">술/유흥</a>
+            {% elif category.category == 4 %}
+            <a style="font-weight:bold; color:#3a3a3a">생활</a>
+            {% elif category.category == 5 %}
+            <a style="font-weight:bold; color:#3a3a3a">쇼핑</a>
+            {% endif %}
+          </td>
+          <td style="text-align: right;" width='150'>
+            <a style="font-weight:400; color:#3a3a3a">{{ category.amount|truncatechars:16|intcomma }}원</a>
+          </td>
+        </tr>
+        {% empty %}
+        <div class="summary-nodata-wrap">
+          <a>소비내역 및 지출내역이 없습니다.</a>
+        </div>
+        {% endfor %}
+      </table>
+    </ol>
+  </div>
+  </div> <!-- 카테고리 탑5 div 끝-->
 
-  <!-- Initialize Swiper -->
-  <script>
-    var bullet = ["추천", "요약", "내역" ,"달력"];
+    <!-- 건수 탑5 div 시작-->
+  <div style="background-color:#fff; margin:20px 5% 80px 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);">
+    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;">
+      <img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png">
+      <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">건수 Top5 카테고리</a>
+    </div>
+  <div>
+  <ol style="padding-left: 1rem !important;">
+    <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+      {% for category in Category_count %}
+      <tr>
+        <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
+        <td style="text-align: left;" width='60'>
+          {% if category.category == 1 %}
+          <a style="font-weight:bold; color:#3a3a3a">식비</a>
 
-    var swiper = new Swiper(".mySwiper", {
-      slidesPerView: 'auto',
-      centeredSlides: true,
-      autoHeight: true,
-      //effect:'fade',
-      fadeEffect: { crossFade: true },
-      mousewheel: false,
-      speed: 0,
-      hashNavigation: {
-        watchState: true,
-        replaceState:true,
-      },
-      pagination : {
-        observer: true,
-        observeParents: true,
-        el : '.swiper-pagination',
-        clickable : true,
-        paginationType: "custom",
-        renderBullet: function (index, className) {
-          return '<div class="' + className + '"><span>' + (bullet[index]) + '</span></div>';
-        }
-        },
+          {% elif category.category == 2 %}
+          <a style="font-weight:bold; color:#3a3a3a">카페/간식</a>
+          {% elif category.category == 3 %}
+          <a style="font-weight:bold; color:#3a3a3a">술/유흥</a>
+          {% elif category.category == 4 %}
+          <a style="font-weight:bold; color:#3a3a3a">생활</a>
+          {% elif category.category == 5 %}
+          <a style="font-weight:bold; color:#3a3a3a">쇼핑</a>
+          {% endif %}
+        </td>
+        <td style="text-align: right;" width='150'>
+          <a style="font-weight:400; color:#3a3a3a">{{ category.count|intcomma }}회</a>
+        </td>
+      </tr>
+      {% empty %}
+      <div class="summary-nodata-wrap">
+        <a>소비내역 및 지출내역이 없습니다.</a>
+      </div>
+    {% endfor %}
+    </table>
+  </ol>
+  </div>
+  </div><!-- 건수 탑5 div 끝-->
+</div>
 
-        scrollbar: {
-          el: '.swiper-scrollbar',
-        },
-    });
-    /*
-    swiper.on('slideChange', function () {
-      window.scrollTo(0,0);
-      swiper.update(true);
-      //console.log('slide changed');
-    });*/
-    swiper.update();
-  </script>
+
 
   <script>
     var myElement = document.getElementById('container');
@@ -299,13 +401,8 @@
     });
 
     mc.on("swiperight", function(ev) {
-        window.location.href="/list";
+        window.location.href="/listview";
   });
   </script>
-
-<link rel = "stylesheet" href="{% static 'css/main.css' %}">
-<link rel = "stylesheet" href="{% static 'css/style.css' %}">
-<script src="{% static 'js/main.js' %}"></script>
-
 
 {% endblock container %}
