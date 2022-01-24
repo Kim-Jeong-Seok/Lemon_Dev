@@ -20,7 +20,6 @@ class KakaoSignInView(View):
         return redirect(
                 f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={'http://127.0.0.1:8000/signup2'}&response_type=code"
             )
-
 class KakaoSignInCallbackView(View):
     def get(self, request):
         try:
@@ -32,9 +31,7 @@ class KakaoSignInCallbackView(View):
             )
             token_json      = token_request.json()
             #print(token_json)
-
             error           = token_json.get("error", None)
-
             if error is not None:
                 return JsonResponse({"message":"INVALD_CODE"}, status=400)
 
