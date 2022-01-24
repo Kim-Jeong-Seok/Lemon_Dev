@@ -48,7 +48,7 @@ class LemonUserManager(BaseUserManager):
             invest = invest,
         )
         user.set_password(password)
-    
+
         user.is_admin = True
         user.is_active = True
         user.is_superuser = True
@@ -77,6 +77,8 @@ class user(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    gender = models.CharField(max_length=10, db_collation='utf8_general_ci', verbose_name= "성별")
+    job = models.IntegerField(verbose_name="직업",blank=True, null=True)
 
     USERNAME_FIELD = 'uid'
     REQUIRED_FIELDS = ['email','username','phonenumber','invest']
@@ -99,13 +101,13 @@ class user(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return self.is_admin
-    
+
 class Notice(models.Model):
     notice_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=45, null=False, verbose_name = '제목')
     content = RichTextUploadingField(blank=True, null=True, verbose_name = '내용')
     date = models.DateTimeField(default=timezone.now, verbose_name = '날짜')
-    
+
     def __str__(self):
         return self.title
 

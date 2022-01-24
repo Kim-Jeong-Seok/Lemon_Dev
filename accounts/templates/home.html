@@ -164,7 +164,7 @@
 </style>
   <div class="signup-wrap">
     <div class="alert alert-danger" role="alert">
-        <a>소셜로그인을 통한 최초 로그인시, <strong>레몬서비스 이용약관</strong> 및 <strong>개인정보 수집 동의 </strong>와 
+        <a>소셜로그인을 통한 최초 로그인시, <strong>레몬서비스 이용약관</strong> 및 <strong>개인정보 수집 동의 </strong>와
         <strong>추가정보 입력</strong> 후 서비스 사용가능합니다.</a>
     </div>
     <div class="input-form col-md-12 mx-auto" style="height:100%; padding:0 20px; text-align:left;">
@@ -203,20 +203,24 @@
 
             <div class="add_info">
                 <a class="add_info_title">이름</a><br>
-                <input type="text" class="add_info_input"> <br>
+                <input type="text"  name = name class="add_info_input"> <br>
                 <a class="add_info_title">성별</a><br>
                 <select class="add_info_select">
+                  <option input type="gender" name = "gender"value="1"> 성별 </option>
+                  <option input type="gender" name = "gender"value="M"> 남자 </option>
+                  <option input type="gender" name = "gender"value="F"> 여자 </option>
                     <option value=""> 성별 </option>
                     <option value="M"> 남자 </option>
                     <option value="F"> 여자 </option>
                 </select> <br>
                 <a class="add_info_title">직업군</a><br>
                 <select class="add_info_select">
-                    <option value=""> 직업군 </option>
-                    <option value="1"> 학생 </option>
-                    <option value="1"> 자영업자 </option>
-                    <option value="1"> 회사원 </option>
-                    <option value="1"> 의사 </option>
+                    <option input type="job" name = "job"value="1"> 학생 </option>
+                    <option input type="job" name = "job"value="2"> 직장인 </option>
+                    <option input type="job" name = "job"value="3"> 사업자 </option>
+                    <option input type="job" name = "job"value="4"> 공무원 </option>
+                    <option input type="job" name = "job"value="5"> 기타(프리렌) </option>
+                    <option input type="job" name = "job"value="5"> 무6 </option>
                 </select> <br>
                 <a class="add_info_title">휴대전화</a><br>
                 <input class="add_info_phone" id="phoneinput" type="tel" placeholder="- 를 제외하고 입력하세요">
@@ -267,7 +271,7 @@ $('input[id="require_chk"]').change(function () {
             alert('휴대전화번호 11자리를 입력하세요.');
             return false;
         }
-        
+
         if((phoneInput.value != '' || phoneInput.value != null) && phoneInput.value.length == 11 ){
             alert('입력하신 휴대번호로 인증번호를 전송하였습니다.');
             $('#inputCode').removeAttr('disabled');
@@ -280,7 +284,7 @@ $('input[id="require_chk"]').change(function () {
             }else{
                 startTimer(leftSec, display);
             };
-        
+
             $.ajax({
                 type: "POST",
                 url: "{% url 'calendars:ajax_sendSMS' %}",
@@ -349,7 +353,7 @@ $('input[id="require_chk"]').change(function () {
             isRunning = true;
     }
 
-    
+
 </script>
 
 

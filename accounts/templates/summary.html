@@ -102,7 +102,7 @@
       </a><br>
 
       <div class="amountMoney">
-        <a id="amount-money1" style="display: none;">{{user.invest|default_if_none:'0'}}</a>
+        <a id="amount-money1" style="display: none;">{{Expenditure}}</a>
         <div class="money-wrap"><a id="amount-money" class="amount-money"></a><a class="amount-won">won</a></div>
       </div>
 
@@ -204,7 +204,7 @@
               dataType: "json",
             },
             success: function(data){
-              
+
               msg_value = data.msg1;
               const reset = document.getElementById('modalBody');
               const element = document.getElementById('modalBody');

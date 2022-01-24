@@ -22,8 +22,6 @@ urlpatterns = [
     path('iedit_calendar/<int:spend_id>', views.iedit_calendar, name='iedit_calendar'),
 
     path('ajax_pushdate', views.ajax_pushdate, name='ajax_pushdate'),
-    path('all_events/', views.all_events, name='all_events'),
-    path('add_event', views.add_event, name='add_event'),
-    path('load_list', views.load_list, name='load_list'),
+
     path('ajax_sendSMS', views.ajax_sendSMS, name='ajax_sendSMS'),
 ]
