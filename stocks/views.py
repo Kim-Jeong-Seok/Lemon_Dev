@@ -28,15 +28,19 @@ def stock(request):
 
 def portfolio(request):
     # 구매하기가 같은 페이지에 있어서 임시로 넣어둔 값
-    data = {'marketcode': 'kospi', 'issuecode': '035420'}
+    # data = {'marketcode': 'kospi', 'issuecode': '035420'}
+    data = {}
 
     stock_cal = cal.calculator()
     total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
     total_current_price = stock_cal.total_current_price(request.user.user_id)
-    if total_investment_amount and total_current_price:
+    if total_current_price == False:
+        return render(request, 'portfolio.html')
+
+    if total_investment_amount and total_investment_amount:
         data['total_investment_amount'] = total_investment_amount
         data['total_current_price'] = total_current_price
-    return render(request, 'portfolio.html', data)
+    return render(request, 'portfolio.html')
 
 
 def current_stock(request):

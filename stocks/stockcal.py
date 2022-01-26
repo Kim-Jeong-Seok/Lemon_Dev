@@ -23,6 +23,7 @@ class calculator:
         total_current_price = 1
         try:
             stockheld = Stockheld.objects.filter(sh_userid=user_id)
+            
             for elements in stockheld:
                 current_price = kocom.api().get_current_price(elements.sh_marketcode, elements.sh_isusrtcd)
                 if current_price:

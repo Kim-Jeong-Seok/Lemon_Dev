@@ -47,8 +47,14 @@ def home(request):
     income_month_filter2 = Income.objects.filter(user_id = user, income_date__month=month).values('income_id','kind','income_date','amount','income_way', 'income_way')
 
     # 월 총 수입, 지출
-    spend_sum = spend_month_filter2.aggregate(Sum('amount'))
-    income_sum = income_month_filter2.aggregate(Sum('amount'))
+    spend_sum = spend_month_filter2.values('amount').aggregate(amount = Sum('amount'))
+    income_sum = income_month_filter2.values('amount').aggregate(amount = Sum('amount'))
+
+    category_amount = spend_month_filter.values('category','card','place').annotate(amount=Sum('amount')).order_by('-amount')[:5]
+
+    print(spend_sum)
+
+
 
     return render(request, 'home.html', {'month':month,'Expenditure': spend_sum, 'Income': income_sum})
 
@@ -149,6 +155,9 @@ def top5(request):
     category_amount = spend_month_filter.values('category','card','place').annotate(amount=Sum('amount')).order_by('-amount')[:5]
     # 요약 페이지_카테고리 건수별 TOP5
     category_amount_count = spend_month_filter.values('category').annotate(count=Count('category')).order_by('-count')[:5]
+    print(category_amount_count)
+    spend_sum = spend_month_filter2.values('amount').aggregate(Sum('amount'))
+    income_sum = income_month_filter2.values('amount').aggregate(Sum('amount'))
 
     category_amount_data = []
     category_amount_label = []
@@ -160,13 +169,13 @@ def top5(request):
     for item in category_amount_count:
         category_count_data.append(item['count'])
         category_count_label.append(item['category'])
-
+        print(type(category_count_data))
     return render(request, 'top5.html',
             {'month':month,
             'TOP': category_amount,
             'Category_amount_data': category_amount_data,
-            'Category_amount_labels': category_amount_label,
-            'Category_count_data': category_count_data,
+            'Category_amount_labels': category_amount_labe,
+            'Category_count_data': category_count_data2,
             'Category_count_label': category_count_label,
             'Category_count': category_amount_count,})
 
@@ -197,7 +206,7 @@ def ajax_sendSMS(request):
         NUM = request.POST.get("NUM", None)
         KEY = request.POST.get("KEY", None)
     print(str(NUM)+ '그리고' + str(KEY))
-    
+
     send_url = 'https://apis.aligo.in/send/' # 요청을 던지는 URL, 현재는 문자보내기
     # ================================================================== 문자 보낼 때 필수 key값
     # API key, userid, sender, receiver, msg
@@ -217,7 +226,7 @@ def ajax_sendSMS(request):
     }
     requests.post(send_url, data=sms_data)
     data = {}
-    
+
     return JsonResponse(data,safe=False)
 
 
@@ -297,6 +306,6 @@ def ajax_pushdate(request):
         detail_month = income.union(spend).order_by('kind')
         even1 = list(detail_month.values('kind','income_date','amount'))
         evens = {'msg1':even1}
-        
+
 
         return JsonResponse(evens)

@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import user
 from django.conf import settings
+
 # Create your models here.
 
 class AccountBook(models.Model):

@@ -16,7 +16,6 @@ def find_income_money(queryset, day):
     if day == item['income_date__day']:
       return item['amount']
 
-
 @register.filter
 def sub(value, arg):
   return value - arg

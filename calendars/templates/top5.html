@@ -169,8 +169,11 @@ const myChart = new Chart(ctx, {
     data: {
         labels: ['쇼핑', '생활', '컨텐츠', '여행', '교통비'],
         datasets: [{
-            label: '# of Votes',
-            data: [30, 30, 5, 2, 15],
+          label: '# of Votes',
+            {% for i in category_count_data%}
+
+            data: [{{i}}],
+            {% endfor %}
             backgroundColor: [
                 '#fd7c78',
                 '#70dafc',
