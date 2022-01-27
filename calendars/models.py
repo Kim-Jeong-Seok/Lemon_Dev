@@ -39,10 +39,12 @@ class Spend(models.Model):
     amount = models.IntegerField(blank=True, null=True)
     place = models.TextField(blank=True, null=True)
     way = models.IntegerField(blank=True, null=True)
-    category = models.ForeignKey(Category, models.DO_NOTHING, db_column='category', blank=True, null=True)
-    card = models.ForeignKey(Cardlist, models.DO_NOTHING, db_column='card', blank=True, null=True)
+    category = models.IntegerField(db_column='category', blank=True, null=True)
+    card = models.CharField(max_length=100, db_column='card', blank=True, null=True)
     memo = models.TextField(blank=True, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
+    stock = models.CharField(max_length=100, blank=True, null=True)
+
 
     class Meta:
         managed = False

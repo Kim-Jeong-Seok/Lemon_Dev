@@ -5,7 +5,7 @@ from .models import Spend, Income
 class SpendForm(forms.ModelForm):
     class Meta:
         model = Spend
-        fields = ['user','kind','spend_date','amount','place', 'way', 'category', 'card', 'memo']
+        fields = ['user','kind','spend_date','amount','place', 'way', 'category', 'card', 'memo', 'stock']
 
 
 class IncomeForm(forms.ModelForm):

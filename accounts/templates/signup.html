@@ -10,7 +10,6 @@
     <!-- <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/> -->
     <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://kit.fontawesome.com/51db22a717.js" crossorigin="anonymous"></script>
 
     <title>레몬::회원가입</title>
 </head>
@@ -119,24 +118,41 @@ textarea{
 </style>
 
 <body>
-<div id="nav" style="border-bottom: 1px solid #f1f1f1;">
-            <div>
-            <div style="text-align:center;">
-                <a style="color: #black;" href="javascript:history.back();"><i class="fa fa-angle-left" style="position: absolute;
-    left: 5px;
-    padding: 14px 15px;
-    top: 0;
-    font-size: 25px;
-    font-weight: 600;color:black;"></i></a>회원가입</div>
-        </div>
-        </div>
     <div class="signup-wrap" style="background-color: #fff;">
 
         <div class="input-form col-md-12 mx-auto" style="height:100%; padding:20px; text-align:left;">
             <div style="width: 100%; text-align:center; margin-bottom:20px; margin-top:30px;">
+                <img src="media/LEMON_LOGO_146x40.png" style="width: 146px; height:40px;">
             </div>
-            <form class="validation-form" method="POST" action="" id="signup-form">
+            <form class="validation-form" method="POST" action="{% url 'accounts:signup' %}" id="signup-form">
                 {% csrf_token %}
+                <div class="service_access">
+                    <div class="all_chk-wrap">
+                    <label style="text-align:end;">
+                        <input type="checkbox" name="all_chk" value ="0" id="all_chk">
+                        <a class="all_chk_font">레몬서비스 이용약관, 개인정보 수집에 모두 동의 합니다.</a>
+                    </div>
+                    <div class="require_chk_wrap">
+                        </label>
+                        <a>레몬서비스 이용약관 동의(필수)</a><br>
+                        <textarea cols="30" rows="10" style="width:100%;" disabled="disabled">이부분은 이용약관관련된 내용이 들어갈 예정입니다.</textarea><br>
+                        <label style="text-align:end;">
+                            <input type="checkbox" name="u_chk" value ="1" id="require_chk">
+                            <span>이용약관에 동의합니다.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="persnal_info_access">
+                    <div class="require_chk_wrap" style="margin-top: 15px;">
+                        <a>개인정보 수집 동의(필수)</a><br>
+                        <textarea cols="30" rows="10" style="width:100%;" disabled="disabled">이부분은 개인정보 수집에 대한 내용이 들어갈 예정입니다.</textarea><br>
+                        <label style="text-align:end;">
+                            <input type="checkbox" name="e_chk" value ="1" id="require_chk">
+                            <span>이용약관에 동의합니다.</span>
+                        </label>
+                    </div>
+                </div>
 
                 <div class="signup-form-wrap">
                     <div class="signup-form">
@@ -153,10 +169,32 @@ textarea{
                                 value="">
                     </div>
                     <div class="signup-form">
+                        <input type="text" class="form-control"
+                                id="name" name="username" placeholder="이름을 입력해주세요." value="">
+                    </div>
+                    <div class="signup-form">
                         <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력해주세요." value="">
                     </div>
+                    <div class="signup-form" style="text-align:left;">
+                        <input type="text" id="phonenumber" class="form-control"
+                                name="phonenumber" placeholder="- 를 제외한 휴대폰번호"
+                                style="width:85%;display:inline;">
+                                <a class="sms_btn" href="#" onclick="click_sms">발송</a>
+                    </div>
+                    <div class="input-style has-icon input-style-1 input-required" id="sms_cert_div" style="display: none">
+                        <span>인증번호</span>
+                        <d class="sms_btn" id="send_sms_cert_btn">확인</d>
+                        <d class="sms_time">남은시간(<d id="time">00:00</d>)</d>
+                        <input type="hidden" id="cert_id" value="">
+                        <input type="number" oninput="maxLengthCheck(this)" class="form-control"
+                            style="padding-right: 140px;padding-left: 10px;" id="cert_key"
+                            name="cert_key" placeholder="인증번호 입력">
+                    </div>
 
-                    <button class="btn btn-primary btn-lg btn-block" id="signupBtn" type="submit" value="signup" style="width:100%">회원가입</button>
+                    <div class="signup-form">
+                        <input type="number" class="form-control" id="invest" name="invest" placeholder="모의 투자금액" value="">
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" id="signupBtn" type="submit" value="signup" disabled style="width:100%">회원가입</button>
                 </div>
             </form>
         </div>
@@ -164,7 +202,7 @@ textarea{
 </body>
 
 <script>
-    
+
     $('#all_chk').change(function () {
         var checked = $(this).prop('checked');
         $('input[id="require_chk"]').prop('checked', checked);
