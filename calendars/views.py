@@ -238,19 +238,25 @@ def category_detail(request, int):
 
 def detail_search(request):
     user = request.user.user_id
-    start_date = request.POST.get('start_date', None)
-    end_date = request.POST.get("end_date", None)
-    spend_date = Spend.objects.filter(user_id=user, spend_date__range=(start_date, end_date)).values('spend_id', 'kind',
+    start_date = request.POST.get('start_date', None )
+    end_date = request.POST.get("end_date",None)
+
+    if not start_date :
+        return redirect('/history')
+    else:
+        spend_date = Spend.objects.filter(user_id=user, spend_date__range=(start_date, end_date)).values('spend_id', 'kind',
                                                                                                      'spend_date',
                                                                                                      'amount', 'place',
                                                                                                      'category')
-    income_date = Income.objects.filter(user_id=user, income_date__range=(start_date, end_date)).values('income_id',
+        income_date = Income.objects.filter(user_id=user, income_date__range=(start_date, end_date)).values('income_id',
                                                                                                         'kind',
                                                                                                         'income_date',
                                                                                                         'amount',
                                                                                                         'income_way',
                                                                                                         'income_way')
-    total_date = spend_date.union(income_date).order_by('-spend_date')
+        total_date = spend_date.union(income_date).order_by('-spend_date')
+
+
 
     return render(request, 'detail_search.html', {'total_date': total_date})
 
@@ -288,72 +294,40 @@ def ajax_sendSMS(request):
 
 def add_income_calendar(request):
     if request.method == "POST":
-        if 'spendbtn' in request.POST:
-            sform = SpendForm(request.POST)
-            if sform.is_valid():
-                user_id = request.POST['user'],
-                kind = sform.cleaned_data['kind'],
-                amount = sform.cleaned_data['amount'],
-                place = sform.cleaned_data['place'],
-                spend_date = sform.cleaned_data['spend_date'],
-                way = sform.cleaned_data['way'],
-                category = sform.cleaned_data['category'],
-                card = sform.cleaned_data['card'],
-                memo = sform.cleaned_data['memo'],
-                stock = sform.cleaned_data['place']
-                sform.save()
-                return redirect('/history')
-
-        elif 'incomebtn' in request.POST:
-            iform = IncomeForm(request.POST)
-            if iform.is_valid():
-                user_id = request.POST['user'],
-                kind = iform.cleaned_data['kind'],
-                amount = iform.cleaned_data['amount'],
-                income_date = iform.cleaned_data['income_date'],
-                income_way = iform.cleaned_data['income_way'],
-                memo = iform.cleaned_data['memo']
-                iform.save()
-                return redirect('/history')
+        Inc = Income.objects.create(
+        user_id = request.POST['user'],
+        kind = request.POST['kind'],
+        amount = request.POST['amount'],
+        income_date = request.POST['income_date'],
+        income_way = request.POST['income_way'],
+        memo = request.POST['memo'],
+        )
+        return redirect('/history')
     else:
-        sform = SpendForm()
         iform = IncomeForm()
-    wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
-    return render(request, 'add_income_calendar.html', {'wntlr': wntlr})
+    return render(request, 'add_income_calendar.html')
 
 
 def add_spend_calendar(request):
     if request.method == "POST":
-        if 'spendbtn' in request.POST:
-            sform = SpendForm(request.POST)
-            if sform.is_valid():
-                user_id = request.POST['user'],
-                kind = sform.cleaned_data['kind'],
-                amount = sform.cleaned_data['amount'],
-                place = sform.cleaned_data['place'],
-                spend_date = sform.cleaned_data['spend_date'],
-                way = sform.cleaned_data['way'],
-                category = sform.cleaned_data['category'],
-                card = sform.cleaned_data['card'],
-                memo = sform.cleaned_data['memo'],
-                stock = sform.cleaned_data['place']
-                sform.save()
-                return redirect('/history')
+        spe = Spend.objects.create(
+            user_id = request.POST['user'],
+            kind = request.POST['kind'],
+            amount = request.POST['amount'],
+            spend_date = request.POST['spend_date'],
+            way = request.POST['way'],
+            #category =request.POST.get('category'),
+            #card = request.POST['card'],
+            memo = request.POST['memo'],
+            stock = request.POST.get('place')[7:],
+            place = request.POST.get('place')[:7],
 
-        elif 'incomebtn' in request.POST:
-            iform = IncomeForm(request.POST)
-            if iform.is_valid():
-                user_id = request.POST['user'],
-                kind = iform.cleaned_data['kind'],
-                amount = iform.cleaned_data['amount'],
-                income_date = iform.cleaned_data['income_date'],
-                income_way = iform.cleaned_data['income_way'],
-                memo = iform.cleaned_data['memo']
-                iform.save()
-                return redirect('/history')
+        )
+
+        return redirect('/history')
     else:
         sform = SpendForm()
-        iform = IncomeForm()
+
     wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
     return render(request, 'add_spend_calendar.html', {'wntlr': wntlr})
 
@@ -382,6 +356,14 @@ def sedit_calendar(request, spend_id):
             memo=request.POST['memo'],
             stock=request.POST['stock'])
         return redirect('/history')
+def delete_shistory(request, spend_id):
+    spend = Spend.objects.get(spend_id = spend_id)
+    spend.delete()
+    return redirect('/history')
+def delete_ihistory(request, income_id):
+    income = Income.objects.get(income_id = income_id)
+    income.delete()
+    return redirect('/history')
 
 
 def iedit_calendar(request, spend_id):

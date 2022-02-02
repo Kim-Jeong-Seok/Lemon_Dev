@@ -23,7 +23,10 @@ urlpatterns = [
     path('sedit_calendar/<int:spend_id>', views.sedit_calendar, name='sedit_calendar'),
     path('iedit_calendar/<int:spend_id>', views.iedit_calendar, name='iedit_calendar'),
     path('category_detail/<int>', views.category_detail, name= 'category_detail'),
-    
+    path('delete_shistory/<int:spend_id>', views.delete_shistory, name='delete_shistory'),
+    path('delete_ihistory/<int:income_id>', views.delete_ihistory, name='delete_ihistory'),
+
+
     path('ajax_pushdate', views.ajax_pushdate, name='ajax_pushdate'),
     path('ajax_sendSMS', views.ajax_sendSMS, name='ajax_sendSMS'),
 ]

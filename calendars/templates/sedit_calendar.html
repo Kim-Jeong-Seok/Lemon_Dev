@@ -303,8 +303,14 @@
         <button class="addBtn" name="spendbtn" value="spendbtn" type="submit" style="width:45%">수정</button>
 
         </div>
-          {% endfor %}
+
     </form>
+    <form action = "{% url 'calendars:delete_shistory' i.spend_id %}" method="POST">
+      {% csrf_token %}
+
+      <input type = "submit" value = "내역삭제">
+        </form>
+        {% endfor %}
     </div>
 </div>
 

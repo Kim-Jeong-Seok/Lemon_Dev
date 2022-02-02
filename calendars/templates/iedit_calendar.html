@@ -247,7 +247,7 @@
                       <option value="2" {% if i.income_way == 2 %} selected {% endif %}>용돈</option>
                       <option value="1" {% if i.income_way == 3 %} selected {% endif %}>금융수입</option>
                       <option value="2" {% if i.income_way == 4 %} selected {% endif %}>사업수입</option>
-                      <option value="1" {% if i.income_way == 5 %} selected {% endif %}>기타</option>                    
+                      <option value="1" {% if i.income_way == 5 %} selected {% endif %}>기타</option>
                     </select>
                     </th>
                 </tr>
@@ -273,8 +273,14 @@
         </div>
     </div>
     </form>
-</div>
+
+<form action = "{% url 'calendars:delete_ihistory' i.income_id %}" method="POST">
+  {% csrf_token %}
+
+  <input type = "submit" value = "내역삭제">
+    </form>
  {% endfor %}
+ </div>
 <script>
 
     //textarea auto height increaze...

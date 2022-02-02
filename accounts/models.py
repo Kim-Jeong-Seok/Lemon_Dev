@@ -4,7 +4,7 @@ from django.utils import timezone
 
 # Create your models here.
 class LemonUserManager(BaseUserManager):
-    def create_user(self,uid, email, username,u_chk,e_chk,  invest, phonenumber, password=None):
+    def create_user(self,uid, pin, gender, job, birthday, email, username,u_chk,  invest, phonenumber, password=None):
         if not email:
             raise ValueError("이메일을 입력해주세요!")
         if not uid:
@@ -17,8 +17,7 @@ class LemonUserManager(BaseUserManager):
             raise ValueError("전화번호를 입력해주세요!")
         if not u_chk:
             raise ValueError("개인정보에 동의 해주세요!")
-        if not e_chk:
-            raise ValueError("이용약관에 동의 해주세요!")
+
 
         user = self.model(
             email = self.normalize_email(email),
@@ -26,8 +25,12 @@ class LemonUserManager(BaseUserManager):
             phonenumber = phonenumber,
             username = username,
             u_chk= u_chk,
-            e_chk=e_chk,
             invest = invest,
+            gender = gender,
+            job = job,
+            birthday= birthday,
+            pin=pin,
+
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -44,7 +47,7 @@ class LemonUserManager(BaseUserManager):
             invest = invest,
         )
         user.set_password(password)
-    
+
         user.is_admin = True
         user.is_active = True
         user.is_superuser = True

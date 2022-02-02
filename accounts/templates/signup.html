@@ -143,14 +143,14 @@
 <div class="signup-wrapper" style="min-width:378px; padding:70px 20px 40px 20px;">
     <form class="validation-form" method="POST" action="{% url 'accounts:signup' %}" id="signup-form">
         {% csrf_token %}
-        <input style="display: none;" type="checkbox" name="u_chk" value ="1" id="require_chk" checked>
+
 
         <div class="persnal_info_access" style="padding-bottom: 20px;">
             <div class="require_chk_wrap">
                 <a>개인정보 수집 동의(필수)</a><br>
                 <textarea cols="30" rows="10" style="width:100%;" disabled="disabled">{% include 'persnal.html' %}</textarea><br>
                 <label style="text-align:end;">
-                    <input type="checkbox" name="e_chk" value ="1" id="require_chk2">
+                    <input type="checkbox" name="u_chk" value ="1" id="require_chk2">
                     <span>이용약관에 동의합니다.</span>
                 </label>
             </div>
@@ -176,6 +176,10 @@
             <div class="signup-form">
                 <input type="text" class="add_info_select_signup"
                     id="name" name="username" placeholder="이름을 입력해주세요." value="">
+            </div>
+            <div class="signup-form">
+                <input type="text" class="add_info_select_signup"
+                    id="pin" name="pin" placeholder="핀번호 입력해주세요." value="">
             </div>
             <!-- 성별 입력 input -->
             <div class="signup-form">

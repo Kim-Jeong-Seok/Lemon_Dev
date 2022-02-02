@@ -124,12 +124,12 @@
             <a style="color:#3a3a3a;" id="year_atag2">년 </a>
             <a style="color: #3a3a3a;" id="month_atag">{{month}}</a>
             <a style="color: #3a3a3a;">월</a></b>
-          <input type="hidden" name ="input_year" id="input_year" value="">
-          <input type="hidden" name="input_month" id="input_month" value="">
-          
+          <input type="hidden" name ="input_year" id="input_year" value=''>
+          <input type="hidden" name="input_month" id="input_month" value=''>
+
           <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right" style="color:#31bc8a"></i></button> <br>
         </div>
-  </form>    
+  </form>
   </div>
 
   <script>
@@ -218,7 +218,7 @@
     <tbody id="list-table-tbody">
     {% for detail in Detail_month %}
     {% ifchanged detail.spend_date.day %}
-    <tr style="vertical-align:top;" id="date_title"> 
+    <tr style="vertical-align:top;" id="date_title">
     <th style="text-align:left;padding-left:5px; border-bottom:1px solid #dddddd;">
       <img src="media/date.png" style="margin-right: 5px; width:20px; height:20px; vertical-align:middle;">
       <a style="font-weight: 100; color:#3a3a3a;font-size:20px; vertical-align: inherit;">{{detail.income_id}}{{ detail.spend_date | date:'d 일' }}</a>
