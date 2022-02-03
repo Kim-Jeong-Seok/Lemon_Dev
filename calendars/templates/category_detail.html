@@ -4,6 +4,8 @@
 {% block container %}
 {% load humanize %}
 {% load mytag %}
+
+{% block nav %}
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
             <div>
             <div style="text-align:center;">
@@ -13,12 +15,12 @@
     top: 0;
     font-size: 25px;
     font-weight: 600;color:black;"></i></a>
-                {% if int == '1' %}식비
-                {% elif int == '2' %}
-                {% endif %} 상세</div>
+                카테고리 상세</div>
         </div>
         </div>
-
+{% endblock nav %}
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <div>
   <table class="list-table" id="list-table" style="background-color:#fff; border-radius:10px; margin: 15px 10px 60px 10px; padding:0 20px 60px 20px; border-collapse:separate; border-spacing:0 20px; "width="95%">
    <colgroup>
@@ -73,7 +75,7 @@
     </style>
     <div class="list-empty-wrap">
       <i class="fas fa-exclamation"></i><br>
-      <a>소비내역 및 지출내역이 없습니다.</a>
+      <a>소비 내역 및 지출 내역이 없습니다.</a>
     </div>
   </tbody>
       {% endfor %}

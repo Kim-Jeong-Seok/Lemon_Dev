@@ -1,20 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}레몬::지출내역수정페이지{% endblock title %}
-
-{% block nav %}
-        <div id="nav">
-            <div>
-            <div style="margin-left:15px; float:left; width:35%;">
-                <a style="color: #fff;" href="javascript:history.back();"<i class="fas fa-arrow-left"></i></a><!--<img style="position: absolute; margin-left:15px;" onclick="location.href='calendar'" src="../../media/lemonlogo_white.png" width="200px"> -->
-            </div>
-        </div>
-        <div style="float:right; margin-right:20px;">
-            <i style="font-size: 30px;" class="fas fa-bell"></i>
-        </div>
-        </div>
-        {% endblock %}
-
 {% block container %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -133,7 +119,7 @@
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         background-color: #fff;
-
+        text-align:center;
     }
     .span_list_select{
         border-top: none;
@@ -151,6 +137,7 @@
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         background-color: #fff;
+        text-align:center;
     }
     .income_list_title{
         float: left;
@@ -193,10 +180,9 @@
         width: 100%;
         height: 40px;
         font-weight: bold;
-        font-size: 1.3rem;
+        font-size: 1rem;
         color: #fff;
-        background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: #31bc8a
     }
     .delBtn{
         border: 1px solid #FC615D;
@@ -204,7 +190,7 @@
         width: 100%;
         height: 40px;
         font-weight: bold;
-        font-size: 1.3rem;
+        font-size: 1rem;
         color: #FC615D;
         background: #FFF;  /* Chrome 10-25, Safari 5.1-6 */
 
@@ -221,7 +207,20 @@
         }
     }
 </style>
-
+{% block nav %}
+<div id="nav" style="border-bottom: 1px solid #f1f1f1;">
+            <div>
+            <div style="text-align:center;">
+                <a style="color: #fff;" href="javascript:history.back();"><i class="fa fa-angle-left" style="position: absolute;
+    left: 5px;
+    padding: 14px 15px;
+    top: 0;
+    font-size: 25px;
+    font-weight: 600;color:black;"></i></a>
+                지출 내역</div>
+        </div>
+        </div>
+{% endblock nav %}
 <div class="addEvent-wrap">
     <div class="list">
         <input type="radio" name="jtags" value="지출" id="span" checked>
@@ -239,19 +238,19 @@
                     <th width="200" height="60"><a class="span_list_title">금액</a></th>
                     <th width="240" style="text-align: end;"><input class="input_span" type="number" name="amount" pattern="\\d*" value="{{i.amount}}"></th>
                 </tr>
-                <tr> <!-- 행선언 -->
-                    <th width="200" height="60"><a class="span_list_title">소비처</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span" type="text" name="place" value="{{i.place}}"></th>
-                </tr>
+<!--          -->
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">날짜</a></th>
                     <th width="240" style="text-align: end;"><input class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{i.spend_date|date:'Y-m-d'}}"></th>
                 </tr>
                 <tr> <!-- 행선언 -->
+                    <th width="200" height="60"><a class="span_list_title">소비처</a></th>
+                    <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="place" name="place" autocomplete="on" value=""></th>
+                </tr>
+                <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">결제수단 </a></th>
                     <th width="240" style="text-align: end;">
                       <select class="span_list_select" name="way" id="spendlist_select">
-
                         <option value="1" {% if i.way == 1 %} selected {% endif %}>현금</option>
                         <option value="2" {% if i.way == 2 %} selected {% endif %}>카드</option>
                         </select></th>
@@ -296,19 +295,22 @@
                         </select>
                     </th>
                 </tr>
-                <tr> <!-- 행선언 -->
-                    <th width="200" height="60"><a class="span_list_title">메모</a></th>
-                    <th width="240" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo">{{i.memo}}</textarea></th>
-                </tr>
             </table>
         </div>
 
-        <div style="text-align:center; margin-top:15px;">
-        <button class="addBtn" name="spendbtn" value="spendbtn" type="submit">수정하기</button>
-        <button class="delBtn" value="delbtn" name="delbtn" type="button" onclick="return confirm('정말로 내역을 삭제하실건가요?')">내역삭제</button>
+        <div style="display:flex;text-align:center; margin-top:15px;justify-content: space-between;">
+            <button class="delBtn" value="delbtn" name="delbtn" type="button" onclick="return confirm('정말로 내역을 삭제하실건가요?')" style="width:45%">삭제</button>
+        <button class="addBtn" name="spendbtn" value="spendbtn" type="submit" style="width:45%">수정</button>
+
         </div>
-          {% endfor %}
+        <input type = "submit" value = "내역삭제">
     </form>
+    <form action = "{% url 'calendars:delete_shistory' i.spend_id %}" method="POST">
+      {% csrf_token %}
+
+      <input type = "submit" value = "내역삭제">
+        </form>
+        {% endfor %}
     </div>
 </div>
 
@@ -320,21 +322,11 @@
       });
 
 
-    $(function() {
-        var cardlist_Tags = [
-        "국민카드",
-        "롯데카드",
-        "BC카드",
-        "삼성카드",
-        "신한카드",
-        "하나카드",
-        "현대카드",
-        "농협카드",
-        "시티카드",
-        "카카오뱅크카드"
-        ];
-        $('#cardlist').autocomplete({
-            source: cardlist_Tags
+     $(function() {
+        var cardlist_Tags = [{% for i in wntlr %}'{{i.ss_isukorabbrv}} : {{i.ss_isusrtcd}}',{% endfor %}];
+        $('#place').autocomplete({
+            source: cardlist_Tags,
+            max:10
         });
     });
 

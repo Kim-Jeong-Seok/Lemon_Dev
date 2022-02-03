@@ -5,6 +5,140 @@
     .bottom-nav-search-stock,.bottom-nav-search-stock a{
         color: #FFD859;
     }
+    .search-logo{
+    position:relative;
+    top:34px;
+    left:10px;
+    }
+    #search_window{
+    width:100%;
+    padding-left:35px;
+    border:0px;
+    padding-top:10px;
+    padding-bottom:10px;
+    border-bottom: 2px solid #31bc8a;
+    }
+    li{
+    padding-bottom:5px;
+    padding-top:5px
+    }
+    .searchbox{
+    position:fixed;
+    top:28px;
+    width:100%
+    }
 </style>
-<a>주식 검색 페이지</a><br>
+{% block nav %}
+<div id="nav" style="border-bottom: 1px solid #f1f1f1;">
+            <div>
+            <div style="text-align:center;">
+                <a style="color: #fff;" href="javascript:history.back();"><i class="fa fa-angle-left" style="position: absolute;
+    left: 5px;
+    padding: 14px 15px;
+    top: 0;
+    font-size: 25px;
+    font-weight: 600;color:black;"></i></a>주식 검색</div>
+        </div>
+        </div>
+{% endblock nav %}
+<div class="searchbox">
+<i class="fa fa-search search-logo" style="color:#31bc8a" aria-hidden="true"></i>
+<input type="text" id="search_window" name="search_window" placeholder="주식 검색">
+</div>
+<div id="search_result" style="height: auto; width:100%;padding-top: 50px;
+">
+    <ol id="result_list" style="list-style:none">
+        <li></li>
+    </ol>
+</div>
+
+<form id="form" method="post">
+    {% csrf_token %}
+    <input type="hidden" id="issuecode" name="issuecode">
+    <input type="hidden" id="marketcode" name="marketcode">
+</form>
+
+
+<script>
+    var csrftoken = getCookie('csrftoken');
+    function getCookie(cname) {
+        var name = cname + "=";
+            decodedCookie = decodeURIComponent(document.cookie);
+            ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i].trim();
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    window.onload = function() {
+        const search_window = document.getElementById('search_window');
+        const result_window = document.getElementById('result_list');
+        search_window.addEventListener('keyup', async function(e) {
+            if (search_window.value != '') {
+                var result = await get_search(search_window.value);
+                result_window.innerHTML = '';
+                if (!result.result[0])
+                    result_window.innerHTML = '검색결과가 없습니다.';
+                if (result.result)
+                    insert_result(result.result, result_window);
+            } else
+                result_window.innerHTML = '검색어를 입력해 주세요';
+        });
+    }
+
+    function get_search(data) {
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json')
+        headers.append('X-CSRFToken', csrftoken)
+        var response = fetch('/stock_search_result', {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(data)
+        })
+        return response.then(res => {
+            if(res.status === 200) return res.json();
+            else console.log(res.statusText);
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
+    function insert_result(data, result_position) {
+        for ( elements in data ) {
+            var logo = data[elements]['logo'];
+            var isukorabbrv = data[elements]['isukorabbrv'];
+            var issuecode = data[elements]['issuecode'];
+            var marketcode = data[elements]['marketcode'];
+
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            // const nbsp = document.createTextNode('\u00A0\u00A0');
+            // const img = new Image(28, 28);
+            //img.src = 'media/LEMON.png' // If insert logo in DB, change img.src = logo
+            // a.appendChild(img);
+            // a.appendChild(nbsp);
+            a.appendChild(document.createTextNode(isukorabbrv+'\u00A0\u00A0'));
+            a.appendChild(document.createTextNode(issuecode+'\u00A0\u00A0'));
+            a.href='javascript:info("'+issuecode+'", "'+marketcode+'")'
+            li.appendChild(a)
+            result_position.append(li);
+        }
+    }
+
+    function info(issuecode, marketcode) {
+        document.getElementById('issuecode').value = issuecode;
+        document.getElementById('marketcode').value = marketcode;
+        const form = document.getElementById('form');
+        form.action="/stock_info"
+        form.submit();
+    }
+</script>
 {% endblock %}

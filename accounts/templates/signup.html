@@ -4,117 +4,130 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="stylesheet" href="{% static 'css/style.css'%}">
-    <link rel="stylesheet" href="{% static 'css/swiper.css'%}">
-    <!-- <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/> -->
-    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 
     <title>레몬::회원가입</title>
 </head>
 <style>
-    .signup-wrap::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, Opera*/
+    body,html{
+        width: 100%;
+        margin: 0;
+        padding: 0;
     }
-.form-control{
-    padding-left: 10px;
-    margin-bottom: 15px;
-    width:98%;
-    height: 40px;
-    border-bottom: 1px solid #31BC89;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    /* ios 기능 */
-    -webkit-user-select:none;
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    border-radius: 0;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    background-color: #fff;
+    .add_info_select_signup{
+		margin-bottom: 10px;
+		padding-left: 10px;
+		background-color: #fff;
+		border: 1px solid #D1D6DA;
+		font-family: 'Noto Sans KR', sans-serif;
+		font-size: 14px;
+		font-weight: 500;
+		width: 96%;
+		height: 35px;
+		border-radius:10px;
+		color:#a0a0a0;
     }
-.sms_btn{
-    width: 40px;
-    height: 30px;
-    padding-top: 6px;
-    text-align: center;
-    vertical-align: middle;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 10pt;
-    font-weight: bold;
-    float:right;
-    color:white !important;
-    background:#31BC89;
-    border-radius:10px;
-    position:relative;
-}
-
-table{
-width:100%;
-height:40px;
-text-align:center;
-position: sticky;
-top: 0px;
-z-index: 2;
-background: white;
-}
-body{
-margin:0px;}
-
-button{
+    .add_info_phone_signup{
+        margin-bottom: 10px;
+        padding-left: 10px;
+        border: 1px solid #D1D6DA;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        width: 75%;
+        height: 35px;
+        border-radius: 10px;
+    }
+.phone_code_btn_signup{
+    margin-top: 1px;
+    width: 73px;
+    height: 35px;
+    background: #31BC89;
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
-    vertical-align: middle;
-    width:100%;
-    height: 50px;
-    margin-top:20px;
-    background:#31BC89;
-    border:0px;
-    border-radius:50px;
-    color:white;
-}
-
-button:disabled{
-    font-family: 'Noto Sans KR', sans-serif;
-    font-weight: bold;
-    font-size: 16px;
-    text-align: center;
-    vertical-align: middle;
-width:100%;
-height: 50px;
-/*margin-top:20px;*/
-    background:#a0a0a0;
-    border:0px;
-    border-radius:50px;
-    color:white;
-}
-textarea{
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 12px;
-    border: 1px solid #CACACA;
+    vertical-align: top;
+    border: 0px;
+    border-radius: 1px;
+    color: white;
     border-radius: 10px;
-    background-color: #fff;
-    resize: none;
-    padding-left: 5px;
-    padding-top: 5px;
 }
-
-.all_chk_wrap{
-    margin-bottom: 15px;
-}
-
-.all_chk_font{
+.phone_code_btn_signup:disabled{
+    margin-top: 1px;
+    width: 73px;
+    height: 35px;
+    background:#a0a0a0;
     font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 400;
-    color: #3a3a3a;
-    font-size: 12pt; /*16px*/
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    vertical-align: top;
+    border: 0px;
+    border-radius: 1px;
+    color: white;
+    border-radius: 10px;
+}
+    button{
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: bold;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+        width:100%;
+        height: 50px;
+        margin-top:40px;
+        background:#31BC89;
+        border:0px;
+        border-radius:10px;
+        color:white;
+    }
+
+    button:disabled{
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: bold;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+        width:100%;
+        height: 50px;
+        /*margin-top:20px;*/
+        background:#a0a0a0;
+        border:0px;
+        border-radius:10px;
+        color:white;
+    }
+
+    textarea{
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 12px;
+        border: 1px solid #CACACA;
+        border-radius: 10px;
+        background-color: #fff;
+        resize: none;
+        padding-left: 5px;
+        padding-top: 5px;
+    }
+
+.count-signup{
+    right: 92px;
+    padding-top: 9px;
+    position: absolute;
+    width: 30px;
 }
 
+    .all_chk_wrap{
+        margin-bottom: 15px;
+    }
+
+    .all_chk_font{
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        color: #3a3a3a;
+        font-size: 12pt; /*16px*/
+    }
 </style>
 
 <body>
@@ -196,25 +209,150 @@ textarea{
                     </div>
                     <button class="btn btn-primary btn-lg btn-block" id="signupBtn" type="submit" value="signup" disabled style="width:100%">회원가입</button>
                 </div>
-            </form>
+            </div>
+            <!-- 생년월일 입력 input -->
+            <div class="signup-form">
+                <a class="add_info_title" style="padding-top:40px;">생년월일</a><br>
+                <input class="add_info_select_signup" name = birthday type="integrity" id="year" maxlength="8" placeholder="예시)19801210">
+            </div>
+            <!-- 모의투자금액 입력 input -->
+            <div class="signup-form">
+                <a class="add_info_title" style="padding-top:40px;">모의투자금액</a><br>
+                <input type="number" class="add_info_select_signup" id="invest" name="invest" placeholder="모의 투자금액을 입력하세요." value="">
+            </div>
+
+            <button class="btn btn-primary btn-lg btn-block" id="signupBtn" type="submit" value="signup" disabled style="width:100%">회원가입</button>
         </div>
-    </div>
+    </form>
+</div><!-- 회원가입 Wrapper 끝 -->
+
 </body>
 
 <script>
+/* 체크버튼 동의시 회원가입 버튼 활성화 스크립트 */
+$('#require_chk2').change(function () {
+    var checked = $(this).prop('checked');
+    $('input[id="require_chk2"]').prop('checked', checked);
+    //$('#signupBtn').removeAttr('disabled');
+    checked ? $('#signupBtn').removeAttr('disabled'):$('#signupBtn').attr('disabled','true');
+});
 
-    $('#all_chk').change(function () {
-        var checked = $(this).prop('checked');
-        $('input[id="require_chk"]').prop('checked', checked);
-        $('#signupBtn').removeAttr('disabled');
-    });
+/* 전화번호 길이 검증 스크립트 */
+document.addEventListener('keydown', function(event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+    };
+}, true);
 
-    $('input[id="require_chk"]').change(function () {
-        var tmpLength = $('input[id="require_chk"]').length;
-        var checkedLength = $('input[id="require_chk"]:checked').length;
-        var selectAll = (tmpLength == checkedLength);
-        $('#all_chk').prop('checked', selectAll);
-        selectAll ? $('#signupBtn').removeAttr('disabled'):$('#signupBtn').attr('disabled','true');});
+  document.addEventListener('keydown', function(event) {
+  if (event.keyCode === 13) {
+    event.preventDefault();
+  };
+}, true);
+</script>
+
+<script>
+    document.getElementById('codeBtn').addEventListener('click', codebtn);
+
+    KEY = undefined;
+    function codebtn(){
+        KEY = makeRandomNum(4);
+        var timer = null;
+        var isRunning = false;
+        var display = $('#count');
+        var leftSec = 180;
+        var phoneInput = document.getElementById('phonenumber');
+        if(phoneInput.value == '' || phoneInput.value == null){
+            alert('휴대전화번호를 입력하세요.');
+            return false;
+        }
+        if(phoneInput.value.length != 11){
+            alert('휴대전화번호 11자리를 입력하세요.');
+            return false;
+        }
+
+        if((phoneInput.value != '' || phoneInput.value != null) && phoneInput.value.length == 11 ){
+            alert('입력하신 휴대번호로 인증번호를 전송하였습니다.');
+            $('#inputCode').removeAttr('disabled');
+            $('#certBtn').removeAttr('disabled');
+            $('#codeBtn').attr('disabled',true);
+            if (isRunning){
+                clearInterval(timer);
+                display.html("");
+                startTimer(leftSec, display);
+            }else{
+                startTimer(leftSec, display);
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'calendars:ajax_sendSMS' %}",
+                data: {
+                    NUM: $('#phonenumber').val(),
+                    KEY: KEY,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function(data){
+                    console.log('성공');
+                },
+                fail: function(data) {
+                    console('실패');
+                },
+            });
+            return 0;
+        }
+        else{
+
+        }
+        // 난수 설정
+        function makeRandomNum(n) {
+            let value = '';
+            for(let i = 0; i < n; i++) {
+                value += Math.floor(Math.random() * 10);
+            }
+            return value;
+        }
+    }
+
+    function certfun() {
+        if(document.querySelector("#inputCode").value == KEY){
+            alert('확인되었습니다.');
+            clearInterval(timer);
+            $('#phonenumber').attr('disabled', true);
+            $('#inputCode').attr('disabled', true);
+            $('#codeBtn').attr('disabled', true);
+            $('#certBtn').attr('disabled', true);
+            document.querySelector("#count").style.display = "none";
+        }
+        else{
+            alert('알수없는 오류가 발생하였습니다. 다시 진행해주세요.');
+        }
+    }
+
+    function startTimer(count, display) {
+        var minutes, seconds;
+        timer = setInterval(function () {
+            minutes = parseInt(count / 60, 10);
+            seconds = parseInt(count % 60, 10);
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+            display.html(minutes + ":" + seconds);
+        // 타이머 끝
+        if (--count < 0) {
+            clearInterval(timer);
+            alert("입력시간이 초과되었습니다.");
+            display.html("00:00");
+            $('#certBtn').attr('disabled', true);
+            $('#codeBtn').removeAttr('disabled');
+            $('.btn_chk').attr("disabled","disabled");
+            isRunning = false;
+            }
+        }, 1000);
+            isRunning = true;
+    }
+
+
 </script>
 
 </html>

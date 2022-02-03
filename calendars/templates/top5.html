@@ -3,8 +3,14 @@
 {% load humanize %}
 {% load static %}
 
-{% block title %}레몬::가계부{% endblock title %}
+{% block title %}레몬::TOP5{% endblock title %}
 {% block container %}
+<script>
+  $(document).ready(function(){
+    $('.footer-selector').fadeIn(550);
+      //document.getElementById('footer_calendar').src = "/media/calendar_active.png";
+  });
+</script>
 <style>
   #container{
     padding-top: 50px !important;
@@ -107,15 +113,15 @@
     padding: 0;
   }
   .pagenation{
-    background-color: #f5f5f5;
-    z-index: 99;
+    background-color: lightgrey;
+    z-index: 10;
     padding:0;
     bottom: 70px;
-    left: 28px;
+    left: 58px;
     position: fixed;
     vertical-align: middle;
     text-align: center;
-    width: 90%;
+    width: 70%;
     height: 30px;
     border-radius: 20px;
     margin: 0 auto;
@@ -124,7 +130,7 @@
     padding-top: 2px;
     font-weight: 500;
     border-radius: 20px;
-    width : 24%;
+    width : 32%;
     height: 30px;
     display:inline-block;
   }
@@ -136,7 +142,7 @@
     color: #fff;
   }
   #pagenation_recom a, #pagenation_summary a, #pagenation_list a{
-    color: #adadad;
+     color: white;
   }
   #pagenation_recom{
     display: none;
@@ -146,12 +152,16 @@
     width:200px !important;
     height:200px !important;
   }
+.footer-line-calendar{
+    width:50px;
+    padding: 12px 0 10px 0;
+    border-bottom: 2px solid #FFF;
+    }
   </style>
-
   <!-- pagenation -->
 <div class="pagenation">
   <ul>
-    <li id="pagenation_recom"><a href="{% url 'calendars:recom' %}">추천</a></li>
+<!--    <li id="pagenation_recom"><a href="{% url 'calendars:recom' %}">추천</a></li>-->
     <li id="pagenation_summary"><a href="{% url 'calendars:summary' %}">요약</a></li>
     <li id="pagenation_list"><a href="{% url 'calendars:history' %}">내역</a></li>
     <li id="pagenation_calendar"><a href="{% url 'calendars:top5' %}">TOP 5</a></li>
@@ -160,10 +170,9 @@
 
 <div class="swiper-slide">
   <!-- 카테고리 탑5 div 시작-->
-  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);">
-    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;">
-      <img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png">
-      <a style="font-weight: bold; font-size:16pt;">소비 Top5 카테고리</a></div>
+   <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;">
+    <div style="text-align:left; font-weight: bold; font-size:16px;">
+      <a style="font-weight: bold; font-size:16pt;">나의 소비 패턴</a></div>
   <div>
   <canvas id="myChart" width="100" height="100"></canvas>
     <ol style="padding-left: 1rem !important;">
@@ -229,7 +238,7 @@ data: {
     }]
 },
 options: {
-  //legend: { display: false },
+  legend: { display: false },
     scales: {
         yAxes: [{
           display:false,
@@ -250,10 +259,9 @@ onClick:function(e){
 </script>
     </div><!-- 카테고리차트 탑5 div 끝-->
 
-  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);"><!-- 소비 탑5 카드사 div 시작-->
-    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;">
-      <img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png">
-      <a style="font-weight: bold; font-size:16pt;">소비 Top5 카드사</a>
+       <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;"><!-- 소비 탑5 카드사 div 시작-->
+    <div style="text-align:left; font-weight: bold; font-size:16px;">
+      <a style="font-weight: bold; font-size:16pt;">카드사 Top5</a>
     </div>
     <div>
       <ol style="padding-left: 1rem !important;">
@@ -319,15 +327,14 @@ onClick:function(e){
     </div>
   </div> <!-- 소비 탑5 카드사 div 끝-->
 
-  <div style="background-color:#fff; margin:20px 5% 0 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);"><!-- 소비 탑5 기업명 div 시작-->
-    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;">
-      <img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png">
-      <a style="font-weight: bold; font-size:16pt;">소비 Top5 기업명</a></div>
+       <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;"><!-- 소비 탑5 기업명 div 시작-->
+    <div style="text-align:left; font-weight: bold; font-size:16px;">
+      <a style="font-weight: bold; font-size:16pt;">소비처 Top5</a></div>
     <div>
       <ol style="padding-left: 1rem !important;">
         <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
           {% for area in category_place %}
-          <tr>
+          <tr onclick="info('주식코드','시장 kospi')">
             <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
             <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:50px; text-align: left;" width='50'>
               <a style="font-weight:bold; color:#3a3a3a">{{ area.place }}</a>
@@ -356,14 +363,13 @@ onClick:function(e){
   </div><!-- 소비 탑5 기업명 div 끝-->
 
     <!-- 건수 탑5 div 시작-->
-  <div style="background-color:#fff; margin:20px 5% 80px 5%; padding: 10px; border-radius:15px; box-shadow:1px 1px 5px 1px rgb(202 202 202);">
-    <div style="text-align:center; font-weight: bold; border-bottom:1px solid #c8c8c8; font-size:16px;">
-      <img style="margin-right:5px; vertical-align:bottom; width: 30px; height: 30px;" src="media/trophy.png">
-      <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">건수 Top5 카테고리</a>
+   <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;">
+    <div style="text-align:left; font-weight: bold; font-size:16px;">
+      <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">카테고리 지출 Top5</a>
     </div>
   <div>
   <ol style="padding-left: 1rem !important;">
-    <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+    <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;" >
       {% for category in Category_count %}
       <tr>
         <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
@@ -394,10 +400,13 @@ onClick:function(e){
   </div>
   </div><!-- 건수 탑5 div 끝-->
 </div>
-
-
-
+<form id="form" method="post">
+    {% csrf_token %}
+    <input type="hidden" id="issuecode" name="issuecode">
+    <input type="hidden" id="marketcode" name="marketcode">
+</form>
   <script>
+  
     var myElement = document.getElementById('container');
 
     // create a simple instance
@@ -412,6 +421,14 @@ onClick:function(e){
     mc.on("swiperight", function(ev) {
         window.location.href="/history";
   });
+
+  function info(issuecode, marketcode) {
+        document.getElementById('issuecode').value = issuecode;
+        document.getElementById('marketcode').value = marketcode;
+        const form = document.getElementById('form');
+        form.action="/stock_info"
+        form.submit();
+    }
   </script>
 
 {% endblock container %}

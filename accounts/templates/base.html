@@ -81,7 +81,7 @@
     }
     	/* footer 관련 css */
 	.bottom-nav-calendar,.bottom-nav-search-stock,
-    .bottom-nav-stock,.bottom-nav-addlist,
+    .bottom-nav-stock,.bottom-nav-portfolio,
     .bottom-nav-myinfo,.bottom-nav-home{
         vertical-align: middle;
         list-style: none;
@@ -91,13 +91,14 @@
         align-items: center;
         justify-content: center;
     }
-    .bottom-nav-calendar i,.bottom-nav-search-stock i,
-    .bottom-nav-stock i,.bottom-nav-addlist i,
-    .bottom-nav-myinfo i,.bottom-nav-home i{
-        font-size: 18px;
+    .bottom-nav-calendar img,.bottom-nav-search-stock img,
+    .bottom-nav-stock img,.bottom-nav-portfolio img,
+    .bottom-nav-myinfo img,.bottom-nav-home img{
+        width: 18px;
+        height: 18px;
     }
     .bottom-nav-calendar a,.bottom-nav-search-stock a,
-    .bottom-nav-stock a,.bottom-nav-addlist a,
+    .bottom-nav-stock a,.bottom-nav-portfolio a,
     .bottom-nav-myinfo a, .bottom-nav-home a{
         font-weight: 500;
         font-size: 14px;
@@ -139,7 +140,7 @@ $( document ).ready(function() {
                 <img onclick="location.href='{% url 'calendars:home' %}'" src="{% static 'main/assets/img/레몬 가로.png'%}" width="100px">
             </div>
             <div style="margin-right:15px; float:right;">
-                <i class ="fa fa-search" style="color:#31bc8a"></i>
+                <a href="{% url 'stocks:search_stock' %}"><i class ="fa fa-search" style="color:#31bc8a"></i></a>
             </div>
         </div>
     </div>
@@ -148,16 +149,17 @@ $( document ).ready(function() {
     <div id="footer">
         {% block footer %}
         <table class="bottom-nav-wrap" style="padding-left:0 !important;">
-            <tr> <li class="bottom-nav-home" style="width: 20%; height:100%; text-align:center;"><a
-                href="{% url 'calendars:home' %}"><i class="fas fa-home"></i></a></li></tr>
-            <tr> <li class="bottom-nav-calendar" style="width: 20%; height:100%; text-align:center;"><a
-                    href="{% url 'calendars:history' %}" ><i class="far fa-calendar-alt"></i></a></li></tr>
-            <tr><li class="bottom-nav-stock" style="width: 20%; height:100%; text-align:center;"><a
-                    href="{% url 'stocks:stock' %}"><i class="fas fa-chart-area"></i></a></li></tr>
-            <tr> <li class="bottom-nav-addlist" style="width: 20%; height:100%; text-align:center;"><a
-                    href="{% url 'stocks:portfolio' %}"><i class="fas fa-user"></i></a></li></tr>
-            <tr><li class="bottom-nav-myinfo" style="width: 20%; height:100%; text-align:center;"><a
-                    href="{% url 'accounts:myinfo' %}"><i class="fas fa-bars"></i></i></a></li></tr>
+            <tr> <li class="bottom-nav-home" style="width: 20%; height:100%; text-align:center;"><a class="footer-line-home"
+                href="{% url 'calendars:home' %}"><img id="footer_home" class="fa-home" src="/media/home.png"></img><br></a>
+                <div class="footer-selector"></div></li></tr>
+            <tr> <li class="bottom-nav-calendar" style="width: 20%; height:100%; text-align:center;"><a class="footer-line-calendar"
+                    href="{% url 'calendars:history' %}" ><img id="footer_calendar" class="fa-calendar" src="/media/calendar.png"></img></a></li></tr>
+            <tr> <li class="bottom-nav-portfolio" style="width: 20%; height:100%; text-align:center;"><a class="footer-line-portfolio"
+                    href="{% url 'stocks:portfolio' %}"><img id="footer_portfolio" class="fa-portfolio" src="/media/portfolio.png"></img></a></li></tr>
+              <tr><li class="bottom-nav-stock" style="width: 20%; height:100%; text-align:center;"><a class="footer-line-stock"
+                    href="{% url 'stocks:stock' %}"><img id="footer_stock" class="fa-stock" src="/media/stock.png"></img></a></li></tr>
+            <tr><li class="bottom-nav-myinfo" style="width: 20%; height:100%; text-align:center;"><a class="footer-line-myinfo"
+                    href="{% url 'accounts:myinfo' %}"><img id="footer_myinfo" class="fa-myinfo" src="/media/myinfo.png"></img></i></a></li></tr>
         </table>
         {% endblock %}
     </div>

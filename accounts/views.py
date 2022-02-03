@@ -35,12 +35,16 @@ def signup(request):
             user = get_user_model().objects.create_user(
                                             uid=request.POST['uid'],
                                             password=request.POST['password'],
-                                            email=request.POST['email'],
                                             username=request.POST['username'],
+                                            gender=request.POST['gender'],
+                                            job=request.POST['job'],
+                                            email=request.POST['email'],
                                             phonenumber=request.POST['phonenumber'],
                                             invest=request.POST['invest'],
                                             u_chk=request.POST['u_chk'],
-                                            e_chk=request.POST['e_chk'],
+                                            pin=request.POST['pin'],
+                                            birthday=request.POST['birthday'],
+
                                             )
             auth.login(request, user)
             return redirect('/')

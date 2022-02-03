@@ -28,15 +28,15 @@
     padding: 0;
   }
   .pagenation{
-    background-color: #f5f5f5;
+    background-color: lightgrey;
     z-index: 10;
     padding:0;
     bottom: 70px;
-    left: 28px;
+    left: 58px;
     position: fixed;
     vertical-align: middle;
     text-align: center;
-    width: 90%;
+    width: 70%;
     height: 30px;
     border-radius: 20px;
     margin: 0 auto;
@@ -45,7 +45,7 @@
     padding-top: 2px;
     font-weight: 500;
     border-radius: 20px;
-    width : 24%;
+    width : 32%;
     height: 30px;
     display:inline-block;
   }
@@ -57,13 +57,20 @@
     color: #fff;
   }
   #pagenation_recom a, #pagenation_list a, #pagenation_calendar a{
-    color: #adadad;
+    color: white;
   }
   #pagenation_recom{
     display: none;
   }
+.fc-scroller{
+overflow:hidden !important;
+}
+.footer-line-calendar{
+    width:50px;
+    padding: 12px 0 10px 0;
+    border-bottom: 2px solid #FFF;
+    }
 </style>
-
 <!-- pagenatino -->
 <div class="pagenation">
   <ul>
@@ -79,13 +86,15 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-          <h3 id="modalTitle" class="modal-title"></h3>
-          <button type="button" onclick="close_btn()" id="close_btn" class="btn btn-default" data-dismiss="modal">X</button>
+        <div style="display:flex;align-items:center;">
+          <img src="media/date.png" style="margin-right: 5px; width:20px; height:20px; vertical-align:middle;"><h3 id="modalTitle" class="modal-title"></h3></div>
+          <button type="button" onclick="close_btn()" id="close_btn" class="btn btn-default" data-dismiss="modal"><i class="far fa-times-circle"></i></button>
       </div>
       <div id="modalBody" class="modal-body">
       </div>
-      <div class="modal-footer">
-        <button type="button" onclick="location.href='add_calendar'" id="add_event" class="addList-btn" data-dismiss="modal">내역추가</button>
+      <div class="modal-footer" style="display:flex;">
+        <button type="button" onclick="location.href='add_spend_calendar'" id="add_event" class="addList-btn" data-dismiss="modal" style="width:47%">지출 추가</button>
+        <button type="button" onclick="location.href='add_income_calendar'" id="add_event" class="addList-btn" data-dismiss="modal" style="width:47%">수입 추가</button>
       </div>
     </div>
   </div>
@@ -100,13 +109,12 @@
 <div class="swiper-slide" data-name="요약" data-hash="summary">
   <div class="money-info-wrap">
     <div class="money-info-container">
-      <a class="money-info-title">
-        <strong>{{user.uid}}</strong>님의 <strong>{{month}}월</strong> 누적금액
-      </a><br>
-
-      <div class="amountMoney">
+      <b class="money-info-title">
+        <strong>{{month}}월</strong> 누적 금액
+      </b>
+      <div class="amountMoney" style="padding-top:10px;">
         <a id="amount-money1" style="display: none;">{{Expenditure.amount__sum|default_if_none:'0'|intcomma}}</a>
-        <div class="money-wrap"><a id="amount-money" class="amount-money"></a><a class="amount-won">won</a></div>
+        <div class="money-wrap"><b id="amount-money" class="amount-money"></b><b class="amount-won">won</b></div>
       </div>
 
       <script>
@@ -122,12 +130,12 @@
         cn1element.innerHTML = cn1;
       </script>
 
-      <div style="text-align:initial; padding-left:1rem;">
+      <div style="text-align:initial; padding-top:10px;padding-left:16px;">
         <div style="margin-top:10px; margin-bottom:10px;">
           <a style="color:#FFF; font-weight: bold;">지출</a> <a style="margin-left: 10px; margin-right:10px; font-weight:400; color:#FFF;">{{Expenditure.amount__sum|default_if_none:'0'|intcomma}} won</a>
         </div>
 
-        <div style="margin-bottom:20px; width:50%; position:relative; padding-bottom:2px; border-bottom:1px solid #fff;">
+        <div style="margin-top:10px; margin-bottom:10px;">
           <a style="color:#FFF; font-weight: bold;">수입</a> <a style="margin-left: 10px; font-weight:400; color:#FFF;">{{Income.amount__sum|default_if_none:'0'|intcomma}} won</a>
         </div>
 
@@ -154,6 +162,7 @@
           selectOverlap:false,
           editable: false,
           droppable:false,
+          disableDragging: true,
           themeSystem: 'standard',
           dragScroll:false,
           headerToolbar: {
@@ -214,8 +223,8 @@
               reset.innerHTML = '';
               $.each (msg_value, function (index, el) {
                 console.log('element', index, el);
-                element.innerHTML += '<div class="modal-body-text">'+el.kind+
-                                    el.amount +'원</div>';
+                element.innerHTML += '<div class="modal-body-text"><div class="modal-body-kind">'+el.kind+'</div>'
+                                    +'<div class="modal-body-amount">'+ el.amount +'원</div></div>';
               });
             },
             fail: function() {
@@ -230,12 +239,18 @@
         calendar.render();
       });
       </script>
-        <div class="cal-container" id="cal-container">
+        <div class="cal-container noselect" id="cal-container">
           <div id='calendar'></div>
         </div>
         <input type="hidden" value="" id="click_date">
 
 </div><!--- 요약 SWIPER div영역 끝 --->
+<script>
+  $(document).ready(function(){
+    //$('.footer-selector').fadeIn(550);
+      //document.getElementById('footer_calendar').src = "/media/calendar_active.png";
+  });
+</script>
 <script>
   var myElement = document.getElementById('container');
 

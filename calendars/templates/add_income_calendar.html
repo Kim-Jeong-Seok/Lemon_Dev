@@ -1,8 +1,20 @@
-]{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
-{% block title %}레몬::수입내역수정페이지{% endblock title %}
+{% block title %}레몬::추가하기{% endblock title %}
 
-
+{% block nav %}
+      <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
+            <div>
+            <div style="text-align:center;">
+                <a style="color: #fff;" href="javascript:history.back();"><i class="fa fa-angle-left" style="position: absolute;
+    left: 5px;
+    padding: 14px 15px;
+    top: 0;
+    font-size: 25px;
+    font-weight: 600;color:black;"></i></a>수입 작성</div>
+        </div>
+        </div>
+        {% endblock %}
 
 {% block container %}
 
@@ -44,9 +56,6 @@
       ::-webkit-scrollbar-thumb{
         width: 30px;
       }
-    .span_div{
-        display: none;
-    }
     .addEvent-wrap{
         background-color: #fff;
         position: relative;
@@ -69,24 +78,24 @@
         white-space: initial;
     }
     label {
-    width: 90%;
+    width: 100px;
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: 500;
     display: inline-block;
     border-radius: 15px;
     text-align: center;
     text-decoration: none;
-    /*border: solid 1px rgb(202, 202, 202);*/
+    border: solid 1px #4C8AE5;
     transition: 0.25s;
     padding: 6px 18px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
     margin: 3px;
     }
     input[type="radio"]:checked + label {
-    width: 90%;
-    background: #fff;
-    color: #202020;
+    width: 100px;
+    background: #4C8AE5;
+    color: #fff;
     }
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
@@ -113,7 +122,7 @@
         border-top: none;
         border-left: none;
         border-right: none;
-        border-bottom: 1px solid #767676;
+        border-bottom: 1px solid rgb(202, 202, 202);
         /* ios 기능 */
         appearance: none;
         -moz-appearance: none;
@@ -122,7 +131,7 @@
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         background-color: #fff;
-    text-algin:center;
+
     }
     .span_list_select{
         border-top: none;
@@ -140,7 +149,7 @@
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         background-color: #fff;
-        text-align:center;
+        border-bottom: 1px solid rgb(202, 202, 202);
     }
     .income_list_title{
         float: left;
@@ -148,19 +157,20 @@
         margin-left: 10px;
         font-family: 'Noto Sans KR', sans-serif;
         font-weight: 600;
-        font-size: 1.4rem;
+        font-size: 14px;
         margin-right: 2rem;
     }
     .input_textarea{
         width: 230px;
+        height:150px;
         overflow:visible;
-        font-size: 1.3rem;
+        font-size: 15px;
         font-family: 'Noto Sans KR', sans-serif;
         font-weight: 400;
         border-top: none;
         border-left: none;
         border-right: none;
-        border-bottom: 1px solid #767676;
+        border-bottom: 1px solid rgb(202, 202, 202);
         resize: none;
         /* ios 기능 */
         appearance: none;
@@ -174,29 +184,32 @@
         -webkit-user-select: auto;
         -ms-user-select: auto;
         user-select: auto;
-
     }
+
+
     .addBtn{
-        margin-bottom: 20px;
         border: 1px solid transparent;
         border-radius: 10px;
         width: 100%;
-        height: 40px;
+        height: 50px;
         font-weight: bold;
-        font-size: 1rem;
+        font-size: 18px;
         color: #fff;
-        background: 31bc8a
+        background: #31bc8a;
+        margin-top: 20px;
     }
-    .delBtn{
-        border: 1px solid #FC615D;
-        border-radius: 10px;
-        width: 100%;
-        height: 40px;
-        font-weight: bold;
-        font-size: 1rem;
-        color: #FC615D;
-        background: #FFF;  /* Chrome 10-25, Safari 5.1-6 */
+    .ui-autocomplete {
+    height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position:relative !important;
+    left:0px !important;
+    padding-left:20px;
+    padding-right:20px;
+    margin:40px;
+    }
 
+    ::-webkit-scrollbar {display:none;
     }
     @media screen and (max-width: 420px) {
         .span_table a{
@@ -204,34 +217,19 @@
         }
         .input_span{
             font-size: 15px;
-            text-align:center;
+            border-bottom: 1px solid rgb(202, 202, 202);
         }
         .span_list_select{
             font-size: 15px;
+            border-bottom: 1px solid rgb(202, 202, 202);
         }
     }
+
 </style>
-{% block nav %}
-<div id="nav" style="border-bottom: 1px solid #f1f1f1;">
-            <div>
-            <div style="text-align:center;">
-                <a style="color: #fff;" href="javascript:history.back();"><i class="fa fa-angle-left" style="position: absolute;
-    left: 5px;
-    padding: 14px 15px;
-    top: 0;
-    font-size: 25px;
-    font-weight: 600;color:black;"></i></a>
-                수입 내역</div>
-        </div>
-        </div>
-{% endblock nav %}
+
 <div class="addEvent-wrap">
-    <div class="list">
-        <input type="radio" name="jtags" value="수입" id="income" checked>
-        <label for="income">수입내역 수정하기</label>
-    </div>
-    {% for i in income %}
-    <form action="{% url 'calendars:iedit_calendar' i.income_id %}" method = "POST">
+
+    <form action="{% url 'calendars:add_income_calendar' %}" method = "POST">
         {% csrf_token %}
     <div class="income_div" id="income_div">
         <div class="income_list">
@@ -243,97 +241,84 @@
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">수입수단</a></th>
                     <th width="240" style="text-align: end;"><select class="span_list_select" name="income_way">
-                      <option value="1" {% if i.income_way == 1 %} selected {% endif %}>급여</option>
-                      <option value="2" {% if i.income_way == 2 %} selected {% endif %}>용돈</option>
-                      <option value="1" {% if i.income_way == 3 %} selected {% endif %}>금융수입</option>
-                      <option value="2" {% if i.income_way == 4 %} selected {% endif %}>사업수입</option>
-                      <option value="1" {% if i.income_way == 5 %} selected {% endif %}>기타</option>
+                        <option style="text-align: center;" value='' selected>선택</option>
+                        <option value='1'>급여</option>
+                        <option value='2'>용돈</option>
+                        <option value='3'>금융수입</option>
+                        <option value='4'>사업수입</option>
+                        <option value='5'>기타</option>
                     </select>
                     </th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">날짜</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span" type="date" id="datepicker4" min="1900-01-01" max="2099-12-31" autocomplete="off" name="income_date" value="{{i.income_date|date:'Y-m-d'}}"></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" type="date" id="datepicker4" min="1900-01-01" max="2099-12-31" autocomplete="off" name="income_date" value="{{form.income_date.value|default_if_none:''}}"></th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">금액</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" pattern="\\d*" value="{{i.amount}}"/></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" value="{{form.amount.value|default_if_none:''}}"/></th>
                 </tr>
                 <tr> <!-- 행선언 -->
                 <th width="200" height="60"><a class="span_list_title">메모</a></th>
-                <th width="240" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo" >{{i.memo}}</textarea></th>
+                <th width="240" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo" placeholder="메모"></textarea></th>
             </tr>
 
             </table>
         </div>
 
-        <div style="display:flex;text-align:center; margin-top:15px;justify-content: space-between;">
-            <button class="delBtn" value="delbtn" name="delbtn" type="button" onclick="return confirm('정말로 내역을 삭제하실건가요?')" style="width:45%">삭제</button>
-            <button class="addBtn" value="incomebtn" name="incomebtn" type="submit" style="width:45%">수정</button>
+        <div style="text-align:center; margin-top:15px;">
+            <button class="addBtn" value="incomebtn" name="incomebtn" type="submit">추가하기</button>
         </div>
     </div>
-      <input type = "submit" value = "내역삭제">
     </form>
+</div>
 
-
- {% endfor %}
- </div>
 <script>
-
     //textarea auto height increaze...
-    $("textarea.input_textarea").on('keydown keyup', function () {
-        $(this).height(1).height( $(this).prop('scrollHeight')+12 );
-      });
+<!--    $("textarea.input_textarea").on('keydown keyup', function () {-->
+<!--        $(this).height(1).height( $(this).prop('scrollHeight')+12 );	-->
+<!--      });-->
 
 
     $(function() {
-        var cardlist_Tags = [
-        "국민카드",
-        "롯데카드",
-        "BC카드",
-        "삼성카드",
-        "신한카드",
-        "하나카드",
-        "현대카드",
-        "농협카드",
-        "시티카드",
-        "카카오뱅크카드"
-        ];
-        $('#cardlist').autocomplete({
-            source: cardlist_Tags
+        var cardlist_Tags = [{% for i in wntlr %}
+        '{{i.ss_isukorabbrv}} :{{i.ss_isusrtcd}}',
+        {% endfor %}];
+        $('#place').autocomplete({
+            source: cardlist_Tags,
+            max:10
         });
-    });
-
-    /*
+     });
+/*
     $(document).ready(function(){
         //키를 누르거나 떼었을때 이벤트 발생
         $("#numcomma").bind('keyup keydown',function(){
             inputNumberFormat(this);
         });
-
+    
         //입력한 문자열 전달
         function inputNumberFormat(obj) {
             obj.value = comma(uncomma(obj.value));
         }
-
+          
         //콤마찍기
         function comma(str) {
             str = String(str);
             return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
         }
-
+    
         //콤마풀기
         function uncomma(str) {
             str = String(str);
             return str.replace(/[^\d]+/g, '');
         }
-
+    
         //숫자만 리턴(저장할때)
         //alert(cf_getNumberOnly('1,2./3g')); -> 123 return
         function cf_getNumberOnly (str) {
             var len      = str.length;
             var sReturn  = "";
-
+    
             for (var i=0; i<len; i++){
                 if ( (str.charAt(i) >= "0") && (str.charAt(i) <= "9") ){
                     sReturn += str.charAt(i);

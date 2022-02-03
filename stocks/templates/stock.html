@@ -2,27 +2,125 @@
 {% load static %}
 {% block title %}레몬::주식{% endblock title %}
 {% block container %}
+{% load humanize %}
+{% load mathfilters %}
 <style>
-    .bottom-nav-stock,.bottom-nav-stock a{
-      color: #FFD859;
+    #footer_sotck{
+        background: url(..media/stock_active.png);
+    }
+    .stock{
+    padding-left:20px;
+        padding-right:20px;
+        padding-bottom:30px;
+    }
+    .stocks{
+    padding-bottom:30px;
+    border-bottom: 1px solid #ebebeb;
+    }
+     .stock_name{
+    display:inline-block;
+    }
+    .stock_current_price{
+    float:right;
+    }
+    .buy_price{
+     display:inline-block;
+     float:right;
+     }
+     .refresh{
+     float:right;
+     color:#31bc8a;
+     }
+    ::-webkit-scrollbar {
+    display: none;
+}
+.footer-line-stock{
+    width:50px;
+    padding: 12px 0 10px 0;
+    border-bottom: 2px solid #FFF;
     }
 </style>
-
 {% load mytag %}
-- 내가 구매한 주식
-<br/>
-{% for ele in stock_data %}
-    {{ele.0}}&nbsp;&nbsp;
-    {{ele.2}} (현재가)<br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    (구매가) {{ele.1}} &nbsp;&nbsp; {{ele.2|yields:ele.1|rounds:2}}%<br/><br/>
-
-{% empty %}
-    <span>구매한 주식이 없습니다</span>
-{% endfor %}
-
-<button onclick="fn_koscom_history()">주식history가져오기</button>
-
+<table style="position:fixed;background-color:white;hegith:35px;">
+    <tr>
+        <td style="width:50%;text-align:center;" onclick="move_page(0)">보유 주식</td>
+        <td style="width:50%;text-align:center;" onclick="move_page(1)">관심 주식<td/>
+    </tr>
+</table>
+<div style="padding-top:35px;">
+<div class="swiper">
+    <div class="swiper-scrollbar" style="top:0px;height:3px;"></div>
+    <div class="swiper-wrapper">
+        <div class="swiper-slide">
+            <div class="stock">
+<!--                <div>-->
+<!--                    &lt;!&ndash;    <b class="refresh" onclick="fn_koscom_history()"><i class="fa fa-refresh" aria-hidden="true"></i></b>&ndash;&gt;-->
+<!--                    <strong>{{user.username}}</strong>님의<br>-->
+<!--                    <strong>보유 주식</strong>-->
+<!--                </div>-->
+                <div style="padding-top:20px;margin-bottom:20px;">
+                    {% for ele in stock_data %}
+                    <div class="stocks" onclick="info('{{ele.3}}','{{ele.4}}')">
+                        <div class="stock_name">{{ele.0}}</div>
+                        <div class="stock_current_price">{{ele.2|intcomma}}원</div>
+                        <div>
+                            <div style="float:right;padding-left:5px;"> {{ele.2|yields:ele.1|rounds:2}}%</div>
+                            <div class="buy_price"> {{ele.1|intcomma }}원</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <span>구매한 주식이 없습니다</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="swiper-slide">
+        </div>
+    </div>
+</div>
+</div>
+<form id="form" method="post">
+    {% csrf_token %}
+    <input type="hidden" id="issuecode" name="issuecode">
+    <input type="hidden" id="marketcode" name="marketcode">
+</form>
+<link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+<script>
+    var swiper = new Swiper('.swiper', {
+  scrollbar: {
+    el: '.swiper-scrollbar',
+  },
+});
+    function move_page(index){
+    swiper.slideTo(index)
+    swiper.update();
+    }
+    function info(issuecode, marketcode) {
+        document.getElementById('issuecode').value = issuecode;
+        document.getElementById('marketcode').value = marketcode;
+        const form = document.getElementById('form');
+        form.action="/stock_info"
+        form.submit();
+    }
+    var body_height = document.documentElement.clientHeight - 145;
+    $('.swiper-wrapper').height(body_height)
+    $('.swiper').height(body_height)
+    swiper.update();
+</script>
+<Style>
+    .swiper-scrollbar-drag{
+    background:#31bc8a;
+    }
+    .swiper {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+    .swiper-slide {
+        overflow-y: scroll;
+    }
+</Style>
 <script>
     var csrftoken = getCookie('csrftoken');
     function getCookie(cname) {
@@ -43,12 +141,12 @@
 
     function fn_koscom_history() {
         var data = {
-                'marketcode': 'kospi',
-                'issuecode': '005930',
-                'trnsmCycleTpCd': 'D',
-                'inqStrtDd': '20170101',
-                'inqEndDd': '20170331',
-                'reqCnt': '20'
+<!--                'marketcode': 'kospi',-->
+<!--                'issuecode': '005930',-->
+<!--                'trnsmCycleTpCd': 'D',-->
+<!--                'inqStrtDd': '20170101',-->
+<!--                'inqEndDd': '20170331',-->
+<!--                'reqCnt': '20'-->
             }
             headers = new Headers();
         headers.append('Content-Type', 'application/json')
@@ -69,6 +167,12 @@
             console.log(err)
         })
     }
+
 </script>
 
+<script>
+$(document).ready(function(){
+   // $('.footer-selector').fadeIn(550);
+});
+</script>
 {% endblock %}

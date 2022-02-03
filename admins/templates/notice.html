@@ -16,7 +16,6 @@
     display: flex;
     justify-content: space-between;
     align-items : center;
-    border-bottom: 1px solid #ddd;
   }
   .fa-chevron-left{
     padding-top: 3px;
@@ -29,7 +28,13 @@
   section {
     padding: 5px;
   }
+.footer-line-myinfo{
+    width:50px;
+    padding: 12px 0 10px 0;
+    border-bottom: 2px solid #FFF;
+    }
 </style>
+{% block nav %}
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
             <div>
             <div style="text-align:center;">
@@ -41,13 +46,13 @@
     font-weight: 600;color:black;"></i></a>공지사항</div>
         </div>
         </div>
-
+{% endblock nav %}
   <section>
     <div class="notice-wrap">
       {% for notice in notices %}
       <div class="notice-contents" onclick="location.href='{% url 'admins:notice_detail' notice.notice_id %}'">
         <div>
-            <a class="notice-title">{{ notice.title }}</a>
+      <a class="notice-title">{{ notice.title }}</a>
           <i style="margin-top:10px; float: right;" class="fas fa-chevron-right"></i>
         </div>
         <div>

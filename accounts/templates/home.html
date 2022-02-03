@@ -13,13 +13,7 @@
     select::-ms-expand{
         display:none;/*for IE10,11*/
     }
-    body{
-        background-color: #F3F4F6;
-    }
     /* FOOTER에서 사용하는 CSS */
-    .bottom-nav-home{
-        color: #FFD859 !important;
-    }
 
     .bottom-nav-home a{
         color: #FFD859 !important;
@@ -44,62 +38,69 @@
     width:250px !important;
     height:250px !important;
   }
-
-
+  .footer-line-home{
+    width:50px;
+    padding: 12px 0 10px 0;
+    border-bottom: 2px solid #FFF;
+    }
 </style>
-{% if user.e_chk == 0 %}
+
+
+{% if user.u_chk == 0 %}
 <style>
     #footer{
         display:none;
     }
 </style>
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
-            <div>
-            <div style="text-align:center;">회원가입</div>
+    <div>
+    <div style="text-align:center;">소셜로그인 추가정보 수집 안내</div>
 <!--                <a style="color: #black;" href="javascript:history.back();"><i class="fa fa-angle-left" style="position: absolute;-->
 <!--    left: 5px;-->
 <!--    padding: 14px 15px;-->
 <!--    top: 0;-->
 <!--    font-size: 25px;-->
 <!--    font-weight: 600;color:black;"></i></a>-->
-        </div>
-        </div>
+    </div>
+</div>
     <div class="signup-wrap" style="background-color: #fff;">
   <div class="signup-wrap">
     <div class="alert alert-danger" role="alert">
-        <a>최초 로그인시, <strong>레몬서비스 이용약관</strong> 및 <strong>개인정보 수집 동의 </strong>와
+        <a>최초 로그인시, <strong>개인정보 수집 동의 </strong>와
         <strong>추가정보 입력</strong> 후 서비스 사용가능합니다.</a>
     </div>
     <div class="input-form col-md-12 mx-auto" style="height:100%; padding:0 20px; text-align:left;">
 
         <div style="width: 100%; text-align:center; margin-top:10px;">
-<!--            <img src="media/LEMON_LOGO_146x40.png" style="width: 146px; height:40px;">-->
+        <!--<img src="media/LEMON_LOGO_146x40.png" style="width: 146px; height:40px;">-->
         </div>
         <form class="validation-form" method="POST" action="{% url 'calendars:home' %}" id="signup-form">
             {% csrf_token %}
             <div class="service_access">
-                <div class="all_chk-wrap" style="text-align:left;">
-                <label style="text-align:left;">
-                    <input type="checkbox" name="all_chk" value ="0" id="all_chk">
+                <div class="all_chk-wrap" style="text-align:left; display:none;">
+                    <label style="text-align:left;">
+                    <input type="checkbox" name="all_chk" value ="0" id="all_chk" checked>
                     <a class="all_chk_font">레몬 서비스 이용약관, 개인정보 수집에 모두 동의 합니다.</a>
                 </div>
-                <div class="require_chk_wrap" style="padding-top:10px;">
+                <div class="require_chk_wrap" style="padding-top:10px; display:none;">
                     </label>
                     <a>레몬서비스 이용약관 동의(필수)</a><br>
-                    <textarea cols="30" rows="5" style="width:100%;" disabled="disabled">이부분은 이용약관관련된 내용이 들어갈 예정입니다.</textarea><br>
+                    <textarea cols="30" rows="5" style="width:100%;" disabled="disabled">
+
+                    </textarea><br>
                     <label style="text-align:end;">
-                        <input type="checkbox" name="u_chk" value ="1" id="require_chk">
+                        <input type="checkbox" name="u_chk" value ="1" id="require_chk" checked>
                         <span>이용약관에 동의합니다.</span>
                     </label>
                 </div>
             </div>
 
-            <div class="persnal_info_access" style="padding-top:10px;">
+            <div class="persnal_info_access" style="padding-top:10px; min-width:375px;">
                 <div class="require_chk_wrap" style="margin-top: 15px;">
                     <a>개인정보 수집 동의(필수)</a><br>
-                    <textarea cols="30" rows="5" style="width:100%;" disabled="disabled">이부분은 개인정보 수집에 대한 내용이 들어갈 예정입니다.</textarea><br>
+                    <textarea cols="30" rows="5" style="width:100%;" disabled="disabled">{% include "persnal.html" %}</textarea><br>
                     <label style="text-align:end;">
-                        <input type="checkbox" name="e_chk" value ="1" id="require_chk">
+                        <input type="checkbox" name="e_chk" value ="1" id="require_chk2">
                         <span>이용약관에 동의합니다.</span>
                     </label>
                 </div>
@@ -119,11 +120,11 @@
                     <option value="4">의사</option>
                 </select> <br>
                 <a class="add_info_title" style="padding-top:40px;">연락처</a><br>
-                <div style="width:100%;">
-                <input class="add_info_phone" id="phonenumber" name="phonenumber" type="text" placeholder="- 를 제외하고 입력하세요">
-                <button type="button" id="codeBtn" class="phone_code_btn">발송</button><br>
-                <input id="inputCode" class="add_info_phonecode" type="number" placeholder="인증번호 입력" disabled> <a id="count" class="count"></a>
-                <button style="float: right;" type="button" id="certBtn" onclick="certfun();" class="phone_code_btn" disabled >확인</button><br>
+                <div style="width:100%; min-width:373px;">
+                    <input class="add_info_phone" id="phonenumber" name="phonenumber" type="text" placeholder="- 를 제외하고 입력하세요">
+                    <button type="button" id="codeBtn" class="phone_code_btn">발송</button><br>
+                    <input id="inputCode" class="add_info_phonecode" type="number" placeholder="인증번호 입력" disabled> <a id="count" class="count"></a>
+                    <button type="button" id="certBtn" onclick="certfun();" class="phone_code_btn" disabled >확인</button><br>
                 </div>
                 <a class="add_info_title" style="padding-top:40px;">생년월일</a><br>
                     <input class="add_info_year" name = birthday type="integrity" id="year" maxlength="8" placeholder="예시)19801210">
@@ -147,18 +148,20 @@ document.addEventListener('keydown', function(event) {
   };
 }, true);
 
-$('#all_chk').change(function () {
+$('#require_chk2').change(function () {
     var checked = $(this).prop('checked');
-    $('input[id="require_chk"]').prop('checked', checked);
-    $('#signupBtn').removeAttr('disabled');
+    $('input[id="require_chk2"]').prop('checked', checked);
+    //$('#signupBtn').removeAttr('disabled');
+    checked ? $('#signupBtn').removeAttr('disabled'):$('#signupBtn').attr('disabled','true');
 });
 
+/*
 $('input[id="require_chk"]').change(function () {
     var tmpLength = $('input[id="require_chk"]').length;
     var checkedLength = $('input[id="require_chk"]:checked').length;
     var selectAll = (tmpLength == checkedLength);
     $('#all_chk').prop('checked', selectAll);
-    selectAll ? $('#signupBtn').removeAttr('disabled'):$('#signupBtn').attr('disabled','true');});
+    selectAll ? $('#signupBtn').removeAttr('disabled'):$('#signupBtn').attr('disabled','true');});*/
 </script>
 
 <script>
@@ -269,20 +272,23 @@ $('input[id="require_chk"]').change(function () {
 {% else %}
 <div class="home-wrap">
     <div class="home-title">
-        <a>{{user.username}}님의 <br> 소비와 투자 현황입니다.</a>
+        <a><strong>{{user.username}}</strong>님의 <br><strong>소비</strong>와 <strong>투자 현황</strong></a>
     </div>
 
-    <div class="home-chart">
+    <div class="home-chart" id="home-chart">
         <canvas id="myChart2" width="100" height="100"></canvas>
         <script>
         const ctx = document.getElementById('myChart2').getContext('2d');
         const myChart = new Chart(ctx, {
+            if(data=['0','0']){
+                console.log('데이터가 0');
+            },
             type: 'doughnut',
             data: {
                 labels: ['가계부지출','가계부수입','모의투자금액','주식수입'],
                 datasets: [{
                     label: ['가계부지출','가계부수입','모의투자금액','주식수입'],
-                    data: [1000000, 2000000, 400000, 100000],
+                    data: {{ Home_chartjs_data }},
                     backgroundColor: [
                         '#5989DD',
                         '#D46A84',
@@ -311,7 +317,7 @@ $('input[id="require_chk"]').change(function () {
 
     <div class="home-spand-div">
         <div class="home-spand-title">
-            <a>{{month}}월 소비</a>
+            <a><strong>{{month}}월</strong> 소비</a>
             <b class="home-spand-dateView" id="date_view"></b>
         </div>
 
@@ -361,6 +367,13 @@ $('input[id="require_chk"]').change(function () {
     console.log(today);
     $('#date_view').html(today);
     $('#date_view2').html(today);
+</script>
+
+<script>
+    $(document).ready(function(){
+        //$('.footer-line-home').fadeIn(550);
+        //document.getElementById('footer_home').src = "/media/home_active.png";
+    });
 </script>
 
 {% endif %}

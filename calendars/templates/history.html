@@ -1,43 +1,25 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}레몬::추천{% endblock title %}
+{% block title %}레몬::내역{% endblock title %}
 {% block container %}
 {% load humanize %}
 {% load mytag %}
-
 <style>
-   /* FOOTER에서 사용하는 CSS */
-   .bottom-nav-calendar{
-    color: #FFD859 !important;
-  }
-
-  .bottom-nav-calendar a{
-    color: #FFD859 !important;
-  }
-
-  .bottom-nav-search-stock a,.bottom-nav-home a,
-  .bottom-nav-stock a,.bottom-nav-addlist a,
-  .bottom-nav-myinfo a{
-    font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 500;
-    font-size: 0.8rem;
-    color: #D1D6DA !important;
-  }
   ul{
     list-style: none;
     margin:0;
     padding: 0;
   }
   .pagenation{
-    background-color: #f5f5f5;
+    background-color: lightgrey;
     z-index: 10;
     padding:0;
     bottom: 70px;
-    left: 28px;
+    left: 58px;
     position: fixed;
     vertical-align: middle;
     text-align: center;
-    width: 90%;
+    width: 70%;
     height: 30px;
     border-radius: 20px;
     margin: 0 auto;
@@ -46,7 +28,7 @@
     padding-top: 2px;
     font-weight: 500;
     border-radius: 20px;
-    width : 24%;
+    width : 32%;
     height: 30px;
     display:inline-block;
   }
@@ -58,7 +40,7 @@
     color: #fff;
   }
   #pagenation_recom a, #pagenation_summary a, #pagenation_calendar a{
-    color: #adadad;
+    color: white;
   }
   #pagenation_recom{
     display: none;
@@ -83,6 +65,7 @@
     border-radius: 5px;
     width:47%;
     height:30px;
+    background:white;
   }
   .search-btn{
     margin: 25px 0 5px 0;
@@ -95,6 +78,11 @@
     border-radius: 5px;
     color: #fff;
   }
+.footer-line-calendar{
+    width:50px;
+    padding: 12px 0 10px 0;
+    border-bottom: 2px solid #FFF;
+    }
 </style>
 <!-- pagenation -->
 <div class="pagenation">
@@ -108,9 +96,20 @@
 <!-- pagenation 끝 -->
 
 <!-- 소비내역추가하기버튼 -->
-<div class="addevent-btn">
-  <a style="color: #fff;font-size:18px;" href="{% url 'calendars:add_calendar' %}"><i class="fas fa-pencil-alt"></i></a>
-</div>
+<div class="addevent-btn" onclick="more_btn()"><i class="fas fa-pencil-alt" style="color: #fff;font-size:18px;"></i></div>
+<div class="addevent-btn spend_btn" style="bottom:100px;display:none;"><a style="color: #fff;font-size:18px;" href="{% url 'calendars:add_spend_calendar' %}">지출</a></div>
+<div class="addevent-btn income_btn" style="bottom:150px;display:none;"><a style="color: #fff;font-size:18px;" href="{% url 'calendars:add_income_calendar' %}">수입</a></div>
+<script>
+  function more_btn(){
+  if ($('.spend_btn').css('display') == 'none'){
+  $('.spend_btn').fadeIn();
+    $('.income_btn').fadeIn();
+  }else{
+  $('.spend_btn').fadeOut();
+    $('.income_btn').fadeOut();
+  }
+  };
+</script>
 <!-- 소비내역추가하기버튼 끝 -->
 
 <div class="swiper-slide" data-name="내역" data-hash="list">
@@ -125,12 +124,12 @@
             <a style="color:#3a3a3a;" id="year_atag2">년 </a>
             <a style="color: #3a3a3a;" id="month_atag">{{month}}</a>
             <a style="color: #3a3a3a;">월</a></b>
-          <input type="hidden" name ="input_year" id="input_year" value="">
-          <input type="hidden" name="input_month" id="input_month" value="">
-          
+          <input type="hidden" name ="input_year" id="input_year" value=''>
+          <input type="hidden" name="input_month" id="input_month" value=''>
+
           <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right" style="color:#31bc8a"></i></button> <br>
         </div>
-  </form>    
+  </form>
   </div>
 
   <script>
@@ -211,7 +210,7 @@
   </div>
 
   <div>
-  <table class="list-table" id="list-table" style="background-color:#fff; border-radius:10px; margin: 15px 10px 60px 10px; padding:0 20px 60px 20px; border-collapse:separate; border-spacing:0 20px; "width="95%">
+  <table class="list-table" id="list-table" style="background-color:#fff; border-radius:10px; margin: 15px 10px 0px 10px; padding:0 20px 60px 20px; border-collapse:separate; border-spacing:0 20px; "width="95%">
     <colgroup>
       <col width="*"/>
       <col width="*"/>
@@ -219,7 +218,7 @@
     <tbody id="list-table-tbody">
     {% for detail in Detail_month %}
     {% ifchanged detail.spend_date.day %}
-    <tr style="vertical-align:top;" id="date_title"> 
+    <tr style="vertical-align:top;" id="date_title">
     <th style="text-align:left;padding-left:5px; border-bottom:1px solid #dddddd;">
       <img src="media/date.png" style="margin-right: 5px; width:20px; height:20px; vertical-align:middle;">
       <a style="font-weight: 100; color:#3a3a3a;font-size:20px; vertical-align: inherit;">{{detail.income_id}}{{ detail.spend_date | date:'d 일' }}</a>
@@ -246,7 +245,7 @@
       <tr onclick="location.href='{% url 'calendars:edit_calendar' detail.kind detail.spend_id %}'">
           {% endif %}
       <td style="vertical-align:top;">
-        <div style="text-align:left;padding-left:30px;">
+        <div style="text-align:left;">
           {% if detail.kind == "지출" %}
         <a id= "place" style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; font-size:12pt; color: #3a3a3a; display:block;">{{ detail.place }}</a>
           {% elif detail.kind == "수입" %}
@@ -283,6 +282,12 @@
 </div>
 </div>
 <!--- 내역 SWIPER div영역 끝 --->
+<script>
+  $(document).ready(function(){
+    //$('.footer-selector').fadeIn(550);
+      //document.getElementById('footer_calendar').src = "/media/calendar_active.png";
+  });
+</script>
 <script>
   var myElement = document.getElementById('container');
 

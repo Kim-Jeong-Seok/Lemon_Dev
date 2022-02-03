@@ -25,13 +25,13 @@
     width:30px;
     height:30px;
   }
+.footer-line-myinfo{
+    width:50px;
+    padding: 12px 0 10px 0;
+    border-bottom: 2px solid #FFF;
+    }
 </style>
-<!--  <nav>-->
-<!--    <a href="javascript:history.back();"><i class="fas fa-chevron-left"></i></a>-->
-<!--    <h5 style="padding-right:20px;">공지사항</h5>-->
-<!--    <span></span>-->
-<!--  </nav>-->
-
+{% block nav %}
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
             <div>
             <div style="text-align:center;">
@@ -43,7 +43,7 @@
     font-weight: 600;color:black;"></i></a>공지사항 상세</div>
         </div>
         </div>
-
+{% endblock nav %}
   <div class="notice-detail-wrap">
     <div class="notice-detail-titlewrap">
       <a class="notice-detail-title">{{ notice.title }}</a><br>

@@ -1,3 +1,8 @@
+<style>
+    .loader-main{
+    bottom:0px !important;
+    }
+</style>
 {% extends 'base.html' %}
 {% load humanize %}
 {% block title %}레몬::정보변경{% endblock title %}
@@ -62,8 +67,44 @@
   .slider.round:before {
     border-radius: 50%;
   }
+  input{border:none;
+  width:100%;
+  display:inline-block;
+  border-bottom:1px solid #ebebeb;
+  background-color:white;
+  margin-top:10px;
+  }
+  .input_design{
+  margin-bottom:30px;
+  margin-top:10px;
+  }
+  .input_title{
+  width:30%;
+  font-size:12px;
+  color:grey;
+  }
+  select{
+  border:none;
+  margin-top:10px;
+  border-bottom:1px solid #ebebeb;
+  width:100%;
+    display:inline-block;
+    text-align:left;
+    background-color:white;
+  }
+  .btn{
+  padding:10px 30px 10px 30px;
+  width:80%;
+  border-radius:10px;
+  color:white !important;
+  background-color:#31bc8a;
+  }
+  #footer{
+  display:none;
+  }
 </style>
 <body>
+{% block nav %}
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
             <div>
             <div style="text-align:center;">
@@ -75,26 +116,35 @@
     font-weight: 600;color:black;"></i></a>회원 정보 변경</div>
         </div>
         </div>
+{% endblock nav %}
 <!--  <a href="{% url 'accounts:myinfo' %}"><h3><i class="fas fa-chevron-left"></i></h3></a>-->
+<div style="padding:20px;">
   <form action="" method="POST">
     {% csrf_token %}
-    아이디 <input type="text" value="{{ user.uid }}" disabled><br>
-    {% if socialaccount_socialaccount.provider %}
-      <div>{{ socialaccount_socialaccount.provider }}</div>
-    {% else %}
-      <div>일반 로그인</div>
-    {% endif %}
-    이름 <input type="text" value="{{ user.username }}" name="username"><br>
-    성별 <input type="text"><br>
-    직업군
+    <div class="input_design"><div class="input_title">ID</div><input type="text" value="{{ user.uid }}" disabled></div>
+<!--                    {% if socialaccount_socialaccount.provider %}-->
+<!--                      <div>{{ socialaccount_socialaccount.provider }}</div>-->
+<!--                    {% else %}-->
+<!--                      <div>일반 로그인</div>-->
+<!--                    {% endif %}-->
+   <div class="input_design"><div class="input_title">이름</div><input type="text" value="{{ user.username }}"></div>
+    <div class="input_design"><div class="input_title">성별</div>
+        <select id="gender" name="gender">
+        <option value="1">남</option>
+          <option value="2">여</option>
+      </select>
+    </div>
+     <div class="input_design"><div class="input_title">직업</div>
     <select>
       <option value="학생">학생</option>
       <option value="백수">백수</option>
       <option value="군인">군인</option>
-    </select><br>
-    생년월일<input type="date"><br>
-    연락처 <input type="tel" id="phonenumber" value="{{ user.phonenumber }}" placeholder="- 을 제외한 번호을 입력하세요" name="phonenumber" pattern="[0-9]{11}"><br>
-    <button type="submit">변경</button>
+    </select></div>
+    <div class="input_design"><div class="input_title">생년월일</div><input type="date" value=""></div>
+      <div class="input_design"><div class="input_title">연락처</div><input type="tel" id="phonenumber" value="{{ user.phonenumber }}" placeholder="- 을 제외한 번호을 입력하세요" name="phonenumber" pattern="[0-9]{11}"></div>
+
+      <div style="text-align:center;margin-top:35px;position:fixed;bottom:15px;width:100%;left:0px;"><button class="btn" type="submit">정보 수정</button></div>
   </form>
+    </div>
 </body>
 {% endblock %}

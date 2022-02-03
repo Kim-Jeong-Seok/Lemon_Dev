@@ -7,10 +7,11 @@ from . import kocom
 from . import stockcal as cal
 from .models import *
 from accounts import models as acc_models
-
+from stocks.models import Stocksector
 
 def search_stock(request):
-    return render(request, 'search_stock.html')
+    wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
+    return render(request, 'search_stock.html', {'wntlr': wntlr})
 
 
 def stock(request):
@@ -22,7 +23,7 @@ def stock(request):
     for element in stockheld:
         average_price = stock_cal.average_price(request.user.user_id, element.sh_isusrtcd)
         current_price = koscom_api.get_current_price(element.sh_marketcode, element.sh_isusrtcd)
-        stock_data.append([element.sh_isukorabbrv, average_price, current_price])
+        stock_data.append([element.sh_isukorabbrv, average_price, current_price, element.sh_isusrtcd, element.sh_marketcode])
     return render(request, 'stock.html', {'stock_data': stock_data})
 
 
@@ -32,6 +33,7 @@ def portfolio(request):
 
     stock_cal = cal.calculator()
     total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+    print( total_investment_amount)
     total_current_price = stock_cal.total_current_price(request.user.user_id)
     if total_investment_amount and total_current_price:
         data['total_investment_amount'] = total_investment_amount
@@ -42,10 +44,40 @@ def portfolio(request):
     return render(request, 'portfolio.html', data)
 
 
+def stock_info(request):
+    result = False
+    if request.method == 'POST':
+        result = kocom.api().get_stock_master(request.POST['marketcode'], request.POST['issuecode'])
+        if result:
+            result['curPrice'] = kocom.api().get_current_price(request.POST['marketcode'], request.POST['issuecode'])
+            result['marketcode'] = request.POST['marketcode']
+    return render(request, 'stock_info.html', {'result': result})
+
+
 def current_stock(request):
     data = json.loads(request.body)
+    result = False
     if request.method == 'POST':
         result = kocom.api().get_current_stock(data['marketcode'], data['issuecode'])
+    return JsonResponse({'result': result}, content_type='application/json')
+
+
+def stock_search_result(request):
+    data = json.loads(request.body)
+    result = False
+    if request.method == 'POST':
+        try:
+            stocksector = Stocksector.objects.filter(ss_isukorabbrv__icontains=data)
+            result = []
+            for elements in stocksector:
+                result.append({
+                    'logo': elements.ss_logo,
+                    'isukorabbrv': elements.ss_isukorabbrv,
+                    'issuecode': elements.ss_isusrtcd,
+                    'marketcode': elements.ss_marketcode
+                })
+        except Exception as e:
+            print('Error in stock_search_result: \n', e)
     return JsonResponse({'result': result}, content_type='application/json')
 
 
@@ -125,6 +157,7 @@ def stocktrading_insert(user_id, data, master, kind):
 
 def get_selectivemaster(request):
     data = json.loads(request.body)
+    result = False
     if request.method == 'POST':
         result = kocom.api().get_selectivemaster(data['marketcode'], data['issuecode'])
     return JsonResponse({'result': result}, content_type='application/json')

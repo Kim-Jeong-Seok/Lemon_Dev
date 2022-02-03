@@ -84,7 +84,7 @@
     }
 </style>
 <div style="padding: 0 10px;">
-    <div class="logo-wrap" style="margin-top:50px;margin-bottom:20px;">
+    <div class="logo-wrap" style="margin-top:60px;margin-bottom:20px;">
         <div class="logo-title" style="text-align:center;">
             <img id="lemonlogo" src="../../media/LEMON_LOGO_100x110.png"><br>
         </div>
@@ -93,7 +93,7 @@
     <form method="post" action="{% url 'accounts:login' %}">
     {% csrf_token %}
 
-    <div id="loginwrap" class="login-wrap">
+    <div id="loginwrap" class="login-wrap" style="padding-top:25px;">
         <div class="id-input-wrap">
             <input class="id-input" type="text" placeholder="아이디" name="username" id="uid">
         </div>
@@ -112,7 +112,7 @@
     </div>
 </div>
 
-    <div class="login-wrap2" style="width:100%; padding:20px; margin-top:20px;">
+    <div class="login-wrap2" style="width:100%; padding:0px 20px 20px 20px; margin-top:20px;">
         <button class="kakao-login-btn" onclick="location.href='{% provider_login_url 'kakao' %}'"><img class="logo" src="/media/kakao.png">카카오계정으로 로그인</button>
         <button class="naver-login-btn" onclick="location.href='{% provider_login_url 'naver' %}'"><img class="logo" src="/media/naverbtn1.png">네이버계정으로 로그인</button>
         <button class="google-login-btn" onclick="location.href='{% provider_login_url 'google' %}'"><img class="logo" src="/media/google.png">Google계정으로 로그인</button>

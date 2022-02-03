@@ -34,7 +34,7 @@
         width: 100%;
     }
     .invest{
-    background-color:#4c8be4;
+    background-color:#31bc8a;
     border-radius:10px;
     padding-top:20px;
     padding-bottom:20px;
@@ -60,7 +60,11 @@
     width:90%;
     padding-left: 10px;
     }
-
+.footer-line-myinfo{
+    width:50px;
+    padding: 12px 0 10px 0;
+    border-bottom: 2px solid #FFF;
+    }
 </style>
 <div class="profile-wrap">
     {% if user.is_authenticated %}
@@ -142,6 +146,11 @@
         return;
         }
         }
+</script>
+<script>
+$(document).ready(function(){
+    $('.footer-selector').fadeIn(550);
+});
 </script>
 <!--    {% if message %}-->
 <!--    <script>alert('{{ message }}');</script>-->

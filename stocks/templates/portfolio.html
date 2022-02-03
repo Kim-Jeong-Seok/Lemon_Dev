@@ -1,209 +1,124 @@
 {% extends 'base.html' %}
 {% block title %}레몬::모의주식{% endblock title %}
 {% block container %}
+{% load humanize %}
+{% load mathfilters %}
 <style>
     .bottom-nav-addlist,.bottom-nav-addlist a{
-        color: #FFD859;;
+        color: #FFD859;
+    }
+    .wrapper{
+    padding:20px;
+    }
+    .stock{
+    background-color:#31bc8a;
+    border-radius:10px;
+    padding:20px;
+    margin-top:10px;
+    }
+    .title{
+    font-size:18px;
+    color:white;
+    font-weight:bold;
+    }
+    .side{
+    float:right;
+    color:#f1f1f1;
+    font-size:11px;
+    }
+    .my_stock{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    padding-top:20px;
+    }
+.footer-line-portfolio{
+    width:50px;
+    padding: 12px 0 10px 0;
+    border-bottom: 2px solid #FFF;
     }
 </style>
-
 {% load mytag %}
-<p>총 투자금액</p>
-{{user.uid}} &nbsp;&nbsp;&nbsp;
-{{total_investment_amount}} &nbsp;&nbsp; {{total_current_price|yields:total_investment_amount|rounds:2}}%
-<br/>
-손익 : {{total_current_price|sub:total_investment_amount}}
+<div class="wrapper">
+    <div><strong>{{user.uid}}</strong>님의</div>
+    <div><strong>포트폴리오</strong></div>
+<div>
+<div class="stock">
+    <span class="side">현재까지 수익률</span>
+    <div class="title">주식</div>
 
-<br/><br/><br/><br/>
-<span>구매하기</span><button onclick="get_current_price('{{marketcode}}', '{{issuecode}}', 'current_price')">구매하기 팝업</button>
-<br/>
-해당주식 현재가 : <span class="current_price"></span>
-<button onclick="fn_currentPrice()">현재가로 구매하기</button>
-<p>----------------------------------------------</p>
-<p>&lt&lt구매하기 창&gt&gt</p>
-<p>주식마켓코드 : <input type="text" id="buy_marketcode" name="buy_marketcode" value="{{marketcode}}"></p>
-<p>주식종목코드 : <input type="text" id="buy_issuecode" name="buy_issuecode" value="{{issuecode}}"></p>
-<p>현재가 : <input type="text" id="buy_price" name="price" value="0"/></p>
-<p>주 : <input type="number" id="buy_share" name="buy_share" value="10"/></p>
-<button onclick="fn_buy_stock()">구매</button>
-<br/>
-<p>==============================================</p>
+<div style="text-align:center;font-size:22px;">{{total_investment_amount|intcomma}}원</div>
+    <div style="text-align:center;font-size:14px;color:white;">{{total_current_price|sub:total_investment_amount|intcomma}}({{total_current_price|yields:total_investment_amount|rounds:2}}%)</div>
 
-<span>판매하기</span><button onclick="get_current_price('{{marketcode}}', '{{issuecode}}', 'current_price')">판매하기 팝업</button>
-<br/>
-해당주식 현재가 : <span class="current_price"></span>
-<button onclick="fn_currentPrice()">현재가로 판매하기</button>
-<p>----------------------------------------------</p>
-<p>&lt&lt판매하기 창&gt&gt</p>
-<p>주식마켓코드 : <input type="text" id="sold_marketcode" name="sold_marketcode" value="{{marketcode}}"></p>
-<p>주식종목코드 : <input type="text" id="sold_issuecode" name="sold_issuecode" value="{{issuecode}}"></p>
-<p>현재가 : <input type="text" id="sold_price" name="price" value="0"/></p>
-<p>주 : <input type="number" id="sold_share" name="sold_share" value="10"/></p>
-<button onclick="fn_sold_stock()">판매</button>
-<br/>
-↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    <div class="my_stock"><a href="{% url 'stocks:stock' %}" style="width:40%;color:#31bc8a; padding:10px 20px 10px 20px; border-radius: 10px; background-color:white;">보유 주식</a></div>
+</div></div>
 
-<br/><br/><br/>
-<div id="stocksector_update_alert">업종분류 결과위치</div>
-<button onclick="fn_get_selectivemaster()">PER, PBR (PBR = PER * ROE)</button>
-<Button onclick="fn_stocksector_update()">업종분류 업데이트</Button>
+<div class="home-chart" id="home-chart" style="padding:20px;">
+    <div class="title" style="color:black;margin-bottom:20px;">주식 정보</div>
+    <div style="text-align:center;font-size:14px;text-align:left;">가상 자산 {금액} 원에서 {{total_current_price|yields:total_investment_amount|rounds:2}}% 증가</div>
+    <div style="text-align:center;font-size:14px;text-align:left;">손익 : {{total_current_price|sub:total_investment_amount|intcomma}}</div>
+        <canvas id="myChart2" width="100" height="100"></canvas>
+        <script>
+        const ctx = document.getElementById('myChart2').getContext('2d');
+        const myChart = new Chart(ctx, {
+            if(data=['0','0']){
+                console.log('데이터가 0');
+            },
+            type: 'doughnut',
+            data: {
+                labels: ['여기는 설정 자산','증가한 돈','여기는 가리기'],
+                datasets: [{
+                    data: [1,2,3],
+                    backgroundColor: [
+                        '#5989DD',
+                        '#D46A84',
+                        '#4ACBD7',
+                        '#F3CD55',
+
+                    ],
+                    borderColor: [
+                        '#5989DD',
+                        '#D46A84',
+                        '#4ACBD7',
+                        '#F3CD55',
+
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                //legend: { display: false },
+                rotation: 1 * Math.PI,
+                circumference: 1 * Math.PI
+            }
+        });
+        </script>
+    </div>
+
+<div class="stock" style="margin-top:20px;">
+    <span class="side">금일 기준</span>
+    <div class="title">주문 가능 금액</div>
+    <div style="text-align:center;font-size:22px;">현재 금액 보이기</div>
+    <div class="my_stock"><a href="{% url 'admins:edit_invest' %}" style="width:40%;color:#31bc8a; padding:10px 20px 10px 20px; border-radius: 10px; background-color:white;">변경</a></div>
+    </div>
+</div>
+
+   <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;">
+    <div style="text-align:left; font-weight: bold; font-size:16px;">
+      <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">포토폴리오 기반 추천 Top 5</a>
+    </div>
+  <div>
+  <ol style="padding-left: 1rem !important;">
+    <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
+
+    </table>
+  </ol>
+  </div>
+  </div><!-- 건수 탑5 div 끝-->
 
 <script>
-    var csrftoken = getCookie('csrftoken');
-    function getCookie(cname) {
-        var name = cname + "=";
-            decodedCookie = decodeURIComponent(document.cookie);
-            ca = decodedCookie.split(';');
-        for(var i = 0; i <ca.length; i++) {
-            var c = ca[i].trim();
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    }
-
-    async function get_current_price(marketcode, issuecode, result_position) {
-        var result_text = document.getElementsByClassName(result_position);
-            data = { marketcode, issuecode };
-            result = await fn_koscom(data);
-        console.log(JSON.stringify(result.result));
-        if(result.result !== 'False') {
-            for (i=0; i < result_text.length; i++)
-                result_text[i].innerHTML = result.result['trdPrc'];
-        }
-    }
-
-    function fn_koscom(data) {
-        var headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        headers.append('X-CSRFToken', csrftoken);
-        var response = fetch('/current_stock', {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(data)
-        })
-        return response.then(res => {
-            if(res.status === 200) return res.json();
-            else console.log(res.statusText);
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }
-
-    function fn_buy_stock() {
-        var marketcode = document.getElementById('buy_marketcode').value
-            issuecode = document.getElementById('buy_issuecode').value
-            current_price = document.getElementById('buy_price').value
-            share = document.getElementById('buy_share').value
-
-        var headers = new Headers();
-        headers.append('Content-Type', 'application/json')
-        headers.append('X-CSRFToken', csrftoken)
-        var data = { marketcode, issuecode, current_price, share }
-        fetch('/buy_stock', {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(data)
-        })
-        .then(res => {
-            if(res.status === 200) return res.json();
-            else console.log(res.statusText);
-        })
-        .then(json => {
-            console.log(json.result);
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    }
-
-    function fn_sold_stock() {
-        var marketcode = document.getElementById('sold_marketcode').value
-            issuecode = document.getElementById('sold_issuecode').value
-            current_price = document.getElementById('buy_price').value
-            share = document.getElementById('sold_share').value
-
-        var headers = new Headers();
-        headers.append('Content-Type', 'application/json')
-        headers.append('X-CSRFToken', csrftoken)
-        var data = { marketcode, issuecode, current_price, share }
-        fetch('/sold_stock', {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(data)
-        })
-        .then(res => {
-            if(res.status === 200) return res.json();
-            else console.log(res.statusText);
-        })
-        .then(json => {
-            console.log(json.result);
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    }
-
-    function fn_get_selectivemaster() {
-        var marketcode = document.getElementById('buy_marketcode').value
-            issuecode = document.getElementById('buy_issuecode').value
-
-        var headers = new Headers();
-        headers.append('Content-Type', 'application/json')
-        headers.append('X-CSRFToken', csrftoken)
-        var data = { marketcode, issuecode }
-        fetch('/get_selectivemaster', {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(data)
-        })
-        .then(res => {
-            if(res.status === 200) return res.json();
-            else console.log(res.statusText);
-        })
-        .then(json => {
-            console.log(json.result);
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    }
-
-    function fn_currentPrice() {
-        var result_text = document.getElementsByName('price');
-        for (i=0; i < result_text.length; i++)
-            result_text[i].value = document.getElementsByClassName('current_price')[0].innerText;
-    }
-
-    // 업종분류 업데이트
-    function fn_stocksector_update() {
-        var stocksector_update_alert = document.getElementById('stocksector_update_alert');
-        stocksector_update_alert.innerText = 'Please wait until the stocksector updating is over';
-
-        var headers = new Headers();
-        headers.append('Content-Type', 'application/json')
-        headers.append('X-CSRFToken', csrftoken)
-        fetch('/stocksector_update', {
-            method: "POST",
-            headers: headers
-        })
-        .then(res => {
-            if(res.status === 200) return res.json();
-            else console.log(res.statusText);
-        })
-        .then(json => {
-            console.log(json.result);
-            stocksector_update_alert.innerText = json.result + ' stocksector updating!!!'
-        })
-        .catch(err => {
-            console.log(err);
-            stocksector_update_alert.innerText = 'Fail stocksector updating!!!'
-        })
-    }
+$(document).ready(function(){
+    //$('.footer-selector').fadeIn(550);
+});
 </script>
 {% endblock %}

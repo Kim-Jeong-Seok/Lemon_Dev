@@ -1,10 +1,15 @@
+<style>
+    .loader-main{
+    bottom:0px !important;
+    }
+</style>
 {% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
-{% block title %}레몬::자산설정{% endblock title %}
+{% block title %}레몬::가상투자 금액 설정{% endblock title %}
 {% block container %}
 <body>
-
+{% block nav %}
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
             <div>
             <div style="text-align:center;">
@@ -16,29 +21,85 @@
     font-weight: 600;color:black;"></i></a>가상투자 금액 추가</div>
         </div>
         </div>
-
+{% endblock nav %}
 <div class="wrap">
 
   {% if user.invest %}
-    <h1>가상투자 금액 설정</h1>
-    이전 금액 : {{ user.invest|intcomma }}<br>
-    이전 날짜 : {{ user.invest_date|date:"Y-m-d" }}<br>
-      <input type="text" name="invest" required>
+    <div class="setup">
+    <h1 style="color:white;">가상투자 금액 설정</h1>
+        <div style="display:flex;flex-direction:column;padding-top:20px;">
+    <div style="width:100%;display: flex;
+        justify-content: space-between;
+    padding: 10px;"><div style="width:40%;display:inline-block">기존 투자 금액</div>{{ user.invest|intcomma }} 원</div>
+    <div style="width:100%;display: flex;
+        justify-content: space-between;
+    padding: 10px;"><div style="width:40%;display:inline-block">설정 날짜</div>{{ user.invest_date|date:"Y-m-d" }}</div>
+       </div>
+    <div style="width:100%;display: flex;
+        justify-content: space-between;
+    padding: 10px;"><div style="width:40%;display:inline-block">변경 가능 날짜</div>{{can_date|date:"Y-m-d"}}</div>
+        <div>
+            {% if can_date|date:"Y-m-d" <= now_date|date:"Y-m-d" %}
+      <input class="invest" type="text" name="invest" value="{{ user.invest|intcomma }}" required>
+            {% else %}
+        <input class="invest" type="text" name="invest" value="{{ user.invest|intcomma }}" disabled>
+            {% endif %}
+    </div>
+        </div>
   {% else %}
-     <h1>가상투자 금액 등록<h1>
-    <input type="text" name="invest" required>
+
+    <h1 style="color:white;">가상투자 금액 설정</h1>
+        <div>
+      <input class="invest" type="text" name="invest" required>
+    </div>
+        </div>
   {% endif %}
   <form action="" method="POST">
     {% csrf_token %}
-    <button type="submit">변경</button>
+       <div style="text-align:center;margin-top:35px;position:fixed;bottom:15px;width:100%;left:0px;">
+           {% if can_date|date:"Y-m-d" <= now_date|date:"Y-m-d" %}
+           <button class="btn" type="submit">변경</button>
+             {% else %}
+               <div class="btn" onclick="alert('30일 동안 변경을 하실수 없습니다.')">변경</div>
+            {% endif %}
+       </div>
   </form>
 </div>
 </body>
 <style>
   .wrap{
   padding:20px;
-  margin:20px;
+  margin:0 20px;
   text-align:center;
+  height:100%;
+  align-items:center;
+  display:flex;
   }
+  .btn{
+  padding:10px 30px 10px 30px;
+  width:80%;
+  border-radius:10px;
+  color:white !important;
+  background-color:#31bc8a;
+  }
+   #footer{
+  display:none;
+  }
+  input{
+  border-radius:10px;
+  margin-top:30px;
+  padding:10px;
+  width:80%;
+  border:1px solid #31bc8a;
+    text-align:center;
+  }
+  .setup{
+  width:100%;
+  background-color:#31bc8a;
+  padding:30px 10px 30px 10px;
+  border-radius:10px;
+  color:white;
+  }
+
 </style>
 {% endblock %}
