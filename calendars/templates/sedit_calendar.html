@@ -185,10 +185,10 @@
         margin-left:5px;
     }
     .delBtn{
-        margin-right:5px;
+        margin-right:140px;
         border: 1px solid #FC615D;
         border-radius: 10px;
-        width: 50%;
+        width: 100%;
         height: 40px;
         font-weight: bold;
         font-size: 1rem;
@@ -310,26 +310,35 @@
             </table>
         </div>
 
+        -------------
         <div style="display:flex;text-align:center; margin-top:15px;justify-content: space-between;">
-        <input class="delBtn"  type = "submit" value = "내역삭제">
-        <div type="button" class="addBtn" value="spendbtn" onclick="submit()" style="line-height:37px;"/>수정</div>
-        
+            <div type="button" class="addBtn" value="spendbtn" onclick="submit()" style="line-height:37px;"/>수정</div>
+            <script>
+                function submit(){
+                var str = $('#where').val();
+                var stockcode = str.slice(-6);
+                var stockname = str.replace(":"+stockcode,"");
+                document.getElementById('place').value = stockname;
+                document.getElementById('stock').value = stockcode;
+                const form = document.getElementById('seidt_form');
+                form.action="{%url 'calendars:sedit_calendar' i.spend_id %}"
+                form.submit();
+                }
+            </script>
+          </form>
+
+
+          <form action = "{% url 'calendars:delete_shistory' i.spend_id %}" method="POST">
+            {% csrf_token %}
+          <input class="delBtn"  type = "submit" value = " 제거 ">
+        </form>
+
+
         </div>
-        <script>
-            function submit(){
-            var str = $('#where').val();
-            var stockcode = str.slice(-6);
-            var stockname = str.replace(":"+stockcode,"");
-            document.getElementById('place').value = stockname;
-            document.getElementById('stock').value = stockcode;
-            const form = document.getElementById('seidt_form');
-            form.action="{%url 'calendars:sedit_calendar' i.spend_id %}"
-            form.submit();
-            }
-        </script>
-          
-    </form>
-    {% endfor %}
+        --------------
+      {% endfor %}
+
+
     </div>
 </div>
 

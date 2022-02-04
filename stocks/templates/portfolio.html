@@ -106,6 +106,14 @@
    <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;">
     <div style="text-align:left; font-weight: bold; font-size:16px;">
       <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">포토폴리오 기반 추천 Top 5</a>
+
+      {% for i in st%}
+      {{i}}
+      {% endfor %}
+
+      {% for i in plist_count %}
+      {{i.plist_count}}
+      {% endfor %}
     </div>
   <div>
   <ol style="padding-left: 1rem !important;">

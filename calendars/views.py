@@ -20,6 +20,7 @@ from django.contrib.auth.hashers import check_password
 from dateutil.relativedelta import relativedelta
 from stocks.models import Stocksector
 from django.http import JsonResponse
+from stocks import stockcal as cal
 
 # Create your views here.
 URL_LOGIN = '/login'
@@ -40,6 +41,16 @@ def home(request):
             invest=request.POST['invest'],
         )
         return redirect('/')
+
+
+
+
+    stock_cal = cal.calculator()
+    total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+    print( total_investment_amount)
+    total_current_price = stock_cal.total_current_price(request.user.user_id)
+
+
 
     invest = request.user.invest
     user = request.user.user_id
@@ -73,7 +84,7 @@ def home(request):
             home_chartjs_data.append(income_sum_value)
 
     return render(request, 'home.html', {'month': month, 'Expenditure': spend_sum, 'Income': income_sum,
-                                         'Home_chartjs_data': home_chartjs_data})
+                                         'Home_chartjs_data': home_chartjs_data ,'total_investment_amount':total_investment_amount})
 
 
 def recom(request):
@@ -363,9 +374,6 @@ def edit_calendar(request, spend_id, kind):
 
 
 def sedit_calendar(request, spend_id):
-    spend = Spend.objects.get(spend_id = spend_id)
-    spend.delete()
-
     if request.method == "POST":
         user = request.user.user_id
         spe = Spend.objects.filter(spend_id=spend_id, user_id=user).update(
@@ -380,10 +388,8 @@ def sedit_calendar(request, spend_id):
         return redirect('/history')
 
 
-def iedit_calendar(request, income_id):
-    income = Income.objects.get(income_id = income_id)
-    income.delete()
 
+def iedit_calendar(request, income_id):
     if request.method == "POST":
         user = request.user.user_id
         spe = Income.objects.filter(income_id=income_id, user_id=user).update(
@@ -394,7 +400,14 @@ def iedit_calendar(request, income_id):
             memo=request.POST['memo'], )
         return redirect('/history')
 
-
+def delete_shistory(request, spend_id):
+    spend = Spend.objects.get(spend_id = spend_id)
+    spend.delete()
+    return redirect('/history')
+def delete_ihistory(request, income_id):
+    income = Income.objects.get(income_id = income_id)
+    income.delete()
+    return redirect('/history')
 @csrf_exempt
 def ajax_pushdate(request):
     if request.method == "POST":

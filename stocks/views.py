@@ -7,7 +7,32 @@ from . import kocom
 from . import stockcal as cal
 from .models import *
 from accounts import models as acc_models
-from stocks.models import Stocksector
+from stocks.models import Stocksector , TotalMerge
+from django.db.models import Sum, Count
+
+def top2(request):
+    st =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')[:3]
+    st2 = list(st.values('sh_idxindmidclsscd'))
+    st3 = st2[0:3]
+
+    st3_arr = []
+    for i in st3:
+        print(i['sh_idxindmidclsscd'])
+        st3_arr.append(i['sh_idxindmidclsscd'])
+
+    print(st3_arr)
+
+    st4 = TotalMerge.objects.filter(category__in = st3_arr[0:3])
+    print(st4)
+
+    #st3_values = list(st3.values())[0:3]
+    #print(st3)
+
+
+
+
+
+    return render(request, 'top2.html', {'st2':st})
 
 def search_stock(request):
     wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
@@ -16,6 +41,7 @@ def search_stock(request):
 
 def stock(request):
     stockheld = Stockheld.objects.filter(sh_userid=request.user.user_id)
+    st = Stockheld.objects.all()
 
     stock_data = []
     stock_cal = cal.calculator()
@@ -24,7 +50,7 @@ def stock(request):
         average_price = stock_cal.average_price(request.user.user_id, element.sh_isusrtcd)
         current_price = koscom_api.get_current_price(element.sh_marketcode, element.sh_isusrtcd)
         stock_data.append([element.sh_isukorabbrv, average_price, current_price, element.sh_isusrtcd, element.sh_marketcode])
-    return render(request, 'stock.html', {'stock_data': stock_data})
+    return render(request, 'stock.html', {'stock_data': stock_data, 'st':st})
 
 
 def portfolio(request):
@@ -44,14 +70,25 @@ def portfolio(request):
     return render(request, 'portfolio.html', data)
 
 
+
+
 def stock_info(request):
     result = False
     if request.method == 'POST':
         result = kocom.api().get_stock_master(request.POST['marketcode'], request.POST['issuecode'])
+        #print(result['per'])
+        result_per = result['per']
+        result_pbr = result['pbr']
+
+        print(result_pbr)
+
+
+
+
         if result:
             result['curPrice'] = kocom.api().get_current_price(request.POST['marketcode'], request.POST['issuecode'])
             result['marketcode'] = request.POST['marketcode']
-    return render(request, 'stock_info.html', {'result': result})
+    return render(request, 'stock_info.html', {'result': result })
 
 
 def current_stock(request):

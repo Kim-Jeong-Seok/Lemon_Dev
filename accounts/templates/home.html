@@ -80,7 +80,7 @@
                     </label>
                     <a>레몬서비스 이용약관 동의(필수)</a><br>
                     <textarea cols="30" rows="5" style="width:100%;" disabled="disabled">
-                    
+
                     </textarea><br>
                     <label style="text-align:end;">
                         <input type="checkbox" name="u_chk" value ="1" id="require_chk" checked>
@@ -326,14 +326,23 @@ $('input[id="require_chk"]').change(function () {
         </div>
     </div>
 
-    <div class="home-stock-div" style="display:none;">
+    <div class="home-stock-div" style="">
         <div class="home-stock-title">
             <a>주식</a>
             <a class="home-spand-dateView" id="date_view2"></a>
         </div>
 
         <div class="home-stock-input">
-            <a>50,500원</a>
+            <a>{{total_investment_amount}}
+
+              {% for i in plist %}
+              {{i}}
+              {% endfor %}
+
+              {% for i in plist_count %}
+              {{i}}
+              {% endfor %}
+            </a>
         </div>
 
         <div class="home-stock-input2">

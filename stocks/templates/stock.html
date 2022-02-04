@@ -59,6 +59,13 @@
 <!--                    <strong>보유 주식</strong>-->
 <!--                </div>-->
                 <div style="padding-top:20px;margin-bottom:20px;">
+                  {% for i in st%}
+                  {{i}}
+                  {% endfor %}
+
+                  {% for i in plist_count%}
+                  {{i.plist_count}}
+                  {% endfor %}
                     {% for ele in stock_data %}
                     <div class="stocks" onclick="info('{{ele.3}}','{{ele.4}}')">
                         <div class="stock_name">{{ele.0}}</div>
