@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+{% load mytag %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}레몬::가계부{% endblock title %}
+{% block container %}
+<style>
+  #container{
+    padding-top: 50px !important;
+    display: block;
+    overflow-x: hidden;
+  }
+
+  body{
+    position: relative !important;
+    background-color: #F7F7F7;
+  }
+
+  a {
+    text-decoration:none;
+    text-decoration-line: none;
+  }
+
+  a:link, a:visited, a:hover, a:active {
+  color: #202020;
+  text-decoration:none;
+  text-decoration-line: none;
+  }
+
+  /* FOOTER에서 사용하는 CSS */
+  .bottom-nav-calendar{
+    color: #FFD859 !important;
+  }
+
+  .bottom-nav-calendar a{
+    color: #FFD859 !important;
+  }
+
+  .bottom-nav-search-stock a,.bottom-nav-home a,
+  .bottom-nav-stock a,.bottom-nav-addlist a,
+  .bottom-nav-myinfo a{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: #D1D6DA !important;
+  }
+  .social-wrap{
+    padding: 20px;
+  }
+  .social-textarea{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    border: 1px solid #CACACA;
+    border-radius: 10px;
+    background-color: #fff;
+    resize: none;
+    padding-left: 5px;
+    padding-top: 5px;
+  }
+  .social-btn{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    vertical-align: middle;
+    width:100%;
+    height: 50px;
+    margin-top:20px;
+    background:#31BC89;
+    border:0px;
+    border-radius:50px;
+    color:white;
+  }
+  .social-btn:disabled{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    vertical-align: middle;
+    width:100%;
+    height: 50px;
+    background:#a0a0a0;
+    border:0px;
+    border-radius:50px;
+    color:white;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+::-webkit-scrollbar-thumb {
+    background: #a9a9a9;
+  }
+
+  .list-filter{
+    background-color:#fff;
+    border-radius: 20px !important;
+    box-shadow: 1px 1px 5px 1px rgb(202, 202, 202);
+    margin: 20px !important;
+  }
+  </style>
+
+
+<!-- Modal -->
+<div id="calendarModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h3 id="modalTitle" class="modal-title"></h3>
+          <button type="button" onclick="close_btn()" id="close_btn" class="btn btn-default" data-dismiss="modal">X</button>
+      </div>
+      <div id="modalBody" class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="location.href='add_calendar'" id="add_event" class="addList-btn" data-dismiss="modal">내역추가</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <script>
+    function close_btn() {
+      $('#calendarModal').modal('hide');
+    }
+  </script>
+<!-- Modal관련끝 -->
+
+<!-- 소비내역추가하기버튼 -->
+  <div class="addevent-btn">
+    <a style="color: #fff;font-size:22px;" href="{% url 'calendars:add_calendar' %}"><i class="fas fa-pencil-alt"></i></a>
+  </div>
+<!-- 소비내역추가하기버튼 끝 -->
+
+
+<div class="swiper mySwiper">
+  <div class="swiper-wrapper">
+
+
+
+      <!--- 달력 SWIPER div영역 시작--->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var calendarEl = document.getElementById('calendar');
+
+          var date = new Date();
+          var d = date.getDate();
+          var m = date.getMonth() + 1;
+          var y = date.getFullYear();
+          var date1 = (y+'-'+m+'-'+d);
+          var date2 = (y+'-'+m);
+          console.log('Today is ' + date1);
+
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          selectable: false,
+          selectOverlap:false,
+          editable: false,
+          droppable:false,
+          themeSystem: 'standard',
+          dragScroll:false,
+          headerToolbar: {
+            left: '',
+            center: 'prev title next',
+            right: ''
+          },
+          titleFormat: function (date) {
+            // YYYY년 MM월
+            return `${date.date.year}년 ${date.date.month + 1}월`;
+          },
+          dayHeaderContent: function (date) {
+            let weekList = ["일", "월", "화", "수", "목", "금", "토"];
+            return weekList[date.dow];
+          },
+          height: 460,
+          //locale: 'en',
+          events: [
+          {% for i in spend_day_sum2 %}
+          {
+            title: "-{{i.amount|intcomma}}",
+            start: "{{i.spend_date | date:'Y-m-d'}}",
+            textColor: 'Red',
+            color:'transparent',
+            allday: 1,
+          },
+          {% endfor %}
+          {% for i in income_day_sum2 %}
+          {
+            title: "+{{i.amount|intcomma}}",
+            start: "{{i.income_date | date:'Y-m-d'}}",
+            textColor: 'Blue',
+            color:'transparent',
+            allday: 1,
+          },
+          {% endfor %}
+        ],
+        eventClick: function(info) {
+          console.log(info.event);
+          click_date = info.event.startStr; // 날짜
+          title_date = moment(click_date).format('YY. MM. DD');
+          //click_title = event.dayEl.innerText;
+          console.log(click_date);
+          document.getElementById('testtest').value = click_date;
+          $.ajax({
+            type: "POST",
+            url: "{% url 'calendars:ajax_pushdate' %}",
+            data: {
+              testtest: $('#testtest').val(),
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              dataType: "json",
+            },
+            cache: false,
+            headers: {"cache-control": "no-cache","pragma": "no-cache"},
+            success: function(data){
+              msg_value = data.msg1;
+              const reset = document.getElementById('modalBody');
+              reset.innerHTML = '';
+              for (var i = 0; i<msg_value.length; i++) {
+                const element = document.getElementById('modalBody');
+                element.innerHTML += '<div class="modal-body-text"><a>'
+                + msg_value[i]['amount'] + '원' +  '</a> </div>';
+              }
+            },
+            fail: function() {
+              console.log('ajax send error!');
+              alert('해당날짜의 내역을 불러오는 과정에서 오류가 발생했습니다');
+            },
+          });
+          $('#calendarModal').modal('show');
+          $('#modalTitle').text(click_date);
+        },
+        });
+        calendar.render();
+      });
+      </script>
+      <div class="swiper-slide" id="swiper-cal" data-name="달력" data-hash="calendar2">
+        <div class="cal-container">
+          <div id='calendar'></div>
+        </div>
+        <input type="hidden" value="" id="testtest">
+      </div><!--- 달력 SWIPER div영역 끝 --->
+    </div><!--swiper-wrapper 선언끝-->
+
+    <div class="swiper-pagination" ></div>
+  </div><!--myswiper 선언끝-->
+
+  <!-- Swiper JS -->
+
+  <!-- Initialize Swiper -->
+  <script>
+    var bullet = ["추천", "요약", "내역" ,"달력"];
+
+    var swiper = new Swiper(".mySwiper", {
+      slidesPerView: 'auto',
+      centeredSlides: true,
+      autoHeight: true,
+      //effect:'fade',
+      fadeEffect: { crossFade: true },
+      mousewheel: false,
+      speed: 0,
+      hashNavigation: {
+        watchState: true,
+        replaceState:true,
+      },
+      pagination : {
+        observer: true,
+        observeParents: true,
+        el : '.swiper-pagination',
+        clickable : true,
+        paginationType: "custom",
+        renderBullet: function (index, className) {
+          return '<div class="' + className + '"><span>' + (bullet[index]) + '</span></div>';
+        }
+        },
+
+        scrollbar: {
+          el: '.swiper-scrollbar',
+        },
+    });
+    /*
+    swiper.on('slideChange', function () {
+      window.scrollTo(0,0);
+      swiper.update(true);
+      //console.log('slide changed');
+    });*/
+    swiper.update();
+  </script>
+
+  <script>
+    var myElement = document.getElementById('container');
+
+    // create a simple instance
+    // by default, it only adds horizontal recognizers
+    var mc = new Hammer(myElement);
+
+    // listen to events...
+    mc.on("swipeleft", function(ev) {
+        console.log('last page!');
+    });
+
+    mc.on("swiperight", function(ev) {
+        window.location.href="/list_view";
+  });
+  </script>
+
+<link rel = "stylesheet" href="{% static 'css/main.css' %}">
+<link rel = "stylesheet" href="{% static 'css/style.css' %}">
+<script src="{% static 'js/main.js' %}"></script>
+
+
+{% endblock container %}

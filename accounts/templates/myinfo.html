@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}레몬::내정보{% endblock title %}
+{% block container %}
+{% load humanize %}
+<style>
+    .bottom-nav-myinfo,.bottom-nav-myinfo a{
+        color: #FFD859;
+    }
+    .profile-wrap{
+        margin-bottom: 1.5rem;
+        padding: 3px 5px;
+        border: 1px solid #343D4C;
+        border-radius: 10px;
+        box-shadow: 1px 4px 5px 0px rgb(202, 202, 202);
+    }
+    .menu1-wrap{
+        padding: 3px 5px;
+        border: 1px solid #343D4C;
+        border-radius: 10px;
+        box-shadow: 1px 4px 5px 0px rgb(202, 202, 202);
+    }
+</style>
+<a>내정보</a><br>
+    <div class="profile-wrap">
+        {% if user.is_authenticated %}
+            <a>{{user.uid}} 님 안녕하세요.<br>(최근로그인 :{{user.last_login|date:"M d일 D H:i"}})</a><br>
+            <a>보유 가상 자산 :{{ user.invest|intcomma }}원</a>
+            <a style="color: #FF4444;" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>
+        {% else %}
+            a style="color: #4DABF7;" href="{% url 'accounts:login' %}"><i class="fas fa-sign-out-alt"></i> 로그인</a>
+        {% endif %}
+    </div>
+    <div class="menu1-wrap">
+        <ul style="list-style: none;">
+            <li><a href="{% url 'admins:edit_invest' %}"><i class="fas fa-wallet"></i> 자산설정</a></li>
+            <li><a href="{% url 'admins:notice' %}"><i class="fas fa-bullhorn"></i> 공지사항</a></li>
+            <li><a href="{% url 'admins:qna' %}"><i class="fas fa-envelope-open"></i> 문의하기</a></li>
+            <li><a href="{% url 'admins:edit_myinfo' %}"><i class="fas fa-user-alt"></i> 정보변경</a></li>
+            <li><a href="{% url 'admins:input_pin' %}"><i class="fas fa-unlock-alt"></i> pin번호변경</a></li>
+            <a style="color: #FF4444;" href="{% url 'admins:user_delete' user.user_id %}"><i class="fas fa-sign-out-alt"></i> 회원탈퇴</a>
+        </ul>
+    </div>
+    {% if message %}
+        <script>alert('{{ message }}');</script>
+    {% endif %}
+{% endblock %}

@@ -287,6 +287,7 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
     align-items: center;
   }
 .fc .fc-toolbar.fc-header-toolbar {
+  margin-top: 20px !important;
     margin-bottom: 0.1em;
   }
 .fc .fc-toolbar.fc-footer-toolbar {
@@ -596,6 +597,7 @@ A HORIZONTAL event
     overflow: hidden;
   }
 .fc-h-event .fc-event-title-container { /* serves as a container for the sticky cushion */
+    text-align: center;
     flex-grow: 1;
     flex-shrink: 1;
     min-width: 0; /* important for allowing to shrink all the way */
@@ -887,7 +889,7 @@ A HORIZONTAL event
   .fc-daygrid-block-event .fc-event-title {
     padding: 2px;
     max-width: 50px;
-    font-size: 1px;
+    font-size: 10px !important;
     text-overflow: ellipsis;
   }
 /* --- the dot style of event --- */

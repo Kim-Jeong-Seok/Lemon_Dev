@@ -29,7 +29,7 @@ font-family: 'Noto Sans KR', sans-serif;
 		scrollbar-width: none;
 		-ms-overflow-style: none;
 		font-family: 'Noto Sans KR', sans-serif;
-		background:#F3F4F6;
+		background:white;
 		/* no drag */
 		-webkit-touch-callout: none !important;
 		-webkit-user-select: none !important;
@@ -68,7 +68,7 @@ font-family: 'Noto Sans KR', sans-serif;
     .la-ball-clip-rotate {
         display: block;
         font-size: 0;
-        color: #4C8AE5;
+        color:#31bc8a;
         margin: 0 auto;
         top: 46%;
     }
@@ -198,7 +198,9 @@ font-family: 'Noto Sans KR', sans-serif;
         max-width: 768px;
         height: 50px;
         background: -webkit-linear-gradient(to right, #31BC8A, #4C8AE5);  /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+        /*background: linear-gradient(to right, #31BC8A, #4C8AE5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background:white;
+        line-height:50px;
         position: fixed;
         top: 0;
         left: 0;
@@ -221,7 +223,7 @@ font-family: 'Noto Sans KR', sans-serif;
     }
 
 	#container{
-		background-color: #F3F4F6;
+		background-color: white;
         -ms-overflow-style: none; /* IE, Edge */
         scrollbar-width: none; /* Firefox */
         padding-top: 50px;
@@ -253,7 +255,7 @@ font-family: 'Noto Sans KR', sans-serif;
 	/* 로그인페이지 관련 CSS */
 
 	.logo-wrap{
-		margin-top: 180px;
+		margin-top: 100px;
 		width: 100%;
 	}
 	.logo-logo{
@@ -280,8 +282,8 @@ font-family: 'Noto Sans KR', sans-serif;
 		color: #8e8e8e;
 		/*margin-top: 0.5rem;*/
 		margin-bottom: 1rem;
-		border-radius: 40px;
-		border: 1px solid #31BC8A;
+		border:none;
+		border-bottom: 1px solid #31BC8A;
 		background-color: #F5F5F5;
 		padding-left: 10px;
 	}
@@ -290,8 +292,8 @@ font-family: 'Noto Sans KR', sans-serif;
 		height: 50px;
 		color: #8e8e8e;
 		margin-bottom: 1rem;
-		border-radius: 40px;
-		border: 0.8px solid #31BC8A;
+		border:none;
+		border-bottom: 0.8px solid #31BC8A;
 		background-color: #F5F5F5;
 		padding-left: 10px;
 	}
@@ -300,12 +302,12 @@ font-family: 'Noto Sans KR', sans-serif;
 		font-size: 2rem;
 		font-weight: bold;
 		color: #fff;
-		margin: 1rem auto 4rem auto;
+		margin: 10px auto 10px auto;
 		width: 100%;
 		height: 50px;
-		background: #4C8AE5;  /* fallback for old browsers */
-		border-radius: 50px;
-		border: 1px solid #fff;
+		background: #31bc8a;  /* fallback for old browsers */
+		border-radius: 10px;
+		border: none;
 		outline: none;
 	}
 	.sns-login-wrap{
@@ -390,23 +392,25 @@ font-family: 'Noto Sans KR', sans-serif;
 		padding-left: 10px;
 		border: 1px solid #D1D6DA;
 		font-family: 'Noto Sans KR', sans-serif;
-		font-size: 18px;
+		font-size: 14px;
 		font-weight: 400;
 		width: 100%;
 		height: 35px;
+		border-radius:10px;
 }
 .add_info_phone{
 		margin-bottom: 10px;
 		padding-left: 10px;
 		border: 1px solid #D1D6DA;
 		font-family: 'Noto Sans KR', sans-serif;
-		font-size: 18px;
+		font-size: 14px;
 		font-weight: 400;
-		width: 70%;
+		width: 84%;
 		height: 35px;
+		border-radius:10px;
 }
 .phone_code_btn{
-		width: 29%;
+		width: 55px;
 		height: 35px;
 		background:#31BC89;
 		font-family: 'Noto Sans KR', sans-serif;
@@ -417,24 +421,28 @@ font-family: 'Noto Sans KR', sans-serif;
 		border:0px;
 		border-radius:1px;
 		color:white;
+		border-radius:10px;
 }
 .phone_code_btn:disabled{
 		background:#a0a0a0;
+		border-radius:10px;
 }
 .add_info_phonecode{
 		margin-bottom: 10px;
 		padding-left: 10px;
 		border: 1px solid #D1D6DA;
 		font-family: 'Noto Sans KR', sans-serif;
-		font-size: 18px;
+		font-size: 14px;
 		font-weight: 400;
-		width: 50%;
+		width: 84%;
 		height: 35px;
+		border-radius:10px;
 }
 .count{
-		margin-left: 15px;
-		position: relative;
-
+		right: 150px;
+    padding-top: 5px;
+    position: absolute;
+    width: 30px;
 }
 .add_info_select{
 		margin-bottom: 10px;
@@ -442,19 +450,22 @@ font-family: 'Noto Sans KR', sans-serif;
 		background-color: #fff;
 		border: 1px solid #D1D6DA;
 		font-family: 'Noto Sans KR', sans-serif;
-		font-size: 16px;
+		font-size: 14px;
 		font-weight: 500;
 		width: 100%;
 		height: 35px;
+		border-radius:10px;
+		color:#a0a0a0;
 }
 .add_info_year{
 		padding-left: 10px;
 		border: 1px solid #D1D6DA;
 		font-family: 'Noto Sans KR', sans-serif;
-		font-size: 18px;
+		font-size: 14px;
 		font-weight: 400;
 		width: 100%;
 		height: 35px;
+		border-radius:10px;
 }
 .access_btn{
 		font-family: 'Noto Sans KR', sans-serif;
@@ -469,6 +480,7 @@ font-family: 'Noto Sans KR', sans-serif;
 		border:0px;
 		border-radius:10px;
 		color:white;
+		border-radius:10px;
 }
 .access_btn:disabled{
 		background:#a0a0a0;
@@ -489,11 +501,8 @@ font-family: 'Noto Sans KR', sans-serif;
 		border-radius: 15px;
 		border: 1px solid #fff;
 		background-color: #fff;
-		box-shadow: 2px 2px 1px rgb(202 202 202);
+		border: 1px solid #f5f5f5;
 		margin-bottom: 25px;
-	}
-	#myChart2{
-		padding: 20px;
 	}
 
 	.home-spand-div{
@@ -794,11 +803,12 @@ font-family: 'Noto Sans KR', sans-serif;
       display: flex;
     }
 .cal-container{
+	pointer-events: none;
 	background-color:#fff;
 	border-radius: 20px !important;
 	min-height: 465px;
 	box-shadow: 1px 1px 5px 1px rgb(202, 202, 202);
-	margin: 20px 20px 0 20px !important;
+	margin: 20px 20px 50px 20px !important;
 }
     .fc-prev-button.fc-button.fc-button-primary,
     .fc-next-button.fc-button.fc-button-primary{
@@ -847,4 +857,42 @@ font-family: 'Noto Sans KR', sans-serif;
       .fc-day-sat a{ color:blue; }
   
     /*End Fullcalendar CSS*/
+
+	/* 공지사항 페이지 */
+	.notice-contents{
+			background-color: #fff;
+			margin: 10px 0;
+			padding: 10px;
+			border: 1px solid #8e8e8e;
+			border-radius: 5px;
+			width:100%;
+		}
+	.notice-title{
+			font-size:16px;
+			color:#2a2a2a;
+			font-weight: 500;
+		}
+	.notice-date{
+			font-size:10px;
+			color:gray;
+			font-weight: 400;
+		}
+	.notice-detail-titlewrap{
+			padding:10px;
+			border-bottom:1px solid #ddd;
+		}
+	
+		.notice-detail-title{
+			font-size:16px;
+			color:#2a2a2a;
+			font-weight: 500;
+		}
+		.notice-detail-date{
+			font-size:12px;
+			color:gray;
+			font-weight: 400;
+		}
+		.notice-detail-content{
+			padding:10px 10px 20px 10px;
+		}
 }

@@ -11,7 +11,6 @@ class Notice(models.Model):
     title = models.CharField(max_length=45, null=False, verbose_name='제목')
     content = RichTextUploadingField(blank=True, null=True, verbose_name='내용')
     date = models.DateTimeField(default=timezone.now, verbose_name='날짜')
-
     def __str__(self):
         return self.title
 

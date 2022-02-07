@@ -339,6 +339,8 @@
   .swiper-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet,
   .swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
     margin: 0 var(--swiper-pagination-bullet-horizontal-gap, 4px);
+    -webkit-tap-highlight-color:transparent;
+    outline: none;
   }
   .swiper-horizontal > .swiper-pagination-bullets.swiper-pagination-bullets-dynamic,
   .swiper-pagination-horizontal.swiper-pagination-bullets.swiper-pagination-bullets-dynamic {

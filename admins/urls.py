@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 app_name='admins'
+
 urlpatterns = [
     path('qna', views.qna, name='qna'), # 문의하기
     path('notice', views.notice, name='notice'), # 공지사항

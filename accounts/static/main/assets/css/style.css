@@ -99,7 +99,6 @@
     }
     .section {
         position: relative;
-        background-image: url(assets/img/header-bg.jpg);
         background-size: cover;
         background-position: center;
         width:100vw;
@@ -109,7 +108,6 @@
     }
     
     .choose-us {
-        background-image: url(assets/img/about-bg.jpg);
         background-position: center;
         width:100vw;
         height:100vh;
@@ -121,7 +119,6 @@
     }
     
     .notice {
-        background-image: url(./assets/img/about-bg.jpg);
         background-position: center;
         width:100vw;
         height:100vh;

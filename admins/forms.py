@@ -5,3 +5,6 @@ class QnaForm(forms.ModelForm):
     class Meta:
         model = Qna
         fields = ['user', 'status', 'category', 'title', 'content', 'file']
+        widgets = {
+            'status': forms.RadioSelect()
+        }

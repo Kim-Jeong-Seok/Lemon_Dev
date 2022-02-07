@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}레몬::정보변경{% endblock title %}
+{% block container %}
+<body>
+  <div><h1>비밀번호 입력창</h1></div>
+  <form action="" method="POST">
+    {% csrf_token %}
+    <input type="password" name="pin">
+    <button type="submit">설정</button>
+  </form>
+</body>
+{% endblock %} 

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}레몬::자산설정{% endblock title %}
+{% block container %}
+<body>
+  <h1>대충 금액 입력하라는 내용</h1>
+  {% if user.invest %}
+    이전 금액 : {{ user.invest|intcomma }}<br>
+    이전 날짜 : {{ user.invest_date|date:"Y-m-d" }}
+  {% else %}
+    대충 처음 설정하네요 하는 내용
+  {% endif %}
+  <form action="" method="POST">
+    {% csrf_token %}
+    <input type="text" name="invest" required>
+    <button type="submit">변경</button>
+  </form>
+</body>
+{% endblock %} 

@@ -63,6 +63,7 @@
         <meta property="og:image:width" content="700"/>
         <meta property="og:image:height" content="300"/>
         <link rel="icon" href="{% static 'main/assets/img/favicon-16x16.png'%}">
+        <link rel="apple-touch-icon-precomposed" href="favicon.ico">
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
         <link rel="stylesheet" href="{% static 'main/assets/css/bootstrap.min.css'%}">
         <link rel="stylesheet" href="{% static 'main/style.css'%}">
@@ -85,7 +86,7 @@
     <body>
         <div id="app">
             <div class="logo">
-                <a href="#page1"><img src="{% static 'main/assets/img/레몬 가로.png'%}" alt=""></a>
+                <a href="#page1"><img src="{% static 'main/assets/img/lemon_horizontal.png'%}" alt=""></a>
             </div>
             <full-page ref="fullpage" :options="options" id="fullpage">
                 <div class="section">
@@ -135,12 +136,12 @@
                                 </div>
                                 <div class="position-left">
                                     <div>
-                                        <img src="{% static 'main/assets/img/목업이미지1.png'%}">
+                                        <img src="{% static 'main/assets/img/mockup1.png'%}">
                                     </div>
                                 </div>
                                 <div class="position-right">
                                     <div>
-                                        <img src="{% static 'main/assets/img/목업이미지4.png'%}">
+                                        <img src="{% static 'main/assets/img/mockup4.png'%}">
                                     </div>
                                 </div>
                                 <div class="move_page">
@@ -165,7 +166,7 @@
                                 </div>
                                 <div class="position-right">
                                     <div>
-                                        <img src="{% static 'main/assets/img/목업이미지3.png'%}">
+                                        <img src="{% static 'main/assets/img/mockup3.png'%}">
                                     </div>
                                 </div>
                                 <div class="move_page">
@@ -188,7 +189,7 @@
                                 </div>
                                 <div class="position-center">
                                     <div>
-                                        <img src="{% static 'main/assets/img/목업이미지2.png'%}">
+                                        <img src="{% static 'main/assets/img/mockup2.png'%}">
                                     </div>
                                 </div>
                                 <div class="position-center-text">
@@ -219,7 +220,7 @@
                                 </div>
                                 <div class="position-center">
                                     <div>
-                                        <img src="{% static 'main/assets/img/목업이미지2.png'%}">
+                                        <img src="{% static 'main/assets/img/mockup2.png'%}">
                                     </div>
                                 </div>
                                 <div class="position-center-text">
@@ -252,7 +253,7 @@
                                 </div>
                                 <div class="position-right">
                                     <div>
-                                        <img src="{% static 'main/assets/img/목업이미지4.png'%}">
+                                        <img src="{% static 'main/assets/img/mockup4.png'%}">
                                     </div>
                                 </div>
                                 <div class="move_page">
@@ -341,8 +342,6 @@
                     loopedSlides: 5
 
                 });
-                galleryTop.controller.control = galleryThumbs;
-                galleryThumbs.controller.control = galleryTop;
             </script>
             <script>
                 var galleryTop = new Swiper('.gallery-top1', {
@@ -375,8 +374,6 @@
                     clickable : true,
                     },
                 });
-                galleryTop.controller.control = galleryThumbs;
-                galleryThumbs.controller.control = galleryTop;
             </script>
             <script>
                 var Slider = function (id, _web, _tab, _mobile, spacing) {

@@ -20,9 +20,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['52.78.138.222']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -140,16 +140,13 @@ SIGNUP_REDIRECT_URL = '/signup'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'accounts', 'static'),
-)
-'''
-STATIC_DIR = [
-    os.path.join(BASE_DIR, '' 'static')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'accounts','static'), # 우리가 사용하는 css static
+    os.path.join(BASE_DIR,'accounts','static','main'), #  홍보페이지 css static
 ]
-'''
-# 배포서버에서 static 파일을 모아서 관리하는 폴더명
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') # 배포서버 static
 
 MEDIA_ROOT = 'media/'
 MEDIA_URL = '/media/'
