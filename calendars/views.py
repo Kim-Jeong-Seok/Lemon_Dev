@@ -21,6 +21,7 @@ from dateutil.relativedelta import relativedelta
 from stocks.models import Stocksector
 from django.http import JsonResponse
 from stocks import stockcal as cal
+from stocks import kocom
 
 # Create your views here.
 URL_LOGIN = '/login'
@@ -73,13 +74,19 @@ def home(request):
         else:
             home_chartjs_data.append(income_sum_value)
 
+    # stock_cal = cal.calculator()
+    # total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+    # print( total_investment_amount)
+    # total_current_price = stock_cal.total_current_price(request.user.user_id)
+    result = {}
     stock_cal = cal.calculator()
     total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
-    print( total_investment_amount)
     total_current_price = stock_cal.total_current_price(request.user.user_id)
-
+    total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+    son = total_current_price + total_use_investment_amount
+    
     return render(request, 'home.html', {'month': month, 'Expenditure': spend_sum, 'Income': income_sum,
-                                         'Home_chartjs_data': home_chartjs_data, 'Total_investment_amount':total_investment_amount})
+                                         'Home_chartjs_data': home_chartjs_data, 'Total_investment_amount':total_investment_amount,'total_current_price':total_current_price, 'son':son})
 
 
 def recom(request):
@@ -190,7 +197,9 @@ def top5(request):
     # 월별 기간 필터링
     spend_month_filter = Spend.objects.filter(user_id=user, spend_date__month=month).values('spend_id', 'kind',
                                                                                             'spend_date', 'amount',
-                                                                                            'place', 'category')
+                                                                                            'place', 'category' ,'stock')
+
+
     income_month_filter = Income.objects.filter(user_id=user, income_date__month=month).values('income_id', 'kind',
                                                                                                'income_date', 'amount',
                                                                                                'income_way',
@@ -199,27 +208,39 @@ def top5(request):
     category_amount = spend_month_filter.values('category', 'card', 'place').annotate(amount=Sum('amount')).order_by(
         '-amount')[:5]
 
+
+
     # 소비 TOP5 카테고리 금액 합계
     category_sum = spend_month_filter.values('category').annotate(amount=Sum('amount')).order_by('-amount')[:5]
     category_card = spend_month_filter.values('card').annotate(amount=Sum('amount')).order_by('-amount')[:5]
-    category_place = spend_month_filter.values('place').annotate(amount=Sum('amount')).order_by('-amount')[:5]
+    category_place = spend_month_filter.values('place','stock').annotate(amount=Sum('amount')).order_by('-amount')[:5]
     print(category_place)
     category_category = spend_month_filter.values('category').annotate(amount=Sum('amount')).order_by('-amount')[:5]
 
     # 요약 페이지_카테고리 건수별 TOP5
-    category_amount_count = spend_month_filter.values('category').annotate(count=Count('category')).order_by('-count')[
-                            :5]
+    category_amount_count = spend_month_filter.values('category').annotate(count=Count('category')).order_by('-count')[:5]
+
+    category_stock = []
+    koscom_api = kocom.api()
+    for element in category_place:
+        current_price = koscom_api.test_get_current_price(element['stock'])
+        category_stock.append([current_price,element['amount'],element['place']
+        ])
+        print(current_price)
+
 
     category_amount_data = []
     category_amount_label = []
     category_count_data = []
     category_count_label = []
+
     for item in category_amount:
         category_amount_data.append(item['amount'])
         category_amount_label.append(item['category'])
     for item in category_amount_count:
         category_count_data.append(item['count'])
         category_count_label.append(item['category'])
+
 
     return render(request, 'top5.html',
                   {'month': month,
@@ -230,7 +251,9 @@ def top5(request):
                    'Category_count': category_amount_count,
                    'Category_sum': category_sum,
                    'category_card': category_card,
-                   'category_place': category_place})
+                   'category_place': category_place,
+                   'category_stock':category_stock
+                   })
 
 
 def category_detail(request, int):
@@ -372,9 +395,6 @@ def edit_calendar(request, spend_id, kind):
 
 
 def sedit_calendar(request, spend_id):
-    spend = Spend.objects.get(spend_id = spend_id)
-    spend.delete()
-
     if request.method == "POST":
         user = request.user.user_id
         spe = Spend.objects.filter(spend_id=spend_id, user_id=user).update(
@@ -390,8 +410,6 @@ def sedit_calendar(request, spend_id):
 
 
 def iedit_calendar(request, income_id):
-    income = Income.objects.get(income_id = income_id)
-    income.delete()
 
     if request.method == "POST":
         user = request.user.user_id
@@ -402,7 +420,14 @@ def iedit_calendar(request, income_id):
             income_way=request.POST['income_way'],
             memo=request.POST['memo'], )
         return redirect('/history')
-
+def delete_shistory(request, spend_id):
+    spend = Spend.objects.get(spend_id = spend_id)
+    spend.delete()
+    return redirect('/history')
+def delete_ihistory(request, income_id):
+    income = Income.objects.get(income_id = income_id)
+    income.delete()
+    return redirect('/history')
 
 @csrf_exempt
 def ajax_pushdate(request):

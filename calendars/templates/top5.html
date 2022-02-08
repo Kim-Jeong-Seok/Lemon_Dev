@@ -208,7 +208,7 @@
       </table>
     </ol>
   </div><!-- 카테고리 탑5 div 끝-->
-    
+
 <script>
 var ctx = document.getElementById("myChart").getContext('2d');
 var myChart = new Chart(ctx, {
@@ -352,17 +352,19 @@ function click_evt() {
     <div>
       <ol style="padding-left: 1rem !important;">
         <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
-          {% for area in category_place %}
+
+          {% for area in category_stock %}
+
           <tr onclick="info('주식코드','시장 kospi')">
             <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
             <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:50px; text-align: left;" width='50'>
-              <a style="font-weight:bold; color:#3a3a3a">{{ area.place }}</a>
+              <a style="font-weight:bold; color:#3a3a3a">{{area.2}}</a>
             </td>
             <td style="text-align: right;" width='25'>
-              <a style="font-weight:400; color:#3a3a3a">{{ area.amount|truncatechars:500|intcomma }}원</a>
+              <a style="font-weight:400; color:#3a3a3a">{{ area.1|truncatechars:500|intcomma }}원</a>
             </td>
             <td width='10' style="text-align: right;">
-              <a style="font-size:9pt; font-weight:300; color:#ff5d51">1,256,400</a>
+              <a style="font-size:9pt; font-weight:300; color:#ff5d51">{{area.0|intcomma}} {{result}} 원</a>
             </td>
             <!--
             <td width='40' style="text-align: right;">
@@ -420,7 +422,7 @@ function click_evt() {
   </div><!-- 건수 탑5 div 끝-->
 </div>
   <script>
-  
+
     var myElement = document.getElementById('container');
 
     // create a simple instance

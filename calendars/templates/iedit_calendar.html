@@ -276,13 +276,17 @@
         </div>
 
         <div style="display:flex;text-align:center; margin-top:15px;justify-content: space-between;">
-            <input class="delBtn" type = "submit" value = "내역삭제"/>
+
             <button class="addBtn" value="incomebtn" name="incomebtn" type="submit" style="width:45%">수정</button>
-            
+
         </div>
     </div>
     </form>
-</div>
+      <form action = "{% url 'calendars:delete_ihistory' i.income_id %}" method="POST">
+            {% csrf_token %}
+          <input class="delBtn"  type = "submit" value = "제거">
+        </form>
+      </div>
 
 
  {% endfor %}

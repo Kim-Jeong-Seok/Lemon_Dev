@@ -32,8 +32,9 @@ class LemonUserManager(BaseUserManager):
             pin=pin,
         )
         user.set_password(password)
-        user.pin = '0000'
         user.save(using=self._db)
+        if user.pin == '':
+            user.pin = '0000'
         return user
 
     def create_superuser(self,uid, email,username, phonenumber, password=None):
@@ -45,7 +46,7 @@ class LemonUserManager(BaseUserManager):
             u_chk = True,
         )
         user.set_password(password)
-    
+
         user.is_admin = True
         user.is_active = True
         user.is_superuser = True

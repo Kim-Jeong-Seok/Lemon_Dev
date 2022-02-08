@@ -61,7 +61,7 @@
                 <div style="padding-top:20px;margin-bottom:20px;">
                     {% for ele in stock_data %}
                     <div class="stocks" onclick="info('{{ele.3}}','{{ele.4}}')">
-                        <div class="stock_name">{{ele.0}}</div>
+                        <div class="stock_name">{{ele}}</div>
                         <div class="stock_current_price">{{ele.2|intcomma}}원</div>
                         <div>
                             <div style="float:right;padding-left:5px;"> {{ele.2|yields:ele.1|rounds:2}}%</div>

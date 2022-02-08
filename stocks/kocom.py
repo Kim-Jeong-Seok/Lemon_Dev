@@ -20,6 +20,8 @@ class api:
             print('Error in get_current_stock: \n', e)
             return False
 
+
+
     def get_current_price(self, marketcode, issuecode):
         try:
             url = f'https://sandbox-apigw.koscom.co.kr/v2/market/stocks/{marketcode}/{issuecode}/price'
@@ -32,6 +34,26 @@ class api:
         except Exception as e:
             print('Error in get_current_price: \n', e)
             return False
+
+    def test_get_current_price(self, stock):
+        try:
+            url = f'https://sandbox-apigw.koscom.co.kr/v2/market/stocks/kospi/{stock}/price'
+            headers = {'apikey': KOSCOM_KEY}
+            response = requests.get(url, headers=headers, timeout=self.timeout)
+            if response.status_code == 200:
+                return json.loads(response.text)['result']['trdPrc']
+            else:
+                url = f'https://sandbox-apigw.koscom.co.kr/v2/market/stocks/kosdaq/{stock}/price'
+                headers = {'apikey': KOSCOM_KEY}
+                response = requests.get(url, headers=headers, timeout=self.timeout)
+                if response.status_code == 200:
+                    return json.loads(response.text)['result']['trdPrc']
+                else:
+                    return False
+        except Exception as e:
+            print('Error in get_current_price: \n', e)
+            return False
+
 
     def get_stock_master(self, marketcode, issuecode):
         try:

@@ -27,6 +27,7 @@ def stock(request):
         current_price = koscom_api.get_current_price(element.sh_marketcode, element.sh_isusrtcd)
         stock_data.append(
             [element.sh_isukorabbrv, average_price, current_price, element.sh_isusrtcd, element.sh_marketcode])
+        print(stock_data)
     return render(request, 'stock.html', {'stock_data': stock_data})
 
 
@@ -34,8 +35,11 @@ def portfolio(request):
     result = {}
     stock_cal = cal.calculator()
     total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+
     total_current_price = stock_cal.total_current_price(request.user.user_id)
+    print(total_current_price)
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+    print(total_use_investment_amount)
     if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False:
         result['total_investment_amount'] = 0
         result['total_current_price'] = 0
@@ -60,6 +64,7 @@ def stock_info(request):
 
             result['year_history'] = day_trdDd_matching(cal_year_history(koscom_api.get_stock_history(request.POST['marketcode'], request.POST['issuecode'],
                                                                                                       'M', '19800101', datetime.today().strftime('%Y%m%d'), 500)))
+
             result['month_history'] = day_trdDd_matching(koscom_api.get_stock_history(request.POST['marketcode'], request.POST['issuecode'],
                                                                                       'M', '19800101', datetime.today().strftime('%Y%m%d'), 500))
             result['week_history'] = day_trdDd_matching(koscom_api.get_stock_history(request.POST['marketcode'], request.POST['issuecode'],
