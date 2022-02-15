@@ -1,6 +1,6 @@
 from .models import *
 from . import kocom
-from django.db.models import Sum, F, Q
+from django.db.models import Sum, F
 
 
 class calculator:
@@ -11,7 +11,7 @@ class calculator:
     def total_investment_amount(self, user_id):
         total_buy = 0
         try:
-            stockheld = Stockheld.objects.filter(~Q(sh_share__lte=0), sh_userid=user_id)
+            stockheld = Stockheld.objects.filter(sh_userid=user_id).exclude(sh_share__lte=0)
             if stockheld.exists():
                 for element in stockheld:
                     stocktrading = Stocktrading.objects.filter(st_userid=user_id,
@@ -42,7 +42,7 @@ class calculator:
     def total_current_price(self, user_id):
         total_current_price = 0
         try:
-            stockheld = Stockheld.objects.filter(~Q(sh_share__lte=0), sh_userid=user_id)
+            stockheld = Stockheld.objects.filter(sh_userid=user_id).exclude(sh_share__lte=0)
             if stockheld.exists():
                 for element in stockheld:
                     current_price = kocom.api().get_current_price(element.sh_marketcode, element.sh_isusrtcd)
@@ -85,8 +85,7 @@ class calculator:
     # 전체 사용한 투자 금액
     def total_use_investment_amount(self, user_id):
         try:
-            use_total = Stockheld.objects.filter(sh_userid=user_id, sh_share=0).aggregate(
-                use_total=Sum('sh_price'))['use_total']
+            use_total = Stockprofit.objects.get(sp_userid=user_id).sp_profit
             if use_total:
                 return use_total
             else:

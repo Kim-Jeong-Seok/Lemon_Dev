@@ -70,7 +70,6 @@ def portfolio(request):
         result['total_current_price'] = 0
         result['total_use_investment_amount'] = 0
     else:
-
         result['category_stock'] = category_stock
         result['total_investment_amount'] = total_investment_amount
         result['total_current_price'] = total_current_price
@@ -130,6 +129,7 @@ def cal_year_history(history):
         print('Error in cal_year_history: \n', e)
         return False
 
+
 def boomark(request, marketcode, isuSrtCd ):
     if request.method == 'POST':
         mark = bookmark.objects.filter(user_id =request.user.user_id, marketcode = marketcode, isuSrtCd = isuSrtCd)
@@ -147,6 +147,7 @@ def boomark(request, marketcode, isuSrtCd ):
             'result': data,
         }
         return JsonResponse(context)
+
 
 def day_trdDd_matching(history):
     day_trdDd_array = []
@@ -194,7 +195,6 @@ def buy_stock(request):
         buy_price = int(data['share']) * int(data['current_price'])
         if (request.user.invest + total_rest_investment) - buy_price < 0:
             return JsonResponse({'result': '가상잔액이 부족합니다'}, content_type='application/json')
-
         try:
             stock_master = kocom.api().get_stock_master(data['marketcode'], data['issuecode'])
             stockheld_check = Stockheld.objects.filter(sh_userid=request.user.user_id,
@@ -203,9 +203,11 @@ def buy_stock(request):
                 if stock_master and not stockheld_check:
                     stockheld_insert(request.user.user_id, data, stock_master)
                     stocktrading_insert(request.user.user_id, data, stock_master, 'B')
+                    stockprofit_input(request.user.user_id, data, 'B')
                 elif stock_master and stockheld_check:
                     stockheld_update(request.user.user_id, data, stock_master, 'B')
                     stocktrading_insert(request.user.user_id, data, stock_master, 'B')
+                    stockprofit_input(request.user.user_id, data, 'B')
                 result = True
         except Exception as e:
             print('Error in buy_stock: \n', e)
@@ -232,6 +234,7 @@ def sold_stock(request):
                 if stock_master and stockheld_check:
                     stockheld_update(request.user.user_id, data, stock_master, 'S')
                     stocktrading_insert(request.user.user_id, data, stock_master, 'S')
+                    stockprofit_input(request.user.user_id, data, 'S')
                 result = True
         except Exception as e:
             print('Error in sold_stock: \n', e)
@@ -270,27 +273,32 @@ def stockheld_update(user_id, data, master, kind):
 
 
 def stocktrading_insert(user_id, data, master, kind):
+    price = int(data['current_price'])
     if kind == 'B':
-        data['current_price'] = -int(data['current_price'])
+        price = -price
+    print(f'stocktrading Insert: {user_id}, {price}')
     Stocktrading(
         st_userid=acc_models.user.objects.get(user_id=user_id),
         st_isusrtcd=master['isuSrtCd'],
         st_kind=kind,
         st_share=data['share'],
-        st_price=data['current_price']
+        st_price=price
     ).save()
 
 
-def stock_profit_input(user_id, price):
+def stockprofit_input(user_id, data, kind):
+    price = int(data['share']) * int(data['current_price'])
+    if kind == 'B':
+        price = -price
     stockprofit_check = Stockprofit.objects.filter(sp_userid=user_id).exists()
     if not stockprofit_check:
-        print(f'Insert: {user_id}, {price}')
+        print(f'stockprofit Insert: {user_id}, {price}')
         Stockprofit(
             sp_userid=user_id,
             sp_profit=price,
         ).save()
     else:
-        print(f'Update: {user_id}, {price}')
+        print(f'stockprofit Update: {user_id}, {price}')
         stockprofit_objects = Stockprofit.objects.get(sp_userid=user_id)
         stockprofit_objects.sp_userid = acc_models.user.objects.get(user_id=user_id)
         stockprofit_objects.sp_profit += price
@@ -378,5 +386,5 @@ def per_pbr_insert(per_pbr_bundle):
         except Exception as e:
             print(f'Error in per_pbr_insert: \n{e}\n !!!!But wait for finish this task!!!!')
             not_exists_list.append(per_pbr['isusrtcd'])
-    print(print('==================> Finish insert per_pbr <=================='))
+    print('==================> Finish insert per_pbr <==================')
     print(f'not exists list \n {not_exists_list}')

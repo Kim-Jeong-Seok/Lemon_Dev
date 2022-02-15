@@ -43,9 +43,8 @@ class api:
             else:
                 return False
         except Exception as e:
-            print('Error in get_current_price: \n', e)
+            print('Error in s_get_current_price: \n', e)
             return False
-
 
     def get_stock_master(self, marketcode, issuecode):
         try:
