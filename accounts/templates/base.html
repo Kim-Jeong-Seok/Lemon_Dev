@@ -199,8 +199,11 @@
     <!-- 핀 번호 로드 -->
     <div id="pin-preload">
         <div class="pin_saver">
-            <div class="pin-input-wrap">
+            <div class="pin-input-wrap" style="flex-direction: column;">
                 <input type="password" pattern="[0-9]*" inputmode="numeric" name="pin" id="pin" maxlength='4' />
+                <a id="forget-pin-kakao-link" style="color: rgba(0, 0, 0, 0.5); text-decoration: underline;">Pin번호를 잊으셨나요?</a>
+            </div>
+            <div>
             </div>
             <div class="pin-btn-wrap">
                 <div onclick="pin_saver({{user.pin}})" class="pinBtn">Pin 번호</div>
@@ -298,4 +301,21 @@
         </div>
     </div>
 </body>
+<script>
+  document.querySelector("#forget-pin-kakao-link").addEventListener("click", kakaoChat);
+
+  function kakaoChat() {
+    Kakao.Channel.chat({
+      channelPublicId: '_xhxeIXb'
+    });
+  };
+
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://developers.kakao.com/sdk/js/kakao.channel.min.js';
+    fjs.parentNode.insertBefore(js, fjs);
+  })(document, 'script', 'kakao-js-sdk');
+</script>
 </html>
