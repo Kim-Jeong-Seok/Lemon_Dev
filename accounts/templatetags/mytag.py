@@ -26,7 +26,25 @@ def sub(value, arg):
 @register.filter
 def rounds(value, arg):
     return round(value, arg)
+# @register.filter
+# def divs(value , arg):
+#     if arg:
+#         return value / arg
+#     else:
+#         return 0
 
+
+# def div(value, arg):
+#     """Divide the arg by the value."""
+#     try:
+#         nvalue, narg = handle_float_decimal_combinations(
+#             valid_numeric(value), valid_numeric(arg), '/')
+#         return nvalue / narg
+#     except (ValueError, TypeError):
+#         try:
+#             return value / arg
+#         except Exception:
+#             return 0
 
 @register.filter
 def yields(value, arg):

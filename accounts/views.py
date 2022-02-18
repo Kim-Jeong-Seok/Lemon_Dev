@@ -75,7 +75,7 @@ def signup(request):
             invest_date = date(1111,1,11)
         else:
             invest_date = datetime.now()
-        
+
         if birthday == '':
             #birthday = date(1111, 1, 11)
             birthday = datetime.now()
@@ -120,16 +120,18 @@ def pin_date_save(request):
         return redirect('/')
 
 class UserPasswordResetView(PasswordResetView):
-    template_name = 'password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+    template_name = 'registration/password_reset_form.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+    print('시발')
     success_url = reverse_lazy('password_reset_done')
     form_class = PasswordResetForm
-    
+    print('시발')
     def form_valid(self, form):
-        if User.objects.filter(email=self.request.POST.get("email")).exists():
+        if user.objects.filter(email=self.request.POST.get("email")).exists():
+            print('시발')
             return super().form_valid(form)
         else:
-            return render(self.request, 'password_reset_done_fail.html')
-            
+            return render(self.request, 'registration/password_reset_done_fail.html')
+
 class UserPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
 

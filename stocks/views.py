@@ -40,7 +40,7 @@ def stock(request):
 
 
 def portfolio(request):
-    categorys =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd','sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')[:3]
+    categorys =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd','sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')
     category_list = list(categorys.values('sh_idxindmidclsscd'))
     categorys_isurtcd = list(categorys.values('sh_isusrtcd'))
     category_keep = category_list[0:3]
@@ -123,6 +123,8 @@ def stock_info(request, marketcode, issuecode):
                                         'D', '19800101', datetime.today().strftime('%Y%m%d'), 50))
         if result['day_history'] is False:
             result['day_history'] = str(0)
+    else:
+        return redirect('/stock_info' + '/' + marketcode + '/'+ issuecode)
 
     return render(request, 'stock_info.html', {'result': result,'star':star})
 
