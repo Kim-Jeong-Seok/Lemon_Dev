@@ -107,7 +107,6 @@
           var y = date.getFullYear();
           var date1 = (y+'-'+m+'-'+d);
           var date2 = (y+'-'+m);
-          console.log('Today is ' + date1);
 
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -154,11 +153,9 @@
           {% endfor %}
         ],
         eventClick: function(info) {
-          console.log(info.event);
           click_date = info.event.startStr; // 날짜
           title_date = moment(click_date).format('DD일');
           //click_title = event.dayEl.innerText;
-          console.log(click_date);
           document.getElementById('click_date').value = click_date;
           $.ajax({
             type: "POST",
@@ -224,7 +221,6 @@
                 else if (el.income_way == 13) {
                   el.income_way = '교육비'
                 };
-                console.log(index, el);
                 element.innerHTML += 
                                   '<div class="ajaxModalWrap" style="" onClick="location.href=\'edit_calendar/' + el.kind + '/' + el.income_id +'/\'">'
                                   +'<div class="ajaxTableWay">'+el.income_way+'</div>'

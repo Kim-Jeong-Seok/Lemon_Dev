@@ -119,16 +119,17 @@ def pin_date_save(request):
         user_db.save()
         return redirect('/')
 
+
 class UserPasswordResetView(PasswordResetView):
-    template_name = 'password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+    template_name = 'registration/password_reset_form.html'  # 템플릿을 변경하려면 이와같은 형식으로 입력
     success_url = reverse_lazy('password_reset_done')
     form_class = PasswordResetForm
-    
+
     def form_valid(self, form):
-        if User.objects.filter(email=self.request.POST.get("email")).exists():
+        if user.objects.filter(email=self.request.POST.get("email")).exists():
             return super().form_valid(form)
         else:
-            return render(self.request, 'password_reset_done_fail.html')
+            return render(self.request, 'registration/password_reset_done_fail.html')
             
 class UserPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
@@ -140,7 +141,6 @@ def fail(request):
 def ajax_checkID(request):
     if request.method == "POST":
         uid = request.POST.get('Vaildid', None)
-        print('에이젝스로 받은 아이디는',uid)
 
         id = user.objects.filter(uid=uid).values('uid')
         if id:
@@ -154,7 +154,6 @@ def ajax_checkID(request):
 def ajax_checkEmail(request):
     if request.method == "POST":
         vailEmail = request.POST.get('vailEmail', None)
-        print('에이젝스로 받은 아이디는', vailEmail)
 
         email = user.objects.filter(email=vailEmail).values('email')
         if email:

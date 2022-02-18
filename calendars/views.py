@@ -64,7 +64,6 @@ def home(request):
             pin=pin,
             invest=invest,
         )
-        print("저장후 폰넘버", phonenumber)
         return redirect('/')
     invest = request.user.invest
     user = request.user.user_id
@@ -247,9 +246,7 @@ def top5(request):
         market_code = find_market_code[0] if find_market_code else None
         issuecode = find_market_code1[0] if find_market_code1 else None
         current_price = koscom_api.get_current_price(market_code , issuecode  )
-        print(current_price)
         category_stock.append([current_price, element['amount'], element['place'], issuecode, market_code])
-        print(category_stock)
 
     category_amount_data = []
     category_amount_label = []
@@ -281,7 +278,6 @@ def category_detail(request, int):
     three_months_ago = now - relativedelta(months=1)
     category = Spend.objects.filter(user_id=user, category=int, spend_date__range=(three_months_ago, now)).order_by(
         'spend_date')
-    print('categorycategorycategorycategory--->', str(category))
 
     return render(request, 'category_detail.html', {'category': category, 'int': int})
 
@@ -310,7 +306,6 @@ def ajax_sendSMS(request):
     if request.method == "POST":
         NUM = request.POST.get("NUM", None)
         KEY = request.POST.get("KEY", None)
-        print(str(NUM) + '그리고' + str(KEY))
 
     send_url = 'https://apis.aligo.in/send/'  # 요청을 던지는 URL, 현재는 문자보내기
     # ================================================================== 문자 보낼 때 필수 key값

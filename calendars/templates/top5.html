@@ -183,8 +183,6 @@ options: {
 onClick:function(e){
     var activePoints = myChart.getElementsAtEvent(e);
     var selectedIndex = activePoints[0]._index;
-    //console.log(this.data.datasets[0].data[selectedIndex]);
-    //console.log(this.data.datasets[0].label[selectedIndex]);
     window.location.href="/category_detail/"+this.data.datasets[0].label[selectedIndex];
 }
 }

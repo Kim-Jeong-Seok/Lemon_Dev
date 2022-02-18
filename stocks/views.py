@@ -94,7 +94,6 @@ def stock_info(request, marketcode, issuecode):
         result['total'] = result['total_use_investment_amount'] - result['total_investment_amount']
         result['share'] = Stockheld.objects.filter(sh_userid=request.user.user_id,
                                                    sh_isusrtcd=issuecode).values_list('sh_share', flat=True)
-        print(result['share'])
         result['curPrice'] = koscom_api.get_current_price(marketcode, issuecode)
         result['marketcode'] = marketcode
         result['total_allow_invest'] = request.user.invest - stock_cal.total_use_investment_amount(request.user.user_id)
