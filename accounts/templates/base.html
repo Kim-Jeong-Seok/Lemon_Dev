@@ -315,10 +315,14 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
     </div>
 <script>
   document.querySelector("#forget-pin-kakao-link").addEventListener("click", kakaoChat);
+
+  function kakaoChat() {
+    Kakao.Channel.chat({
+      channelPublicId: '_xhxeIXb'
     });
   };
 
-  (function (d, s, id) {
+  (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;
     js = d.createElement(s); js.id = id;
