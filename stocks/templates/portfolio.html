@@ -4,69 +4,61 @@
 {% load humanize %}
 {% load mathfilters %}
 <style>
-    .wrapper{
+    .portfolio-wrapper{
     padding:20px;
     }
-    .stock{
-    background-color:#31bc8a;
-    border-radius:10px;
-    padding:20px;
-    margin-top:10px;
-    }
-    .title{
-    font-size:18px;
-    color:white;
-    font-weight:bold;
-    }
-    .side{
-    float:right;
-    color:#f1f1f1;
-    font-size:11px;
-    }
-    .my_stock{
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    padding-top:20px;
-    }
+
 .footer-line-portfolio{
     width:50px;
-    padding: 12px 0 10px 0;
-    border-bottom: 2px solid #FFF;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
     }
 </style>
 {% load mytag %}
-<div class="wrapper">
-    <div><strong>{{user.uid}}</strong>님의</div>
-    <div><strong>포트폴리오</strong></div>
+<div class="portfolio-wrapper">
+    <div class="portfolio-title"><strong>{{user.uid}}</strong>님의</div>
+    <div class="portfolio-title"><strong>포트폴리오</strong></div>
 <div>
-<!--<div>-->
-<!--    <button onclick="fn_set_PER_PBR()">PER, PBR 넣기</button>-->
-<!--</div>-->
-<div class="stock">
-    <span class="side">현재까지 수익률</span>
-    <div class="title">주식</div>
+    <!-- staff 권한을 가진 계정만 per pbr 버튼 활성화 -->
+    {% if user.is_staff == True %}
+        <div>
+            <a>아래 버튼은 관리자 권한을 가진 사용자만 보입니다.</a>
+            <button class="perPbr-Btn" onclick="fn_set_PER_PBR()">PER, PBR 넣기</button>
+        </div>
+    {% else %}{% endif %}
+
+<div class="stock-container">
+    <span class="stock-container-side">현재까지 수익률</span>
+    <div class="stock-container-title">주식</div>
+
 
 {% comment %} <div style="text-align:center;font-size:22px;">{{total_current_amount|intcomma}}원</div> {% endcomment %}
 <!--<div style="text-align:center;font-size:22px;">{{total_invest_amount|intcomma}}원</div>-->
- {% if total_investment_amount %}
-    <div style="text-align:center;font-size:22px;">{{total_current_price|intcomma}}원</div>
 
+    <div style="text-align:center;font-size:22px;font-weight:bold;">{{total_current_price|intcomma}}원</div>
     <div style="text-align:center;font-size:14px;color:white;">
        {{total_current_price|sub:total_investment_amount|intcomma}} ({{total_current_price|yields:total_investment_amount|rounds:2}}%) </div>
-    <div class="my_stock"><a href="{% url 'stocks:stock' %}" style="width:40%;color:#31bc8a; padding:10px 20px 10px 20px; border-radius: 10px; background-color:white;">보유 주식</a></div>
-    {% else %}
-    <div style="text-align:center;font-size:22px;">구매한 주식이 없습니다.</div>
-        {% endif %}
+    <div class="my_stock"><a class="my_stock-btn" href="{% url 'stocks:stock' %}">보유 주식</a></div>
 
-
-</div></div>
+</div>
+</div>
 
 <div class="home-chart" id="home-chart" style="padding:20px;">
-    <div class="title" style="color:black;margin-bottom:20px;">주식 정보</div>
-    <div style="text-align:center;font-size:14px;text-align:left;">내 가상 자산 {{ user.invest|intcomma }} 원에서 {{total_current_price|yields:total_investment_amount|rounds:2}}% 증가</div>
-    <div style="text-align:center;font-size:14px;text-align:left;">손익 : {{total_use_investment_amount|intcomma}}</div>
-        <canvas id="myChart2" width="100" height="100"></canvas>
+    <div class="title" style="color:black;margin-bottom:20px; font-size:16pt; font-weight:bold;">주식 정보</div>
+    <div style="text-align:center;font-size:14px;text-align:left;">내 가상 자산 {{ user.invest|intcomma }} 원에서 {{total_use_investment_amount|yields:user.invest|rounds:2}}% 증가</div>
+    <div style="text-align:center;font-size:14px;text-align:left;">총 가상 자산 : {{ user.invest|add:total_use_investment_amount|intcomma}}원</div>
+    <div style="text-align:center;font-size:14px;text-align:left;">손익금 : {{total_use_investment_amount|intcomma}}원</div>
+
+        <div class="chart-legend">
+            <div><a style="color: #4c8ae5; padding-right: 5px;">■</a><a>가상 잔여 금액</a><a
+                    style="float: right;">{{user.invest|sub:total_investment_amount|intcomma}}원</a></div>
+            <div><a style="color: #ff5d51; padding-right: 5px;">■</a><a>구매한 주식</a><a
+                    style="float: right;">{{total_investment_amount|intcomma}}원</a></div>
+            <div><a style="color: #ffd85a; padding-right: 5px;">■</a><a>손익금</a><a
+                    style="float: right;">{{total_use_investment_amount|intcomma}}원</a></div>
+        </div>
+
+        <canvas id="myChart2" width="100" height="100" style="margin-top: 50px; pointer-events: none;"></canvas>
         <script>
         const ctx = document.getElementById('myChart2').getContext('2d');
         const myChart = new Chart(ctx, {
@@ -79,34 +71,37 @@
                 datasets: [{
                     data: ['{{user.invest|sub:total_investment_amount}}', '{{total_investment_amount}}', '{{total_use_investment_amount}}'],
                     backgroundColor: [
-                        '#5989DD',
-                        '#D46A84',
-                        '#4ACBD7',
-                        '#F3CD55',
+                        '#4c8ae5',
+                        '#ff5d51',
+                        '#ffd85a',
+                        
                     ],
                     borderColor: [
-                        '#5989DD',
-                        '#D46A84',
-                        '#4ACBD7',
-                        '#F3CD55',
+                        '#FFF',
+                        '#FFF',
+                        '#FFF',
                     ],
-                    borderWidth: 0
+                    borderWidth: 5
                 }]
             },
             options: {
-                //legend: { display: false },
+                legend: { display: false },
+                tooltips: { enabled: 0 },
                 rotation: 1 * Math.PI,
-                circumference: 1 * Math.PI
+                circumference: 1 * Math.PI,
+                cutoutPercentage: 80,
             }
         });
         </script>
     </div>
 
-<div class="stock" style="margin-top:20px;">
-    <span class="side">금일 기준</span>
-    <div class="title">주문 가능 금액</div>
-    <div style="text-align:center;font-size:22px;">{{user.invest|sub:total_investment_amount|add:total_use_investment_amount|intcomma}}</div>
-    <div class="my_stock"><a href="{% url 'admins:edit_invest' %}" style="width:40%;color:#31bc8a; padding:10px 20px 10px 20px; border-radius: 10px; background-color:white;">추가</a></div>
+
+
+<div class="stock-container" style="margin-top:20px;">
+    <span class="stock-container-side">금일 기준</span>
+    <div class="stock-container-title">주문 가능 금액</div>
+    <div style="text-align:center;font-size:22px;">{{user.invest|sub:total_investment_amount|add:total_use_investment_amount|intcomma}}원</div>
+    <div class="my_stock"><a href="{% url 'admins:edit_invest' %}" class="my_stock-btn" >추가</a></div>
     </div>
 </div>
 
@@ -114,25 +109,33 @@
     <div style="text-align:left; font-weight: bold; font-size:16px;">
       <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">포트폴리오 기반 추천 Top 5</a>
     </div>
-
-    {{category_stock.0.0}}<br> <!-- 0.1 유저한테 보여줘야할것 -->
-    {{category_stock.0.1}}<br> <!-- 0.1 종목코드 -->
-    {{category_stock.0.2}}<br> <!-- 0.1 per -->
-    {{category_stock.0.3}}<br> <!-- 0.1 pbr -->
-    {{category_stock.0.4}}<br> <!-- 0.1 마켓코드 -->
-    {{category_stock.0.5}}<br> <!-- 0.1 유저한테 보여줘야할것 -->
-
-    <!--{{category_stock.1}}<br>
-    {{category_stock.2}}<br>
-    {{category_stock.3}}<br>
-    {{category_stock.4}}<br>-->
-  <div>
-  <ol style="padding-left: 1rem !important;">
-    <table border="0" style="width: 100%; margin-top:10px; border-collapse:inherit;">
-
-    </table>
-  </ol>
-  </div>
+        <form id="form" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="issuecode" name="issuecode">
+            <input type="hidden" id="marketcode" name="marketcode">
+        </form>
+    <div>
+      <ol style="padding-left: 1rem !important;">
+        <table style="width: 100%; margin-top:10px; border-collapse:inherit;">
+          {% for recom in category_stock %}
+          <tr onclick="info('{{ recom.1 }}','{{ recom.4 }}')">
+            <td width='10'>
+              <li style="font-weight: bold; color:#8e8e8e;"></li>
+            </td>
+            <td class="spendTop5-tableTitle" width='50'>
+              <a>{{recom.5}}</a>
+            </td>
+            <td style="text-align: right;" width='25'>
+              <a style="font-weight:400; color:#3a3a3a">{{ recom.1|truncatechars:500|intcomma }}원</a>
+            </td>
+          {% empty %}
+          <div class="summary-nodata-wrap">
+            <a>주식 구매후 추천해드릴게요</a>
+          </div>
+            {% endfor %}
+        </table>
+      </ol>
+    </div>
   </div><!-- 건수 탑5 div 끝-->
 
 <script>
@@ -176,6 +179,19 @@ $(document).ready(function(){
         .catch(err => {
             console.log(err)
         })
+    }
+
+    function info(issuecode, marketcode) {
+        document.getElementById('issuecode').value = issuecode;
+        document.getElementById('marketcode').value = marketcode;
+        if (marketcode == 'None') {
+        alert('주식 정보가 없습니다.')
+        }
+        else{
+        const form = document.getElementById('form');
+        form.action="/stock_info/" + marketcode + "/" + issuecode ;
+        form.submit();
+        }
     }
 </script>
 {% endblock %}

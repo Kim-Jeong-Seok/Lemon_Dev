@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}레몬::전화번호 변경{% endblock title %}
+{% block container %}
+<style>
+  #container, body{
+    background-color: #fff;
+  }
+  .signup-form{
+    margin:50px 20px 0 20px;
+  }
+  .footer-line-myinfo{
+    /* 하단바 선택시 밑줄 */
+    width: 50px;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #31bc8a;
+  }
+  .add_info_phone_signup{
+    margin-bottom: 10px;
+    padding-left: 10px;
+    border: 1px solid #D1D6DA;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    width: 70%;
+    height: 35px;
+    border-radius: 10px;
+  }
+  .add_info_phonecode_signup{
+    margin-top: 10px;
+    margin-bottom:5px;
+    border: none;
+    width: 50%;
+    display: inline-block;
+    border-bottom: 1px solid #ebebeb;
+    background-color: white;
+    margin-top: 10px;
+  }
+	.changeInfo-btn{
+    margin-top: 10px;
+		padding:10px 30px 10px 30px;
+		width:90%;
+		border-radius:10px;
+		color:white !important;
+		background-color:#31bc8a;
+		border: none;
+	}
+</style>
+{% block nav %}
+<!-- 상단바 영역 시작 -->
+  <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
+    <div>
+        <div style="text-align:center;">
+          <a style="color: #fff;" href="javascript:history.back();">
+            <i class="fa fa-angle-left"></i>
+          </a>연락처 변경
+        </div>
+    </div>
+  </div>
+<!-- 상단바 영역 끝 -->
+{% endblock nav %}
+
+    <!-- 연락처 입력 input -->
+  <form id='changeForm' method="POST">
+    {% csrf_token %}
+    <div class="signup-form">
+        <div style="width:100%;">
+          <div style="display: flex;align-items: center;justify-content: space-between;">
+            <input class="add_info_phone_signup" id="vaildPhonenumber" name="vaildPhonenumber" type="number" placeholder="- 를 제외하고 입력하세요" style="margin-top: 10px; margin-bottom:5px;">
+            <input type="hidden" name="phonenumber">
+            <button type="button" id="codeBtn" class="phone_code_btn_signup">발송</button>
+          </div>
+          <div style="display: flex;align-items: center;justify-content: space-between;">
+            <input style="display: none;" id="inputCode" name="codecode" class="add_info_phonecode_signup" type="number" placeholder="인증번호 입력" disabled>
+            <div style="display: flex; align-items: center;justify-content: space-between;"><a id="count" class="count-signup" style="width:50px;margin-top: 5px; margin-bottom:10px;"></a>
+              <button style="display: none; margin-right:0px;" type="submit" id="certBtn" onclick="certfun();" class="phone_code_btn_signup" disabled >확인</button>
+            </div>
+        </div>
+        </div>
+            <div style="text-align:center;margin-top:55px;position:absolute;bottom:10px;width:100%;left:0px;"><button class="changeInfo-btn" type="button" onclick="change_phone();">정보 수정</button></div>
+    </div>
+  
+<script>
+    document.getElementById('codeBtn').addEventListener('click', codebtn);
+
+    KEY = undefined;
+    function codebtn(){
+        KEY = makeRandomNum(4);
+        var timer = null;
+        var isRunning = false;
+        var display = $('#count');
+        var leftSec = 180;
+        var phoneInput = document.getElementById('vaildPhonenumber');
+        if(phoneInput.value == '' || phoneInput.value == null){
+            alert('휴대전화 번호를 입력하세요.');
+            return false;
+        }
+        if(phoneInput.value.length != 11){
+            alert('휴대전화 번호 11자리를 입력하세요.');
+            return false;
+        }
+
+        if((phoneInput.value != '' || phoneInput.value != null) && phoneInput.value.length == 11 ){
+            alert('입력하신 번호로 인증번호를 전송하였습니다.');
+            $('#inputCode').removeAttr('disabled');
+            $('#inputCode').css('display','block');
+            $('#certBtn').removeAttr('disabled');
+            $('#certBtn').css('display', 'block');
+            $('#codeBtn').attr('disabled',true);
+            if (isRunning){
+                clearInterval(timer);
+                display.html("");
+                startTimer(leftSec, display);
+            }else{
+                startTimer(leftSec, display);
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'calendars:ajax_sendSMS' %}",
+                data: {
+                    NUM: $('#vaildPhonenumber').val(),
+                    KEY: KEY,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function(data){
+                    console.log('성공');
+                    $('#phonce_check').val(1);
+                },
+                fail: function(data) {
+                    console('실패');
+                },
+            });
+            return 0;
+        }
+        else{
+
+        }
+        // 난수 설정
+        function makeRandomNum(n) {
+            let value = '';
+            for(let i = 0; i < n; i++) {
+                value += Math.floor(Math.random() * 10);
+            }
+            return value;
+        }
+    }
+
+    function certfun() {
+        if(document.querySelector("#inputCode").value == KEY){
+            alert('확인되었습니다.');
+            clearInterval(timer);
+            let temp = $('input[name=vaildPhonenumber]').val();
+            $('input[name=phonenumber]').attr('value', temp);
+            $('#vaildPhonenumber').attr('disabled', true);
+            $('#inputCode').attr('disabled', true);
+            $('#codeBtn').attr('disabled', true);
+            $('#certBtn').attr('disabled', true);
+            document.querySelector("#count").style.display = "none";
+        }
+        else if(document.querySelector("#inputCode").value != KEY) {
+            alert('인증번호가 일치하지 않습니다. 다시 확인해주세요.');
+        }
+        else{
+            alert('알수없는 오류가 발생하였습니다. 다시 진행해주세요.');
+        }
+    }
+
+    function startTimer(count, display) {
+        var minutes, seconds;
+        timer = setInterval(function () {
+            minutes = parseInt(count / 60, 10);
+            seconds = parseInt(count % 60, 10);
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+            display.html(minutes + ":" + seconds);
+        // 타이머 끝
+        if (--count < 0) {
+            clearInterval(timer);
+            alert("입력시간이 초과되었습니다.");
+            display.html("00:00");
+            $('#certBtn').attr('disabled', true);
+            $('#codeBtn').removeAttr('disabled');
+            $('.btn_chk').attr("disabled","disabled");
+            isRunning = false;
+            }
+        }, 1000);
+            isRunning = true;
+    }
+</script>
+
+<script>
+  function change_phone() {
+    if ($('input[name=phonenumber]').val() == '') {
+      alert('연락처 입력 또는 인증번호 확인버튼을 클릭해주세요!');
+    }
+    else{
+    const form = document.getElementById('changeForm');
+    alert('변경했습니다.')
+    form.action = "{% url 'admins:changephone' %}"
+    form.submit();
+  }
+  }
+</script>
+</form>
+
+{% endblock %}

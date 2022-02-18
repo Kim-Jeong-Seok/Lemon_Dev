@@ -10,10 +10,14 @@
     margin:0;
     padding: 0;
   }
+
+  .modal-body{
+    padding: 0 25px !important;
+  }
   
   /* 요약페이지 페이지네이션 */
   #pagenation_summary{
-    background-color: #4C8AE5;
+    background-color: #93bcf9;
   }
   #pagenation_summary a{
     color: #fff;
@@ -27,9 +31,13 @@
   }
   .footer-line-calendar{
     width:50px;
-    padding: 12px 0 10px 0;
-    border-bottom: 2px solid #FFF;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
   }
+  a:link, a:active, a:visited, a:hover {
+    color: none;
+    text-decoration-line: none;
+    }
 </style>
 <!-- pagenation -->
 <div class="pagenation">
@@ -68,26 +76,13 @@
 <div class="swiper-slide" data-name="요약" data-hash="summary">
   <div class="money-info-wrap">
     <div class="money-info-container">
-      <b class="money-info-title">
+      <p class="money-info-title">
         <strong>{{month}}월</strong> 누적 금액
-      </b>
+      </p>
       <div class="amountMoney" style="padding-top:10px;">
-        <a id="amount-money1" style="display: none;">{{Expenditure.amount__sum|default_if_none:'0'|intcomma}}</a>
-        <div class="money-wrap"><a id="amount-money" class="amount-money"></a><b class="amount-won">won</b></div>
+        <div class="money-wrap"><a id="amount-money" class="amount-money">{{Expenditure.amount__sum|default_if_none:'0'|intcomma}}</a><b class="amount-won">won</b></div>
       </div>
 
-      <script>
-        //DB에 저장된 usermoney에 천단위 ,(콤마) 찍어주는 스크립트
-        //1. display:none 상태인 amount-money1의 값을 가져온다.
-        var innerText = document.getElementById('amount-money1').innerText;
-        //2. 긁어온 값에 천단위 , 찍어주고 cn1 변수에 저장
-        const cn1 = innerText.toString()
-        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-
-        //3. cn1 변수에 저장된 값을 amount-money 값에 띄워줌
-        const cn1element = document.getElementById('amount-money');
-        cn1element.innerHTML = cn1;
-      </script>
       <!-- 지출 수입 부분 영역 -->
       <div class="spend-income-wrap">
         <div class="spend-income-content">
@@ -112,7 +107,6 @@
           var y = date.getFullYear();
           var date1 = (y+'-'+m+'-'+d);
           var date2 = (y+'-'+m);
-          console.log('Today is ' + date1);
 
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -159,11 +153,9 @@
           {% endfor %}
         ],
         eventClick: function(info) {
-          console.log(info.event);
           click_date = info.event.startStr; // 날짜
           title_date = moment(click_date).format('DD일');
           //click_title = event.dayEl.innerText;
-          console.log(click_date);
           document.getElementById('click_date').value = click_date;
           $.ajax({
             type: "POST",
@@ -180,10 +172,60 @@
               const element = document.getElementById('modalBody');
               reset.innerHTML = '';
               $.each (msg_value, function (index, el) {
-                console.log('element', index, el);
-                element.innerHTML += '<div class="modal-body-text"><div class="modal-body-kind">'+el.kind+'</div>'
-                                    +'<div class="modal-body-amount">'+ el.amount +'원</div></div>';
-              });
+                if (el.kind =='지출'){
+                  el.amount = '- '+el.amount
+                  
+                };
+                if (el.kind == '수입') {
+                  el.amount = '+ ' + el.amount
+                };
+                if (el.income_way == 0) {
+                el.income_way = '카테고리 미선택'
+                }
+                else if (el.income_way == 1) {
+                  el.income_way = '금융/보험'
+                }
+                else if(el.income_way == 2) {
+                  el.income_way = '저축'
+                }
+                else if (el.income_way == 3) {
+                  el.income_way = '온라인쇼핑'
+                }
+                else if (el.income_way == 4) {
+                  el.income_way = '출금'
+                }
+                else if (el.income_way == 5) {
+                  el.income_way = '생활/마트'
+                }
+                else if (el.income_way == 6) {
+                  el.income_way = '카페/간식'
+                }
+                else if (el.income_way == 7) {
+                  el.income_way = '기타지출(사회생활비)'
+                }
+                else if (el.income_way == 8) {
+                  el.income_way = '교통/차량유지'
+                }
+                else if (el.income_way == 9) {
+                  el.income_way = '주거생활/통신'
+                }
+                else if (el.income_way == 10) {
+                  el.income_way = '식사'
+                }
+                else if (el.income_way == 11) {
+                  el.income_way = '의료/건강'
+                }
+                else if (el.income_way == 12) {
+                  el.income_way = '문화/예술 '
+                }
+                else if (el.income_way == 13) {
+                  el.income_way = '교육비'
+                };
+                element.innerHTML += 
+                                  '<div class="ajaxModalWrap" style="" onClick="location.href=\'edit_calendar/' + el.kind + '/' + el.income_id +'/\'">'
+                                  +'<div class="ajaxTableWay">'+el.income_way+'</div>'
+                                  +'<div class="ajaxTableAmount" id="ajaxTableAmount" style="font-weight:500; float:right;"><a id="appen"></a> '+el.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +'원</div></div>';
+                                  });
             },
             fail: function() {
               console.log('ajax send error!');

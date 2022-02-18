@@ -43,6 +43,24 @@ font-family: 'Noto Sans KR', sans-serif;
 		display: none;
 	}
 
+		input:focus {outline: none;}
+    select:focus {outline: none;}
+    textarea:focus {outline: none;}
+    input{-webkit-appearance: none;
+    -webkit-border-radius: 0;
+    }
+    select{-webkit-appearance: none;
+    -webkit-border-radius: 0;}
+    textarea{-webkit-appearance: none;
+    -webkit-border-radius: 0;}
+		input[type="date"]{
+			-webkit-appearance: textfield;
+			-moz-appearance: textfield;
+			min-height: 1.2em;
+    }
+		::-webkit-scrollbar{
+    	display:none;
+		}
 	li{
 		font-family: 'Noto Sans KR', sans-serif;
 	}
@@ -69,7 +87,7 @@ font-family: 'Noto Sans KR', sans-serif;
     .la-ball-clip-rotate {
         display: block;
         font-size: 0;
-        color:#31bc8a;
+        color:#93bcf9;
         margin: 0 auto;
         top: 46%;
     }
@@ -232,7 +250,7 @@ font-family: 'Noto Sans KR', sans-serif;
     #footer{
         max-width: 768px;
         position: fixed;
-        background-color: #4C8AE5;
+        background-color: white;
         border-radius : 1rem 1rem 0 0 ;
         box-shadow: 0 3px 5px 3px rgb(202, 202, 202);
         z-index: 1024;
@@ -267,7 +285,7 @@ font-family: 'Noto Sans KR', sans-serif;
 		/*margin-top: 0.5rem;*/
 		margin-bottom: 1rem;
 		border:none;
-		border-bottom: 1px solid #31BC8A;
+		border-bottom: 1px solid #93bcf9;
 		background-color: #F5F5F5;
 		padding-left: 10px;
 	}
@@ -277,7 +295,7 @@ font-family: 'Noto Sans KR', sans-serif;
 		color: #8e8e8e;
 		margin-bottom: 1rem;
 		border:none;
-		border-bottom: 0.8px solid #31BC8A;
+		border-bottom: 0.8px solid #93bcf9;
 		background-color: #F5F5F5;
 		padding-left: 10px;
 	}
@@ -289,7 +307,7 @@ font-family: 'Noto Sans KR', sans-serif;
 		margin: 10px auto 10px auto;
 		width: 100%;
 		height: 50px;
-		background: #31bc8a;  /* fallback for old browsers */
+		background: #93bcf9;  /* fallback for old browsers */
 		border-radius: 10px;
 		border: none;
 		outline: none;
@@ -384,21 +402,6 @@ font-family: 'Noto Sans KR', sans-serif;
 		bottom: 105px;
 	}
 
-	.addList-btn{
-	font-family: 'Noto Sans KR', sans-serif;
-	font-size: 18px;
-	color: #fff;
-	font-weight: bold;
-	width: 95%;
-	height: 55px;
-	border: 1px solid transparent;
-	border-radius: 15px;
-	box-shadow: 1px 1px 5px 1px gray;
-	background: #31bc8a;
-	}
-
-
-		
 
 		.summary-nodata-wrap{
 			margin-top:10px;
@@ -427,7 +430,7 @@ font-family: 'Noto Sans KR', sans-serif;
 			width: 90%;
 			height:150px;
 			border-radius: 10px;
-			border: 1px solid #3edc84;
+			border: 1px solid #93bcf9;
 			color: #2a2a2a;
 			text-align: center;
 			vertical-align: middle;
@@ -444,7 +447,7 @@ font-family: 'Noto Sans KR', sans-serif;
 			height:45px;
 			border: none;
 			border-radius: 10px;
-			background-color: #3edc84;
+			background-color: #93bcf9;
 		}
 		.recom-empty-wrap{
 			margin: 50px auto;
@@ -569,9 +572,44 @@ font-family: 'Noto Sans KR', sans-serif;
 		font-weight: 500;
 		width: 80%;
 		height: 45px;
-		background-color: #31bc8a;
+		background-color: #93bcf9;
 		color: #FFF;
 	}
 
+	.pin-input-wrap{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+	}
+	.pin-btn-wrap{
+		text-align:center;
+		display: flex;
+		justify-content: center;
+		margin-top:35px;
+		position:fixed;
+		bottom:15px;
+		width:100%;
+		left:0px;
+	}
+	.pinBtn {
+		padding: 10px 30px 10px 30px;
+		width: 80%;
+		border-radius: 10px;
+		color: white !important;
+		background-color: #93bcf9;
+		height: 50px;
+	}
+	
+	.pin_saver {
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		background-color: #F3F4F6;
+		will-change: opacity;
+		z-index: 90;
+	}
 
 }

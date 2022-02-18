@@ -14,13 +14,18 @@
   }
 
   #pagenation_list{
-    background-color: #4C8AE5;
+    background-color: #93bcf9;
   }
   #pagenation_list a{
     color: #fff;
   }
   #pagenation_summary a, #pagenation_calendar a{
     color: #adadad;
+  }
+  .footer-line-calendar{
+    width:50px;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
   }
 </style>
 
@@ -34,15 +39,14 @@
 </div>
 <!-- pagenation 끝 -->
 
-<div class="swiper-slide" data-name="내역" data-hash="list">
 <div class="filter-menu">
-    <div class="filter-menu-title">
-      <a>상세검색</a>
-      <a style="float: right; display:none;" onclick="hideBtn()" id="hide-btn"><i style="margin-right: 5px;" class="fas fa-chevron-up"></i></a>
-      <a style="float: right;" onclick="showBtn()" id="show-btn"><i style="margin-right: 5px;" class="fas fa-chevron-down"></i></a>
-    </div>
+  <div class="filter-menu-title">
+    <a>상세검색</a>
+    <a style="float: right; display:none;" onclick="hideBtn()" id="hide-btn"><i style="margin-right: 5px;" class="fas fa-chevron-up"></i></a>
+    <a style="float: right;" onclick="showBtn()" id="show-btn"><i style="margin-right: 5px;" class="fas fa-chevron-down"></i></a>
+  </div>
 
-    <script>
+  <script>
       function hideBtn() {
         $('#filter-contents').fadeOut();
         document.getElementById('hide-btn').style.display="none";
@@ -70,18 +74,20 @@
       }};
     </script>
 
-    <div class="filter-menu-contents" id="filter-contents" style="display: none;padding-top:15px;">
-      <form class="check_box_form" action="{% url 'calendars:detail_search' %}" method="post">
-    {% csrf_token %}
+  <div class="filter-menu-contents" id="filter-contents" style="display: none;padding-top:15px;">
+    <form class="check_box_form" action="{% url 'calendars:detail_search' %}" method="post" id="search_form">
+      {% csrf_token %}
       <div style="text-align: center;">
-      <input class="search-date" type="date" id="start_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="start_date" value=""> ~
-      <input class="search-date" type="date" id="end_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="end_date" value=""> <br>
-    <div class="search-btn" onclick="check_date()">상세 검색</div></form> <br>
-      </div>
-    </div>
-
+        <input class="search-date" type="date" id="start_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="start_date" value=""> ~
+        <input class="search-date" type="date" id="end_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="end_date" value="">
+        <div style="display: flex;justify-content: center;">
+          <div class="search-btn" onclick="check_date()">상세 검색</div></div>
+      </div></form>
   </div>
-  <table class="list-table" id="list-table" style="background-color:#fff; border-radius:10px; margin: 15px 10px 60px 10px; padding:0 20px 60px 20px; border-collapse:separate; border-spacing:0 20px; "width="95%">
+</div>
+
+
+<table class="list-table" id="list-table">
   <colgroup>
     <col width="*"/>
     <col width="*"/>
@@ -89,10 +95,13 @@
   <tbody id="list-table-tbody">
   {% for filter in total_date %}
   <tr class="tr-month-title">
-  {% ifchanged filter.spend_date.month %}
-    <th class="th-month-title2" style="text-align:right;">기간 : {{start_date}} ~ </th>
-    <th class="th-month-title2" style="padding-left:3px;"> {{end_date}}</th>
-  {% endifchanged %}
+    {% ifchanged filter.spend_date.month %}
+    <th colspan="2" class="th-month-title" style="text-align:center;">
+      <div style="display:flex;align-items:center;justify-content:center">
+        <img src="media/date.png" style="margin-right: 5px; width:30px; height:30px; vertical-align: -webkit-baseline-middle;">{{ filter.spend_date | date:'m월' }}
+      </div>
+    </th>
+    {% endifchanged %}
   </tr>
   {% ifchanged filter.spend_date.day %}
   <tr style="vertical-align:top;" id="date_title">
@@ -103,65 +112,60 @@
     <th style="text-align:right;font-size:13px; border-bottom:1px solid #dddddd; vertical-align: middle;">
 
     </th>
-  {% endifchanged %}
+    {% endifchanged %}
   </tr>
 
   {% if filter.kind == "지출" %}
   <tr onclick="location.href='{% url 'calendars:edit_calendar'  filter.kind filter.spend_id %}'">
-  {% else %}
+    {% else %}
   <tr onclick="location.href='{% url 'calendars:edit_calendar' filter.kind filter.spend_id %}'">
-  {% endif %}
+    {% endif %}
     <td style="vertical-align:top;">
       <div style="text-align:left;padding-left:30px;">
         {% if filter.kind == "지출" %}
         <a style="font-family: 'Noto Sans KR', sans-serif; font-weight:400; font-size:12pt; color: #3a3a3a; display:block;">{{ filter.place }}</a>
         {% elif filter.kind == "수입" %}
-          <a class="date_list_category">{% if filter.place == '0' %} 선택안함 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '1' %} 금융/보험 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '2' %} 저축 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '3' %} 온라인쇼핑 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '4' %} 출금 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '5' %} 생활/마트 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '6' %} 카페/간식 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '7' %} 기타지출(사회생활비) {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '8' %} 교통/차량유지 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '9' %} 주거생활/통신 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '10' %} 식사 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '11' %} 의료/건강 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '12' %} 문화/예술 {% endif %}</a>
-          <a class="date_list_category">{% if filter.place == '13' %} 교육비 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '0' %} 선택안함 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '1' %} 금융/보험 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '2' %} 저축 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '3' %} 온라인쇼핑 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '4' %} 출금 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '5' %} 생활/마트 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '6' %} 카페/간식 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '7' %} 기타지출(사회생활비) {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '8' %} 교통/차량유지 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '9' %} 주거생활/통신 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '10' %} 식사 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '11' %} 의료/건강 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '12' %} 문화/예술 {% endif %}</a>
+        <a class="date_list_category">{% if filter.place == '13' %} 교육비 {% endif %}</a>
         {% endif %}
         <!--<a style="text-align:left;font-size: 13px; color:gray;display:block;">{{ detail.spend_date | date:'h:m' }}</a>-->
       </div>
     </td>
     <td style="vertical-align: top;">
-        <div style="text-align:right; padding-right:15px;">
+      <div style="text-align:right; padding-right:15px;">
         {% if filter.kind == '지출' %}
         <a class="amount" style="color: #2a2a2a">-{{ filter.amount|intcomma }}원</a>
-      {% else %}
+        {% else %}
         <a class="amount" style="color: #2a2a2a">+{{ filter.amount|intcomma }}원</a>
-      {% endif %}
-        </div>
-      </td>
-  </tr>    
+        {% endif %}
+      </div>
+    </td>
+  </tr>
   {% empty %}
-    <style>
+  <style>
       .list-table{display: none;}
     </style>
-    <div class="no-top5">
-      <div class="no-detailsearch-content">
-        <img style="display:block; margin:0 auto 15px auto;" width="100" src="media/LEMON.png">
-        <a class="no-top5-text">내역이 없습니다.</a>
-      </div>
+  <div class="no-top5">
+    <div class="no-detailsearch-content">
+      <img style="display:block; margin:0 auto 15px auto;" width="100" src="media/LEMON.png">
+      <a class="no-top5-text">내역이 없습니다.</a>
     </div>
+  </div>
   {% endfor %}
   </tbody>
-</div><!-- swiper div 끝 -->
-
-
-{{i}}
-
-
+  <!-- swiper div 끝 -->
 
 </table>
 

@@ -5,11 +5,13 @@
 {% load humanize %}
 {% load mathfilters %}
 <style>
-    .bottom-nav-stock,.bottom-nav-stock a{
-        color: #FFD859;
+    .footer-line-stock{
+    width:50px;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
     }
     .act{
-    border-bottom:2px solid #31bc8a;
+    border-bottom:2px solid #93bcf9;
     }
     .title{
     margin-left:20px;
@@ -59,8 +61,8 @@
     padding:10px 20px 10px 20px;
     width:100%;
     text-align:center;
-    color:white;
-    background:#31bc8a;
+    color:white !important;
+    background:#93bcf9;
     margin-top:10px;
     border-radius:10px;
     }
@@ -83,6 +85,11 @@
     }
     .gold{
     color:gold !important;;
+    }
+    .noChartdata{
+        text-align: center;
+        padding-top: 50px;
+        font-weight:500;
     }
 </style>
 {% block nav %}
@@ -110,6 +117,9 @@
             <i class="fas fa-angle-up red"></i>
             <i class="fas fa-angle-down blue"></i>
             <i class="fas fa-minus"></i>
+                <div id="howup" style="display:inline-block;"> {{  result.curPrice|sub:result.prevddClsprc|intcomma }}</div><div class="percent" style="display:inline-block">원</div>
+                 <div class="percent" style="display:inline-block;">({{ result.curPrice|sub:result.prevddClsprc|div:result.prevddClsprc|mul:100|floatformat:2 }}%)</div>
+                 {% comment %} <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|floatformat:2 }}%)</div> {% endcomment %}
         </div>
         {% else %}
             상세정보가 없습니다.
@@ -126,22 +136,22 @@
     <div class="swiper-scrollbar" style="top:0px;height:3px;"></div>
     <div class="swiper-wrapper">
         <div class="swiper-slide">
-              <div class="myChartDiv">
+              <div class="myChartDiv" id="dayChart">
               <canvas id="myChart" width="600" height="400" style="padding-top:15px;"></canvas>
             </div>
         </div>
         <div class="swiper-slide">
-             <div class="myChartDiv">
+             <div class="myChartDiv" id="weekChart">
               <canvas id="myChart1" width="600" height="400"  style="padding-top:15px;"></canvas>
             </div>
         </div>
         <div class="swiper-slide">
-             <div class="myChartDiv">
+             <div class="myChartDiv" id="monthChart">
               <canvas id="myChart2" width="600" height="400"  style="padding-top:15px;"></canvas>
             </div>
         </div>
         <div class="swiper-slide">
-             <div class="myChartDiv">
+             <div class="myChartDiv" id="yearChart">
               <canvas id="myChart3" width="600" height="400"  style="padding-top:15px;"></canvas>
             </div>
         </div>
@@ -330,7 +340,7 @@ var myChart = new Chart(ctx, {
 
 <!-- 주봉 차트 -->
 var ctx = document.getElementById("myChart1");
-var myChart = new Chart(ctx, {
+var myChart2 = new Chart(ctx, {
     type: 'line',
     data: {
         labels: [{% for r in result.week_history %} '{{r.trdDd}}', {% endfor %}],
@@ -439,7 +449,7 @@ var myChart = new Chart(ctx, {
 
 <!-- 월봉 차트 -->
 var ctx = document.getElementById("myChart2");
-var myChart = new Chart(ctx, {
+var myChart3 = new Chart(ctx, {
     type: 'line',
     data: {
         labels: [{% for r in result.month_history %} '{{r.trdDd}}', {% endfor %}],
@@ -548,7 +558,7 @@ var myChart = new Chart(ctx, {
 
 <!-- 연봉 차트 -->
 var ctx = document.getElementById("myChart3");
-var myChart = new Chart(ctx, {
+var myChart4 = new Chart(ctx, {
     type: 'line',
     data: {
         labels: [{% for r in result.year_history %} '{{r.trdDd}}', {% endfor %}],
@@ -654,6 +664,22 @@ var myChart = new Chart(ctx, {
         },
     }
 });
+    if (myChart.data.datasets[0].data == ''){
+        const element = document.getElementById('dayChart');
+        element.innerHTML = '<div class="noChartdata"><p>코스콤 주식 서버의 문제로<br>데이터를 불러올수 없습니다.</p></div>';
+    };
+    if (myChart2.data.datasets[0].data == ''){
+        const element = document.getElementById('weekChart');
+        element.innerHTML = '<div class="noChartdata"><p>코스콤 주식 서버의 문제로<br>데이터를 불러올수 없습니다.</p></div>';
+    };
+    if (myChart3.data.datasets[0].data == ''){
+        const element = document.getElementById('monthChart');
+        element.innerHTML = '<div class="noChartdata"><p>코스콤 주식 서버의 문제로<br>데이터를 불러올수 없습니다.</p></div>';
+    };
+    if (myChart4.data.datasets[0].data == ''){
+        const element = document.getElementById('yearChart');
+        element.innerHTML = '<div class="noChartdata"><p>코스콤 주식 서버의 문제로<br>데이터를 불러올수 없습니다.</p></div>';
+    };
 </script>
 <script>
     var csrftoken = getCookie('csrftoken');
@@ -958,8 +984,8 @@ $.ajaxSetup({
 </script>
 <div  style="display:none;">
     <form action = "{% url 'stocks:boomark' result.marketcode result.isuSrtCd  %}" method="POST" id="form3">
-               {% csrf_token %}
-           </form>
+        {% csrf_token %}
+    </form>
 </div>
 <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
 <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
@@ -987,7 +1013,7 @@ $.ajaxSetup({
 </script>
 <Style>
     .swiper-scrollbar-drag{
-    background:#31bc8a;
+    background:#93bcf9;
     }
     .swiper {
         position: relative;

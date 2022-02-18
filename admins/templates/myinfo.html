@@ -31,7 +31,7 @@
         width: 100%;
     }
     .invest{
-    background-color:#31bc8a;
+    background-color:#93bcf9;
     border-radius:10px;
     padding-top:20px;
     padding-bottom:20px;
@@ -59,8 +59,8 @@
     }
 .footer-line-myinfo{
     width:50px;
-    padding: 12px 0 10px 0;
-    border-bottom: 2px solid #FFF;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
     }
 </style>
 <div class="profile-wrap">
@@ -73,7 +73,7 @@
 <div class="profile-wrap invest">
     {% if user.invest == 0 or user.invest == NULL %}
     <a style="padding-right:5px;">보유 가상 자산</a>
-    <div class="invest_money"><a href="{% url 'accounts:myinfo' %}">가상자산을 설정해주세요.</a></div>
+    <div class="invest_money"><a href="{% url 'admins:edit_invest' %}">가상자산 설정</a></div>
     {% else %}
     <a style="padding-right:5px;">보유 가상 자산</a>
     <div class="invest_money"><span style="color:black;">{{ user.invest|default_if_none:'0'|intcomma }}원</span>
@@ -128,21 +128,22 @@
                       </div>
                 </a>
             </li>
+            <li class="sms">
+                <a href="{% url 'admins:sms_read' %}">
+                    <i class="fas fa-pen" style="padding-right:5px;"></i>
+                    <div class="order">
+                        <div>문자내역</div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+            </li>
 
             <li><a style="color: #FF4444;" onclick="ask_out()">
                 <i class="fas fa-sign-out-alt" style="padding-right:5px;"></i><div class="order"><div>회원 탈퇴</div><i
                     class="fas fa-chevron-right"></i></div></a>
             </li>
             <li>
-                <a href="{% url 'admins:sms_read' %}">
-                    <i class="fas fa-unlock-alt" style="padding-right:5px;"></i><div class="order">
-                        <div>문자내역</div>
-                        <i class="fas fa-chevron-right"></i>
-                          </div>
-                    </a>
-                </li>
-                <li>
-                <a style="color: #FF4444;" href="{% url 'accounts:logout' %}">
+                <a style="color: #FF4444;" onclick="logout()">
                       <i class="fas fa-sign-out-alt" style="padding-right:5px;"></i><div class="order">
                     <div>로그아웃</div>
                     <i class="fas fa-chevron-right"></i>
@@ -153,18 +154,30 @@
     </div>
 </div>
 <script>
-        function ask_out(){
+    function ask_out(){
         if (confirm('정말로 탈퇴하시겠습니까?') == true){
-        window.location.href = "{% url 'admins:user_delete' user.user_id %}";
+            window.location.href = "{% url 'admins:user_delete' user.user_id %}";
         } else {
         return;
         }
-        }
+    }
+    function logout(){
+    if (confirm('로그아웃 하시겠습니까?') == true){
+        
+    window.location.href = "{% url 'accounts:logout' %}";
+    } else {
+        console.image("https://blog.kakaocdn.net/dn/nod8Z/btrcLB71HY2/ZRoPC8JIf8VgIrVUjbCLl1/img.gif");
+    return;
+    }
+}
 </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
-$(document).ready(function(){
-    $('.footer-selector').fadeIn(550);
-});
+// Display 'none' if Apple Device
+const mobile = (/iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase()));
+if(mobile) {
+    $('.sms').hide();
+}
 </script>
 <!--    {% if message %}-->
 <!--    <script>alert('{{ message }}');</script>-->

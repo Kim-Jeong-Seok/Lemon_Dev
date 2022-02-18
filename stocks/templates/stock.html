@@ -24,30 +24,30 @@
     float:right;
     }
     .buy_price{
-     display:inline-block;
-     float:right;
-     }
-     .refresh{
-     float:right;
-     color:#31bc8a;
+        display:inline-block;
+        float:right;
+    }
+    .refresh{
+        float:right;
+        color:#93bcf9;
      }
     ::-webkit-scrollbar {
     display: none;
 }
 .footer-line-stock{
     width:50px;
-    padding: 12px 0 10px 0;
-    border-bottom: 2px solid #FFF;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
     }
 </style>
 {% load mytag %}
-<table style="position:fixed;background-color:white;height:35px;width: 100%;">
+<table style="position:absolute;background-color:white;height:40px;width: 100%;">
     <tr>
         <td style="width:50%;text-align:center;" onclick="move_page(0)">보유 주식</td>
         <td style="width:50%;text-align:center;" onclick="move_page(1)">관심 주식</td>
     </tr>
 </table>
-<div style="padding-top:35px;">
+<div style="margin-top:40px;">
 <div class="swiper">
     <div class="swiper-scrollbar" style="top:0px;height:3px;"></div>
     <div class="swiper-wrapper">
@@ -120,7 +120,7 @@
 </script>
 <Style>
     .swiper-scrollbar-drag{
-    background:#31bc8a;
+    background:#93bcf9;
     }
     .swiper {
         position: relative;
@@ -149,6 +149,7 @@
         return "";
     }
 
+/*
     function fn_koscom_history() {
         var data = {
 <!--                'marketcode': 'kospi',-->
@@ -177,7 +178,7 @@
             console.log(err)
         })
     }
-
+*/
 </script>
 
 <script>

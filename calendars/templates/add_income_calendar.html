@@ -1,9 +1,206 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}레몬::추가하기{% endblock title %}
-
 {% block nav %}
 <!-- 상단바 영역 시작 -->
+<style>
+ .loader-main{
+    bottom:0px !important;
+    }
+    #footer{
+    display: none;
+  }
+    #container{
+        margin: 0 20px !important;
+    }
+      /* FOOTER에서 사용하는 CSS */
+
+  .bottom-nav-search-stock a,
+  .bottom-nav-stock a,.bottom-nav-addlist a,
+  .bottom-nav-myinfo a{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: #D1D6DA !important;
+  }
+    ::-webkit-scrollbar{
+        width: 10px;
+        background-color: wheat;
+        display: block;
+      }
+      ::-webkit-scrollbar-thumb{
+        width: 30px;
+      }
+    .addEvent-wrap{
+        background-color: #fff;
+        position: relative;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        max-width: 768px;
+        height: 100%;
+        border: 1px solid rgb(202, 202, 202);
+        box-shadow: 2px 3px 4px 1px rgb(202, 202, 202);
+        border-radius: 15px;
+        padding: 15px;
+    }
+    .list{
+        text-align: center;
+    }
+    input[type="radio"] {
+        display: none;
+    }
+    th{
+        white-space: initial;
+    }
+    label {
+    width: 100px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    display: inline-block;
+    border-radius: 15px;
+    text-align: center;
+    text-decoration: none;
+    border: solid 1px #4C8AE5;
+    transition: 0.25s;
+    padding: 6px 18px;
+    cursor: pointer;
+    font-size: 20px;
+    margin: 3px;
+    }
+    input[type="radio"]:checked + label {
+    width: 100px;
+    background: #4C8AE5;
+    color: #fff;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+    .span_div,.income_div{
+        padding: 5px;
+    }
+    .span_list_title{
+        color: #000;
+        text-decoration: none;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 500;
+        font-size: 15px;
+    }
+    .input_span{
+        width: 230px;
+        padding-bottom: 5px;
+        font-size: 15px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        text-align: right;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid rgb(202, 202, 202);
+        /* ios 기능 */
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        background-color: #fff;
+
+    }
+    .span_list_select{
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        width:230px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight:400;
+        font-size:15px;
+        /* ios 기능 */
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        background-color: #fff;
+        border-bottom: 1px solid rgb(202, 202, 202);
+    }
+    .income_list_title{
+        float: left;
+        margin-top: 15px;
+        margin-left: 10px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        margin-right: 2rem;
+    }
+    .input_textarea{
+        width: 230px;
+        height:150px;
+        overflow:visible;
+        font-size: 15px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid rgb(202, 202, 202);
+        resize: none;
+        /* ios 기능 */
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        background-color: #fff;
+        -moz-user-select: auto;
+        -webkit-user-select: auto;
+        -ms-user-select: auto;
+        user-select: auto;
+    }
+
+
+    .addBtn{
+        border: 1px solid transparent;
+        border-radius: 10px;
+        width: 100%;
+        height: 50px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #fff;
+        background: #93bcf9;
+        margin-top: 20px;
+    }
+    .ui-autocomplete {
+    height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position:relative !important;
+    left:0px !important;
+    padding-left:20px;
+    padding-right:20px;
+    margin:40px;
+    }
+
+    ::-webkit-scrollbar {display:none;
+    }
+    @media screen and (max-width: 420px) {
+        .span_table a{
+            font-size: 15px;
+        }
+        .input_span{
+            font-size: 15px;
+            border-bottom: 1px solid rgb(202, 202, 202);
+        }
+        .span_list_select{
+            font-size: 15px;
+            border-bottom: 1px solid rgb(202, 202, 202);
+        }
+    }
+
+</style>
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
   <div>
       <div style="text-align:center;">
@@ -27,46 +224,6 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<style>
-    #container{
-        margin: 0 20px !important;
-    }
-      /* FOOTER에서 사용하는 CSS */
-    ::-webkit-scrollbar{
-        width: 10px;
-        background-color: wheat;
-        display: block;
-      }
-      ::-webkit-scrollbar-thumb{
-        width: 30px;
-      }
-    th{
-        white-space: initial;
-    }
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-    .span_div,.income_div{
-        padding: 5px;
-    }
-    ::-webkit-scrollbar {display:none;
-    }
-@media screen and (max-width: 420px) {
-  .span_table a{
-      font-size: 15px;
-  }
-  .input_span{
-      font-size: 15px;
-      border-bottom: 1px solid rgb(202, 202, 202);
-  }
-  .span_list_select{
-      font-size: 15px;
-      border-bottom: 1px solid rgb(202, 202, 202);
-  }
-}
-</style>
 
 <div class="addEvent-wrap">
 
@@ -116,14 +273,19 @@
         </div>
 
         <div style="text-align:center; margin-top:15px;">
-            <div type="button" class="addBtn" value="incomebtn" onclick="submit()" style="line-height:47px;" />추가하기</div>
-
+            <div class="addBtn" onclick="submit()" style="line-height:47px;">추가하기</div>
         </div>
     </div>
     </form>
 </div>
 
 <script>
+    $(document).ready(function(){
+    let today = moment();
+    let today2 = today.format('YYYY-MM-DD')
+    $('#date').attr('value', today2);
+    });
+    
     function submit(){
     var max_int = 210000000;
 

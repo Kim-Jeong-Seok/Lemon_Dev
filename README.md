@@ -9,6 +9,65 @@
 > 4. 기존방식인 ``` python.manage.py runserver ``` 명령어를 사용 하고싶으면, 명령어창에 ```  set DJANGO_SETTINGS_MODULE=lemon.settings.local ``` 입력후, 동일한 방법으로 로컬 서버를 실행하면 됩니다.
 -------
 ### Changelog
+#### 2022.02.16
+
+1. 회원가입 페이지 아이디, 이메일 중복 체크 버튼 추가
+
+2. 회원가입시 전화번호 못받아오는 문제 해결(```disabled``` 옵션때문에 ```<form></form>``` 태그에서는 값을 전달 안함. ```readonly``` 옵션 사용하면 되지만 스크립트가 걸려있어서 disablefh 처리)
+
+3. Pin번호 입력 기능추가(아직은 불안정함)
+
+4. 수입, 지출 작성시 날짜 부분 오늘 날짜 불러올 수 있도록 설정
+
+5. 문자내역 조회 기능 추가
+
+6. 회원 정보 변경 -> 휴대폰 변경 기능 추가
+
+7. 소셜 계정으로 최초 로그인시 추가 양식 받는 페이지에서 전화번호 못 받아오는 문제 해결
+
+8. 요약페이지 모달창 css 수정 및 표시해야하는 항목 정리
+
+#### 2022.02.14
+
+1. account.css 파일 추가(accounts/templates 관련된 css)
+
+2. QNA,공지사항,내정보,자산설정,Pin설정,FAQ HTML태그 내 작성된 css를 admin.css로 이동
+
+3. QNA,공지사항,내정보,자산설정,Pin설정,FAQ HTML 영역별로 주석추가 및 가독성 작업
+
+4. 홍보페이지 재 디자인
+
+5. 주식차트에서 Y축에 콤마(,)표시
+
+6. 회원가입 페이지 회원가입버튼 css line-height:50px; 추가
+
+7. 주식구매시 내가 몇주 살수있는지 표시
+
+8. stock views.py 부분 def stock 부분 수정
+
+9. stock.html 부분 템플릿언어 수정(61라인 62라인)
+
+10. top5.html input marcketcode, input issuecode 추가
+
+11. signup.html 자바스크립트 폼검증 띄어쓰기 수정
+
+12. calendar 앱에서만 사용하는 calendar.css 파일 추가
+
+13. Top5 페이지 css 중복되는 부분 정리 HTML css 막 적어놓은거 정리
+
+14. History 페이지 css 중복되는 부분 정리 HTML css 막적어놓은거 정리
+
+15. Summary 페이지 css 중복되는 부분 정리 HTML css 막 적어놓은거 정리
+
+16. 회원가입 페이지 가입버튼 ```<button> </button>``` 태그에서 ```<div>```태그로 변경 -> 폼 검증(인증코드 확인 및 동의체크여부 추가)기능때문에
+
+17. style.css 파일내 calendar 페이지와 관련된 css들 calendar.css 로 옮김
+
+18. 포트폴리오 추천top5 추가(per,pbr 관련)
+
+19. Kokom.py 에 s_get_current_price 부분에 포트폴리오 추천top5 관련해서 소스코드 추가
+
+20. stockprofilt 테이블을 사용하도록 설정
 #### 2022.02.10
 
 1. 403, 404, 500 페이지 CSS 작업

@@ -1,8 +1,76 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}레몬::추가하기{% endblock title %}
-
 {% block nav %}
+<style>
+    .loader-main{
+    bottom:0px !important;
+    }
+
+    #footer {
+        display: none;
+    }
+
+    #container {
+        margin: 0 20px !important;
+    }
+
+    /* FOOTER에서 사용하는 CSS */
+    ::-webkit-scrollbar {
+        width: 10px;
+        background-color: wheat;
+        display: block;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        width: 30px;
+    }
+
+    .income_div {
+        display: none;
+    }
+
+    th {
+        white-space: initial;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .span_div,
+    .income_div {
+        padding: 5px;
+    }
+
+    #ui-id-1{
+        height:20%;
+        width:230px !important;
+        overflow:scroll;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    @media screen and (max-width: 420px) {
+        .span_table a {
+            font-size: 15px;
+        }
+
+        .input_span {
+            font-size: 15px;
+            border-bottom: 1px solid rgb(202, 202, 202);
+        }
+
+        .span_list_select {
+            font-size: 15px;
+            border-bottom: 1px solid rgb(202, 202, 202);
+        }
+    }
+</style>
 <!-- 상단바 영역 시작 -->
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
   <div>
@@ -17,6 +85,7 @@
 {% endblock nav %}
 
 {% block container %}
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,53 +95,6 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<style>
-  #footer{
-    display: none;
-  }
-  #container{
-    margin: 0 20px !important;
-  }
-  /* FOOTER에서 사용하는 CSS */
-  ::-webkit-scrollbar{
-    width: 10px;
-    background-color: wheat;
-    display: block;
-  }
-  ::-webkit-scrollbar-thumb{
-    width: 30px;
-  }
-  .income_div{
-      display: none;
-  }
-    th{
-        white-space: initial;
-    }
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-    .span_div,.income_div{
-        padding: 5px;
-    }
-
-  ::-webkit-scrollbar {display:none;
-  }
-@media screen and (max-width: 420px) {
-  .span_table a{
-      font-size: 15px;
-  }
-  .input_span{
-      font-size: 15px;
-      border-bottom: 1px solid rgb(202, 202, 202);
-  }
-  .span_list_select{
-      font-size: 15px;
-      border-bottom: 1px solid rgb(202, 202, 202);
-  }
-}
-</style>
 
 <div class="addEvent-wrap">
     <form id="spend_form" action="{%url 'calendars:add_spend_calendar' %}" method="POST" id="add_form">
@@ -92,9 +114,7 @@
                 </tr>
                 <tr>
                     <th width="200" height="60"><a class="span_list_title">소비처</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="where" name="where" autocomplete="on" value="">
-                    <input type="hidden" id="place" name="place">
-                     <input type="hidden" id="stock" name="stock">
+                    <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="place" name="place" autocomplete="on" value="">
                 </tr>
                 </tr>
                 <tr> <!-- 행선언 -->
@@ -154,17 +174,20 @@
         </div>
 
         <div style="text-align:center; margin-top:15px;">
-        <div type="button" class="addBtn" value="spendbtn" onclick="submit()" style="line-height:47px;"/>추가하기</div>
+        <div class="addBtn" onclick="submit()" style="line-height:47px;">추가하기</div>
         </div>
-    </form>
     </div>
+    </form>
 </div>
 
 <script>
+$(document).ready(function(){
+    let today = moment();
+    let today2 = today.format('YYYY-MM-DD')
+    $('#date').attr('value', today2);
+    });
+
 function submit(){
-    var str = $('#where').val();
-    var stockcode = str.slice(-6);
-    var stockname = str.replace(":"+stockcode,"");
     var max_int = 210000000;
 
     if ($('#amount').val() == '') {
@@ -175,31 +198,25 @@ function submit(){
         alert('입력받을수 있는 금액 범위를 초과하였습니다.');
         return false;
     }
-    else if ($('#date').val() == '') {
-        alert('날짜를 선택해주세요.');
-        return false;
-    }
     else if ($('#where').val() == '') {
         alert('소비처를 작성해주세요.');
         return false;
     }
     else{
-    document.getElementById('place').value = stockname;
-    document.getElementById('stock').value = stockcode;
     const form = document.getElementById('spend_form');
     form.action="{%url 'calendars:add_spend_calendar' %}"
     form.submit();
     }
-}
+    }
 
 
 
 
     $(function() {
         var cardlist_Tags = [{% for i in wntlr %}
-        '{{i.ss_isukorabbrv}} :{{i.ss_isusrtcd}}',
+        '{{i.ss_isukorabbrv}}',
         {% endfor %}];
-        $('#where').autocomplete({
+        $('#place').autocomplete({
             source: cardlist_Tags,
         });
      });

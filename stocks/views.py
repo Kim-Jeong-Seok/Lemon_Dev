@@ -40,7 +40,7 @@ def stock(request):
 
 
 def portfolio(request):
-    categorys =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd','sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')[:3]
+    categorys =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd','sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')
     category_list = list(categorys.values('sh_idxindmidclsscd'))
     categorys_isurtcd = list(categorys.values('sh_isusrtcd'))
     category_keep = category_list[0:3]
@@ -94,23 +94,37 @@ def stock_info(request, marketcode, issuecode):
         result['total'] = result['total_use_investment_amount'] - result['total_investment_amount']
         result['share'] = Stockheld.objects.filter(sh_userid=request.user.user_id,
                                                    sh_isusrtcd=issuecode).values_list('sh_share', flat=True)
-        print(result['share'])
         result['curPrice'] = koscom_api.get_current_price(marketcode, issuecode)
         result['marketcode'] = marketcode
         result['total_allow_invest'] = request.user.invest - stock_cal.total_use_investment_amount(request.user.user_id)
 
+
         result['year_history'] = day_trdDd_matching(
             cal_year_history(koscom_api.get_stock_history(marketcode, issuecode,
-                                                          'M', '19800101', datetime.today().strftime('%Y%m%d'), 50)))
+                                                                'M', '19800101', datetime.today().strftime('%Y%m%d'), 50)))
+        if result['year_history'] is False:
+                result['year_history'] = str(0)
+
         result['month_history'] = day_trdDd_matching(
             koscom_api.get_stock_history(marketcode, issuecode,
-                                         'M', '19800101', datetime.today().strftime('%Y%m%d'), 50))
+                                        'M', '19800101', datetime.today().strftime('%Y%m%d'), 50))
+        if result['month_history'] is False:
+            result['month_history'] = str(0)
         result['week_history'] = day_trdDd_matching(
             koscom_api.get_stock_history(marketcode, issuecode,
-                                         'W', '19800101', datetime.today().strftime('%Y%m%d'), 50))
+                                        'W', '19800101', datetime.today().strftime('%Y%m%d'), 50))
+
+        if result['week_history'] is False:
+            result['week_history'] = str(0)
+
         result['day_history'] = day_trdDd_matching(
             koscom_api.get_stock_history(marketcode, issuecode,
-                                         'D', '19800101', datetime.today().strftime('%Y%m%d'), 50))
+                                        'D', '19800101', datetime.today().strftime('%Y%m%d'), 50))
+        if result['day_history'] is False:
+            result['day_history'] = str(0)
+
+    else:
+        return redirect('/stock_info' + '/' + marketcode + '/' + issuecode)
 
     return render(request, 'stock_info.html', {'result': result,'star':star})
 
@@ -312,10 +326,11 @@ def get_selectivemaster(request):
         result = kocom.api().get_selectivemaster(data['marketcode'], data['issuecode'])
     return JsonResponse({'result': result}, content_type='application/json')
 
-
+from . import iex
 def stocksector_update(request):
     if request.method == 'POST':
-        stocksectors_bundle = kocom.api().get_stocksectors_bundle()
+        # stocksectors_bundle = kocom.api().get_stocksectors_bundle()
+        stocksectors_bundle = iex.api().get_stocksectors_bundle()
         if stocksectors_bundle:
             stocksector_insert(stocksectors_bundle)
             return JsonResponse({'result': 'Success'}, content_type='application/json')
@@ -339,7 +354,6 @@ def stocksector_insert(stocksectors_bundle):
         else:
             print('Update: ', stocksector['isusrtcd'])
             stocksector_objects = Stocksector.objects.get(ss_isusrtcd=stocksector['isusrtcd'])
-            stocksector_objects.ss_isusrtcd = stocksector['isusrtcd']
             stocksector_objects.ss_isukorabbrv = stocksector['isukorabbrv']
             stocksector_objects.ss_marketcode = stocksector['marketcode']
             stocksector_objects.ss_idxindmidclsscd = stocksector['idxindmidclsscd']

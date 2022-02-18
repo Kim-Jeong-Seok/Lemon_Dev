@@ -16,9 +16,10 @@ urlpatterns = [
     path('recom', views.recom, name='recom'), # 추천페이지
     path('history', views.history, name='history'), # 내역페이지
     path('detail_search', views.detail_search, name='detail_search'), # 내역필터페이지
-
+    path('sms_add_spend_calendar/<str:date>/<int:amount>/<str:place>', views.sms_add_spend_calendar, name='sms_add_spend_calendar'),  # SMS문자내역 입력
     path('add_income_calendar/', views.add_income_calendar, name='add_income_calendar'),
     path('add_spend_calendar/', views.add_spend_calendar, name='add_spend_calendar'),
+    path('sms_add_spend_calendar/', views.sms_add_spend_calendar, name='sms_add_spend_calendar'), # SMS문자내역 입력
     path('edit_calendar/<str:kind>/<int:spend_id>/', views.edit_calendar, name='edit_calendar'),
     path('sedit_calendar/<int:spend_id>', views.sedit_calendar, name='sedit_calendar'),
     path('iedit_calendar/<int:income_id>', views.iedit_calendar, name='iedit_calendar'),

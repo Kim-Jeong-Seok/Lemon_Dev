@@ -37,7 +37,7 @@ class Spend(models.Model):
     kind = models.CharField(max_length=10, blank=True, null=True)
     spend_date = models.DateTimeField(blank=True, null=True)
     amount = models.IntegerField(blank=True, null=True)
-    place = models.TextField(blank=True, null=True)
+    place = models.CharField(max_length=100, blank=True, null=True)
     way = models.IntegerField(blank=True, null=True)
     category = models.ForeignKey(Category, models.DO_NOTHING, db_column='category', blank=True, null=True)
     card = models.ForeignKey(Cardlist, models.DO_NOTHING, db_column='card', blank=True, null=True)

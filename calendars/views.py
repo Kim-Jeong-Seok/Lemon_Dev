@@ -10,7 +10,7 @@ from .models import Income, Spend, Stocksector, AccountBook
 from django.contrib.auth.decorators import login_required
 from .calendarsforms import SpendForm, IncomeForm
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
+from datetime import datetime, date
 import datetime, requests
 from django.db.models import Sum, Count
 import os, json
@@ -31,15 +31,38 @@ URL_LOGIN = '/login'
 def home(request):
     if request.method == 'POST':
         user = request.user.user_id
+        phonenumber = request.POST.get('phonenumber', None)
+        phonenumber = str(phonenumber)
+        invest = request.POST['invest']
+        birthday = request.POST['birthday']
+        pin = request.POST['pin']
+        
+        if invest == '0':
+            #invest_date = None
+            invest_date = date(1111,1,11)
+        else:
+            invest_date = datetime.now()
+        
+        if birthday == '':
+            #birthday = date(1111, 1, 11)
+            birthday = datetime.now()
+        else:
+            birthday = birthday
+
+        if pin == '':
+            pin = '0000'
+        else:
+            pin = pin
+        
         user = get_user_model().objects.filter(user_id=user).update(
             u_chk=request.POST['u_chk'],
             username=request.POST['username'],
             gender=request.POST.get("gender"),
             job=request.POST.get("job"),
-            phonenumber=request.POST.get('phonenumber'),
-            birthday=request.POST['birthday'],
-            pin=request.POST['pin'],
-            invest=request.POST['invest'],
+            phonenumber=phonenumber,
+            birthday=birthday,
+            pin=pin,
+            invest=invest,
         )
         return redirect('/')
     invest = request.user.invest
@@ -70,9 +93,7 @@ def home(request):
     else:
         total_current_price = total_current_price
     son = total_current_price + total_use_investment_amount
-    print(total_current_price)
     home_chartjs_data = [invest, son]
-    print( home_chartjs_data)
     for spend_sum_value in spend_sum_value:
         if spend_sum_value == None:
             home_chartjs_data.append(0)
@@ -84,7 +105,7 @@ def home(request):
         else:
             home_chartjs_data.append(income_sum_value)
     return render(request, 'home.html', {'month': month, 'Expenditure': spend_sum, 'Income': income_sum, 'income_sum_value':income_sum_value,
-                                         'Home_chartjs_data': home_chartjs_data, 'Total_investment_amount':total_investment_amount, 'son':son})
+                                         'total_current_price': total_current_price,'Home_chartjs_data': home_chartjs_data, 'Total_investment_amount': total_investment_amount, 'son': son})
 
 
 def recom(request):
@@ -154,10 +175,10 @@ def history(request):
         year = now.strftime('%Y')
 
     # 월별 기간 필터링
-    spend_month_filter = Spend.objects.filter(user_id=user, spend_date__month=month).values('spend_id', 'kind',
+    spend_month_filter = Spend.objects.filter(user_id=user, spend_date__year=year, spend_date__month=month).values('spend_id', 'kind',
                                                                                             'spend_date', 'amount',
                                                                                             'place', 'category')
-    income_month_filter = Income.objects.filter(user_id=user, income_date__month=month).values('income_id', 'kind',
+    income_month_filter = Income.objects.filter(user_id=user, income_date__year=year, income_date__month=month).values('income_id', 'kind',
                                                                                                'income_date', 'amount',
                                                                                                'income_way',
                                                                                                'income_way')
@@ -207,7 +228,7 @@ def top5(request):
     # 소비 TOP5 카테고리 금액 합계
     category_sum = spend_month_filter.values('category').annotate(amount=Sum('amount')).order_by('-amount')[:5]
     category_card = spend_month_filter.values('card').annotate(amount=Sum('amount')).order_by('-amount')[:5]
-    category_place = spend_month_filter.values('place','stock').annotate(amount=Sum('amount')).order_by('-amount')[:5]
+    category_place = spend_month_filter.values('place').annotate(amount=Sum('amount')).order_by('-amount')[:5]
 
     category_category = spend_month_filter.values('category').annotate(amount=Sum('amount')).order_by('-amount')[:5]
 
@@ -217,10 +238,15 @@ def top5(request):
     category_stock = []
     koscom_api = kocom.api()
     for element in category_place:
-        find_market_code = Stocksector.objects.filter(ss_isusrtcd=element['stock']).values_list('ss_marketcode', flat=True)
+        find_market_code = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_marketcode', flat=True)
+        find_market_code1 = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_isusrtcd', flat=True)
+
+        find_market_code = list(find_market_code)
+        find_market_code1 = list(find_market_code1)
         market_code = find_market_code[0] if find_market_code else None
-        current_price = koscom_api.get_current_price(market_code, element['stock'])
-        category_stock.append([current_price, element['amount'], element['place'], element['stock'], market_code])
+        issuecode = find_market_code1[0] if find_market_code1 else None
+        current_price = koscom_api.get_current_price(market_code , issuecode  )
+        category_stock.append([current_price, element['amount'], element['place'], issuecode, market_code])
 
     category_amount_data = []
     category_amount_label = []
@@ -252,7 +278,6 @@ def category_detail(request, int):
     three_months_ago = now - relativedelta(months=1)
     category = Spend.objects.filter(user_id=user, category=int, spend_date__range=(three_months_ago, now)).order_by(
         'spend_date')
-    print('categorycategorycategorycategory--->', str(category))
 
     return render(request, 'category_detail.html', {'category': category, 'int': int})
 
@@ -281,7 +306,6 @@ def ajax_sendSMS(request):
     if request.method == "POST":
         NUM = request.POST.get("NUM", None)
         KEY = request.POST.get("KEY", None)
-    print(str(NUM) + '그리고' + str(KEY))
 
     send_url = 'https://apis.aligo.in/send/'  # 요청을 던지는 URL, 현재는 문자보내기
     # ================================================================== 문자 보낼 때 필수 key값
@@ -320,8 +344,7 @@ def add_income_calendar(request):
             return redirect('/history')
     else:
         iform = IncomeForm()
-    wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
-    return render(request, 'add_income_calendar.html', {'wntlr': wntlr})
+    return render(request, 'add_income_calendar.html')
 
 
 def add_spend_calendar(request):
@@ -337,13 +360,25 @@ def add_spend_calendar(request):
             category = sform.cleaned_data['category'],
             card = sform.cleaned_data['card'],
             memo = sform.cleaned_data['memo'],
-            stock = sform.cleaned_data['stock']
+            #stock = sform.cleaned_data['stock']
             sform.save()
             return redirect('/history')
     else:
         sform = SpendForm()
-    wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
+    wntlr = Stocksector.objects.all().values('ss_isukorabbrv')
     return render(request, 'add_spend_calendar.html', {'wntlr': wntlr})
+
+
+# SMS문자내역 입력
+def sms_add_spend_calendar(request):
+    if request.method == "POST":
+        date = request.POST.get("date", None)
+        amount = request.POST.get("amount", None)
+        place = request.POST.get("place", None)
+        wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
+    
+    return render(request, 'sms_add_spend_calendar.html', {'date': date, 'amount': amount, 'place': place, 'wntlr': wntlr})
+
 
 def edit_calendar(request, spend_id, kind):
     user = request.user.user_id
@@ -359,6 +394,8 @@ def edit_calendar(request, spend_id, kind):
 def sedit_calendar(request, spend_id):
     if request.method == "POST":
         user = request.user.user_id
+        # if place == stock:
+        #     stock = 000000
         spe = Spend.objects.filter(spend_id=spend_id, user_id=user).update(
             amount=request.POST['amount'],
             place=request.POST['place'],
@@ -367,7 +404,7 @@ def sedit_calendar(request, spend_id):
             category=request.POST['category'],
             card=request.POST['card'],
             memo=request.POST['memo'],
-            stock=request.POST['stock'])
+            )
         return redirect('/history')
 
 
@@ -397,11 +434,11 @@ def ajax_pushdate(request):
     if request.method == "POST":
         user = request.user.user_id
         date = request.POST.get("clikDate", None)
-        spend = Spend.objects.filter(user_id=user, spend_date=date).values('kind', 'spend_date', 'amount', 'place')
-        income = Income.objects.filter(user_id=user, income_date=date).values('kind', 'income_date', 'amount',
+        spend = Spend.objects.filter(user_id=user, spend_date=date).values('spend_id','kind', 'spend_date', 'amount', 'place')
+        income = Income.objects.filter(user_id=user, income_date=date).values('income_id','kind', 'income_date', 'amount',
                                                                               'income_way')
         detail_month = income.union(spend).order_by('kind')
-        even1 = list(detail_month.values('kind', 'income_date', 'amount'))
+        even1 = list(detail_month.values('income_id','kind', 'income_date', 'amount', 'income_way'))
         evens = {'msg1': even1}
 
         return JsonResponse(evens)

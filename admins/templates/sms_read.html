@@ -1,24 +1,184 @@
+{% extends 'base.html' %}
+{% block title %}레몬::문자내역 불러오기{% endblock title %}
+{% block nav %}
+<!-- 상단바 영역 시작 -->
+  <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
+    <div>
+        <div style="text-align:center;">
+          <a style="color: #fff;" href="{% url 'accounts:myinfo' %}">
+            <i class="fa fa-angle-left"></i>
+          </a>문자내역 불러오기
+        </div>
+    </div>
+  </div>
+<!-- 상단바 영역 끝 -->
+{% endblock nav %}
+{% block container %}
+<style>
+  .body {
+    padding: 0 1.25rem;
+  }
+  #sms_head_date {
+    color: rgba(0, 0, 0, 0.3);
+  }
+  #sms_head_amount {
+    display: flex;
+    justify-content: space-between;
+  }
+  #sms_head_amount span:last-child {
+    font-weight: bold
+  }
+</style>
+<div class="body">
+  <!-- <input type="date" id="startDate">
+  ~
+  <input type="date" id="endDate">
+  <button onclick="fn_readSMS()">문자내역 가져오기</button> -->
+  <div>(최근 30일 기준)</div>
+  <div id="sms_list"></div>
+  <form id="form" method="post">
+    {% csrf_token %}
+    <input style="display:none;" type="text" id="date" name="date">
+    <input style="display:none;" type="text" id="amount" name="amount">
+    <input style="display:none;" type="text" id="place" name="place">
+  </form>
+</div>
 <script>
+  // Start Function when Open Page
+  $(document).ready(function() {
+    /* 
+    Format => 'yyyy.MM.dd HH:mm'
+    Replace all '-' -> '.' & Append ' HH:mm'
+    */
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = ('0' + (today.getMonth() + 1)).slice(-2);
+    const day = ('0' + today.getDate()).slice(-2);
+    // Last 30 days
+    const startDate = `${year}.${month-1}.${day} 00:00`;
+    const endDate = `${year}.${month}.${day} 23:59`;
+
+    window.AndroidBridge.readSMS(startDate, endDate);
+  });
+
+  // Send Date Info to App
   function fn_readSMS() {
-      var startDate = '2022.01.13 00:00'
-      var endDate = '2022.01.17 24:00'
+    startDate = $("#startDate").val().replace(/-/g, ".") + ' 00:00';
+    endDate = $("#endDate").val().replace(/-/g, ".") + ' 00:00';
+
+    if(!($("#startDate").val())) {
+      alert("시작일을 입력해주세요.");
+    } else if(!($("#endDate").val())) {
+      alert("종료일을 입력해주세요.");
+    } else if(($("#startDate").val()) > ($("#endDate").val())) {
+      alert("날짜를 확인해주세요.");
+    } else {
       window.AndroidBridge.readSMS(startDate, endDate);
+    }
+  }
+  
+  // Parse resultSMS to JSON Value
+  function fn_receiveSMSRead(resultSMS) {
+    const jsonDataArray = new Array();
+    const resultSMS_length= JSON.parse(resultSMS).length;
+    for(let i=0; i<resultSMS_length; i++) {
+      const date = JSON.parse(resultSMS)[i]['date'];
+      const body = JSON.parse(resultSMS)[i]['body'];
+      /*
+      Find Amount & Place RegEx
+      If no value in Amount or Place -> 0 or ''
+      */
+      let amount;
+      try {
+        amount = Number(body.match(/[0-9]*0원/)[0].slice(0, -1));
+      } catch(e) {
+        amount = 0;
+      }
+
+      let place;
+      try {
+        place = body.match(/0원[가-힣]*/)[0].substring(2);
+      } catch(e) {
+        place = '';
+      }
+      
+      // Push parsed Value of JSON to Array
+      jsonDataArray.push({
+        date : date,
+        body : body,
+        amount : amount,
+        place : place,
+      });
+    }
+    printJsonToScreen(jsonDataArray);
   }
 
-  function fn_receiveSMSRead(resultSMS) {
-      var result_text = document.getElementById('search_result');
-      result_text.append(resultSMS);
+  // Print JSON on Screen
+  function printJsonToScreen(array) {
+    const sms_list = document.getElementById('sms_list');
+    for(let i=0; i<array.length; i++) {
+      sms_list.innerHTML+=
+      `<div id='sms' onclick="clickSMS('${array[i].date}', '${array[i].body}')">
+        <div>
+          <div id='sms_head_date'>
+            ${array[i].date}
+          </div>
+          <div id='sms_head_amount'>
+            <span>${array[i].place}</span>
+            <span>${array[i].amount}원</span>
+          </div>
+          <div id='sms_body'>
+            ${array[i].body}
+          </div>
+        </div>
+        <hr>
+      </div>`;
+    }
   }
 
   function fn_receiveSMSReadComplete() {
-      var result_text = document.getElementById('search_result');
-      result_text.append('finish');
+    print('Finish');
   }
+  
 
   function fn_receiveSMS(resultSMS) {
-      var result_text = document.getElementById('search_result');
-      result_text.innerHTML = resultSMS;
+    sms_lists.innerHTML = resultSMS;
+  }
+
+  // Find Amount & Place RegEx
+  function checkSMS_Pattern(raw_date, body) {
+    const card = body.match(/[가-힣]*카드/)[0];
+    let date = '';
+    let amount = 0;
+    let place = '';
+
+    // 광주은행 카드
+    if(card.match(/광주/)) {
+      amount = Number(body.match(/[0-9]*0원/)[0].slice(0, -1));
+      date = raw_date.replace(".",  '-').replace(".",  '-').slice(0, -6);
+      place = body.match(/0원[가-힣a-zA-Z]*/)[0].substring(2);
+    }
+    // 신한은행 카드
+    else if(card.match(/신한/)) {
+      date = raw_date.replace(".",  '-').replace(".",  '-').slice(0, -6);
+      amount = Number(body.match(/[0-9]*0원/)[0].slice(0, -1));
+      place = body.match(/[가-힣a-zA-Z]*누적/)[0].slice(0, -2);
+    }
+
+    return {date, amount, place};
+  }
+
+  // Send info to Writing Page
+  function clickSMS(raw_date, body) {
+    const {date, amount, place} = checkSMS_Pattern(raw_date, body);
+
+    const form = document.getElementById('form');
+    document.getElementById('place').value = place;
+    document.getElementById('amount').value = amount;
+    document.getElementById('date').value = date;
+
+    form.action="{% url 'calendars:sms_add_spend_calendar' %}";
+    form.submit();
   }
 </script>
-<button onclick="fn_readSMS()">SMS읽어오기</button>
-<div id="search_result"></div>
+{% endblock %}

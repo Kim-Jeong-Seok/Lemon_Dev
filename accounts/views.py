@@ -9,10 +9,10 @@ from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.models import User
 from .models import user
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
-# Create your views here.
 import datetime
+from datetime import datetime, date, timedelta
 from django.db.models import Sum, Count
 import os, json
 from django.conf import settings
@@ -21,12 +21,14 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .socialviews import KakaoSignInView, KakaoSignInCallbackView
+from django.urls import reverse_lazy
 from django.core.mail.message import EmailMessage
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView
 from django.contrib.auth.forms import (
     AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
 )
-from django.urls import reverse_lazy
+
+# Create your views here.
 
 URL_LOGIN = '/login'
 
@@ -36,6 +38,10 @@ def send_email(request):
     from_email = "basoup.t@gmail.com"
     message = "메지시 테스트"
     EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+
+
+def policy(request):
+    return render(request, 'policy.html')
 
 def main(request):
     return render(request, 'main.html')
@@ -59,6 +65,29 @@ def find_id_result(request):
 
 def signup(request):
     if request.method == 'POST':
+        phonenumber = request.POST.get('phonenumber', None)
+        phonenumber = str(phonenumber)
+        invest = request.POST['invest']
+        birthday = request.POST['birthday']
+        pin = request.POST['pin']
+        if invest == '0':
+            #invest_date = None
+            invest_date = date(1111,1,11)
+        else:
+            invest_date = datetime.now()
+        
+        if birthday == '':
+            #birthday = date(1111, 1, 11)
+            birthday = datetime.now()
+        else:
+            birthday = birthday
+
+        if pin == '':
+            pin = '0000'
+            pin_date = datetime.now() + timedelta(hours=12)
+        else:
+            pin = pin
+            pin_date = datetime.now() + timedelta(hours=12)
         if request.POST['password'] == request.POST['password1']:
             user = get_user_model().objects.create_user(
                                             uid=request.POST['uid'],
@@ -67,28 +96,69 @@ def signup(request):
                                             gender=request.POST['gender'],
                                             job=request.POST['job'],
                                             email=request.POST['email'],
-                                            phonenumber=request.POST.get('phonenumber', False),
+                                            phonenumber=phonenumber,
                                             invest=request.POST['invest'],
-                                            invest_date=request.POST['invest_date'],
+                                            invest_date=invest_date,
                                             u_chk=request.POST['u_chk'],
-                                            pin=request.POST['pin'],
-                                            birthday=request.POST['birthday'],
+                                            pin = pin,
+                                            pin_date=pin_date,
+                                            birthday = birthday,
                                             )
             auth.login(request, user)
             return redirect('/')
         return render(request, 'signup.html')
     return render(request, 'signup.html')
 
+
+def pin_date_save(request):
+    now_time = datetime.now() + timedelta(days=1)
+    if request.method == 'POST':
+        user_id = request.user.user_id
+        user_db = user.objects.get(user_id=user_id)
+        user_db.pin_date = now_time
+        user_db.save()
+        return redirect('/')
+
+
 class UserPasswordResetView(PasswordResetView):
-    template_name = 'password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+    template_name = 'registration/password_reset_form.html'  # 템플릿을 변경하려면 이와같은 형식으로 입력
     success_url = reverse_lazy('password_reset_done')
     form_class = PasswordResetForm
-    
+
     def form_valid(self, form):
-        if User.objects.filter(email=self.request.POST.get("email")).exists():
+        if user.objects.filter(email=self.request.POST.get("email")).exists():
             return super().form_valid(form)
         else:
-            return render(self.request, 'password_reset_done_fail.html')
+            return render(self.request, 'registration/password_reset_done_fail.html')
             
 class UserPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+
+
+def fail(request):
+    return render(request, 'registration/password_reset_done_fail.html')
+
+def ajax_checkID(request):
+    if request.method == "POST":
+        uid = request.POST.get('Vaildid', None)
+
+        id = user.objects.filter(uid=uid).values('uid')
+        if id:
+            result_msg = 0
+        else:
+            result_msg = 1
+
+        return JsonResponse(result_msg, safe=False)
+
+
+def ajax_checkEmail(request):
+    if request.method == "POST":
+        vailEmail = request.POST.get('vailEmail', None)
+
+        email = user.objects.filter(email=vailEmail).values('email')
+        if email:
+            result_msg = 0
+        else:
+            result_msg = 1
+
+        return JsonResponse(result_msg, safe=False)

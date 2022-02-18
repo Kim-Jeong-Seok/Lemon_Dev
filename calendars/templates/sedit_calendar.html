@@ -6,256 +6,402 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700;900&family=Pacifico&display=swap" rel="stylesheet"></head>
+<link
+    href="https://fonts.googleapis.com/css2?family=Limelight&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700;900&family=Pacifico&display=swap"
+    rel="stylesheet">
+
 
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <style>
-  #container{
-      margin: 0 20px !important;
-  }
+    #footer {
+        display: none;
+    }
+
+    #container {
+        margin: 0 20px !important;
+    }
+
     /* FOOTER에서 사용하는 CSS */
-  ::-webkit-scrollbar{
-    width: 10px;
-    background-color: wheat;
-    display: block;
-    }
-    ::-webkit-scrollbar-thumb{
-      width: 30px;
+
+    #ui-id-1 {
+        height: 20%;
+        width: 230px !important;
+        overflow: scroll;
     }
 
-  th{
-    white-space: initial;
-  }
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-  }
-  .span_div,.income_div{
-    padding: 5px;
-  }
+    .footer-line-calendar {
+        width: 50px;
+        padding: 7px 0 5px 0;
+        border-bottom: 2px solid #93bcf9;
+    }
+    
+    .span_table a {
+        font-size: 15px;
+    }
 
-  .addBtn{
-    margin-top:15px;
-    border: 1px solid transparent;
-    border-radius: 10px;
-    width: 100%;
-    height: 40px;
-    font-weight: bold;
-    font-size: 18px;
-    color: #fff;
-    background: #31bc8a;
-  }
+        .input_span {
+            font-size: 15px;
+        }
 
-  .delBtn{
-    margin-left:5px;
-    border: 1px solid #FC615D;
-    border-radius: 10px;
-    height: 40px;
-    font-weight: bold;
-    font-size: 1rem;
-    color: #FC615D;
-    padding:5px;
-    background: #FFF;  /* Chrome 10-25, Safari 5.1-6 */
-  }
+        .span_list_select {
+            font-size: 15px;
+        }
 
-@media screen and (max-width: 420px) {
-  .span_table a{
-    font-size: 15px;
-  }
-  .input_span{
-    font-size: 15px;
-  }
-  .span_list_select{
-    font-size: 15px;
-  }
-}
+        ::-webkit-scrollbar {
+            width: 10px;
+            background-color: wheat;
+            display: block;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            width: 30px;
+        }
+
+        .income_div {
+            display: none;
+        }
+
+        .addEvent-wrap {
+            background-color: #fff;
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            max-width: 768px;
+            height: 100%;
+            border: 1px solid rgb(202, 202, 202);
+            box-shadow: 2px 3px 4px 1px rgb(202, 202, 202);
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .list {
+            text-align: center;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        th {
+            white-space: initial;
+        }
+
+        label {
+            width: 90%;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+            display: inline-block;
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            /*border: solid 1px rgb(202, 202, 202);*/
+            transition: 0.25s;
+            padding: 6px 18px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 3px;
+        }
+
+        input[type="radio"]:checked+label {
+            width: 90%;
+            background: #fff;
+            color: #202020;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .span_div,
+        .income_div {
+            padding: 5px;
+        }
+
+        .span_list_title {
+            color: #000;
+            text-decoration: none;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .input_span {
+            width: 230px;
+            padding-bottom: 5px;
+            font-size: 15px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 400;
+            text-align: right;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid rgb(202, 202, 202);
+            /* ios 기능 */
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            border-radius: 0;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            background-color: #fff;
+        }
+
+        .span_list_select {
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            width: 230px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            /* ios 기능 */
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            border-radius: 0;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            background-color: #fff;
+            border-bottom: 1px solid rgb(202, 202, 202);
+        }
+
+        .income_list_title {
+            float: left;
+            margin-top: 15px;
+            margin-left: 10px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 600;
+            font-size: 1.4rem;
+            margin-right: 2rem;
+        }
+
+        .input_textarea {
+            width: 230px;
+            height: 150px;
+            overflow: visible;
+            font-size: 15px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 400;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid rgb(202, 202, 202);
+            resize: none;
+            /* ios 기능 */
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            border-radius: 0;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            background-color: #fff;
+            -moz-user-select: auto;
+            -webkit-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+
+        }
+
+        .addBtn {
+            margin-top: 15px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            width: 100%;
+            height: 40px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #fff;
+            background: #93bcf9;
+        }
+
+        .delBtn {
+            border-radius: 10px;
+            height: 40px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #FC615D;
+        }
+
+        fa-ban {
+            color: #FC615D !important;
+        }
+
+        @media screen and (max-width: 420px) {
+            .span_table a {
+                font-size: 15px;
+            }
+
+            .input_span {
+                font-size: 15px;
+            }
+
+            .span_list_select {
+                font-size: 15px;
+            }
+        }
 </style>
 {% block nav %}
-<!-- 상단바 영역 시작 -->
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
     <div>
         <div style="text-align:center;">
-            <a style="color: #fff;" href="javascript:history.back();">
-                <i class="fa fa-angle-left"></i>
-            </a>지출 내역
+            <a style="color: #fff;" href="javascript:history.back();"><i class="fa fa-angle-left" style="position: absolute;
+    left: 5px;
+    padding: 14px 15px;
+    top: 0;
+    font-size: 25px;
+    font-weight: 600;color:black;"></i></a>
+            지출 내역
         </div>
     </div>
 </div>
-<!-- 상단바 영역 끝 -->
 {% endblock nav %}
-
 <div class="addEvent-wrap">
     {% for i in spe %}
-    <form action = "{% url 'calendars:delete_shistory' i.spend_id %}" method="POST" style="position:absolute;right:13px;">
-            {% csrf_token %}
-          <input class="delBtn" type = "submit" value = " 삭제 ">
-        </form>
+    <form action="{% url 'calendars:delete_shistory' i.spend_id %}" method="POST" style="position:absolute;right:13px;">
+        {% csrf_token %}
+        <div class="delBtn" onclick="del()"><i class="fa fa-ban" aria-hidden="true"></i></div>
+    </form>
+    <script>
+        function del() {
+            if (confirm('삭제 하시겠습니까?') == true) {
+                const form = document.getElementById('del');
+                form.action = "{% url 'calendars:delete_shistory' i.spend_id %}"
+                form.submit();
+            } else {
+                return;
+            }
+        }
+    </script>
     <div class="list">
-        <a style="font-weight: 500;">지출내역</a>
+        <input type="radio" name="jtags" value="지출" id="span" checked>
     </div>
     <form id="seidt_form" action="{%url 'calendars:sedit_calendar' i.spend_id %}" method="POST">
         {% csrf_token %}
-    <a class="span_div" id="span_div">
-        <div class="span_list">
-                <input type="text" style="display: none;" readonly name="user" value="{{user.user_id}}"/>
-                <input type="text" style="display: none;" readonly name="kind" value="지출"/>
-            <table min-width="300" class="span_table">
-                <tr> <!-- 행선언 -->
-                    <th width="200" height="60"><a class="span_list_title">금액</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span" type="number" name="amount" pattern="\\d*" value="{{i.amount}}"></th>
-                </tr>
-<!--          -->
-                <tr> <!-- 행선언 -->
-                    <th width="200" height="60"><a class="span_list_title">날짜</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{i.spend_date|date:'Y-m-d'}}"></th>
-                </tr>
-                <tr> <!-- 행선언 -->
-                    <th width="200" height="60"><a class="span_list_title">소비처</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="where" name="where" autocomplete="on" value="{{i.place}}:{{i.stock}}">
-                    <input type="hidden" id="place" name="place">
-                     <input type="hidden" id="stock" name="stock">
-                </tr>
-                <tr> <!-- 행선언 -->
-                    <th width="200" height="60"><a class="span_list_title">결제수단 </a></th>
-                    <th width="240" style="text-align: end;">
-                    <select class="span_list_select" name="way" style="text-align:center;">
-                        <option value="0" {% if i.way == 0 %} selected {% endif %}>선택안함</option>
-                        <option value="1" {% if i.way == 1 %} selected {% endif %}>현금</option>
-                        <option value="2" {% if i.way == 2 %} selected {% endif %}>카드</option>
-                        </select></th>
-                </tr>
-                <tr> <!-- 행선언 -->
-                    <th width="200" height="60"><a class="span_list_title">카테고리</a></th>
+        <div class="span_div" id="span_div">
+            <div class="span_list">
+                <input type="text" style="display: none;" readonly name="user" value="{{user.user_id}}" />
+                <input type="text" style="display: none;" readonly name="kind" value="지출" />
+                <table min-width="300" class="span_table">
+                    <tr>
+                        <!-- 행선언 -->
+                        <th width="200" height="60"><a class="span_list_title">금액</a></th>
+                        <th width="240" style="text-align: end;"><input class="input_span" type="number" name="amount"
+                                pattern="\\d*" value="{{i.amount}}"></th>
+                    </tr>
+                    <!--  행선언 -->
+                    <tr>
+                        <th width="200" height="60"><a class="span_list_title">날짜</a></th>
+                        <th width="240" style="text-align: end;"><input class="input_span" type="date" id="datepicker3"
+                                min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date"
+                                value="{{i.spend_date|date:'Y-m-d'}}"></th>
+                    </tr>
+                    <tr>
+                        <!-- 행선언 -->
+                        <th width="200" height="60"><a class="span_list_title">소비처</a></th>
+                        <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="place"
+                                name="place" autocomplete="on" value="{{i.place}}">
+                    </tr>
+                    <tr>
+                        <!-- 행선언 -->
+                        <th width="200" height="60"><a class="span_list_title">결제수단 </a></th>
+                        <th width="240" style="text-align: end;">
+                            <select class="span_list_select" name="way" style="text-align:center;">
+                                <option value="0" {% if i.way == 0 %} selected {% endif %}>선택안함</option>
+                                <option value="1" {% if i.way == 1 %} selected {% endif %}>현금</option>
+                                <option value="2" {% if i.way == 2 %} selected {% endif %}>카드</option>
+                            </select>
+                        </th>
+                    </tr>
+                    <tr>
+                        <!-- 행선언 -->
+                        <th width="200" height="60"><a class="span_list_title">카테고리</a></th>
 
-                    <th width="240" style="text-align: end;">
-                    <select class="span_list_select" name="category" style="text-align:center;">
-                        <option value="0" {% if i.category.category_id == 0 %} selected {% endif %}>선택안함</option>
-                        <option value='1'  {% if i.category.category_id == 1 %} selected {% endif %}>금융/보험</option>
-                        <option value='2'  {% if i.category.category_id == 2 %} selected {% endif %}>저축</option>
-                        <option value='3'  {% if i.category.category_id == 3 %} selected {% endif %}>온라인쇼핑</option>
-                        <option value='4'  {% if i.category.category_id == 4 %} selected {% endif %}>출금</option>
-                        <option value='5'  {% if i.category.category_id == 5 %} selected {% endif %}>생활/마트</option>
-                        <option value='6'  {% if i.category.category_id == 6 %} selected {% endif %} >카페/간식</option>
-                        <option value='7'  {% if i.category.category_id == 7 %} selected {% endif %}>기타지출(사회생활비)</option>
-                        <option value='8'  {% if i.category.category_id == 8 %} selected {% endif %}>교통/차량유지</option>
-                        <option value='9'  {% if i.category.category_id == 9 %} selected {% endif %}>주거생활/통신</option>
-                        <option value='10' {% if i.category.category_id == 10 %} selected {% endif %}>식사</option>
-                        <option value='11' {% if i.category.category_id == 11 %} selected {% endif %}>의료/건강</option>
-                        <option value='12' {% if i.category.category_id == 12 %} selected {% endif %}>문화/예술</option>
-                        <option value='13' {% if i.category.category_id == 13 %} selected {% endif %}>교육비</option>
-                        </select>
-                    </th>
-                </tr>
-                <tr> <!-- 행선언 -->
-                    <th width="200" height="60"><a class="span_list_title">카드사</a></th>
-                    <th width="240" style="text-align: end;">
-                        <select class="span_list_select" name="card" style="text-align:center;">
-                            <option value='0' {% if i.card.card_id == 0 %} selected {% endif %}>선택안함</option>
-                            <option value='1' {% if i.card.card_id == 1 %} selected {% endif %}>국민카드</option>
-                            <option value='2' {% if i.card.card_id == 2 %} selected {% endif %}>롯데카드</option>
-                            <option value='3' {% if i.card.card_id == 3 %} selected {% endif %}>BC카드</option>
-                            <option value='4' {% if i.card.card_id == 4 %} selected {% endif %}>삼성카드</option>
-                            <option value='6' {% if i.card.card_id == 6 %} selected {% endif %}>신한카드</option>
-                            <option value='7' {% if i.card.card_id == 7 %} selected {% endif %}>하나카드</option>
-                            <option value='8' {% if i.card.card_id == 8 %} selected {% endif %}>현대카드</option>
-                            <option value='9' {% if i.card.card_id == 9 %} selected {% endif %}>농협카드</option>
-                            <option value='10' {% if i.card.card_id == 10 %} selected {% endif %} >시티카드</option>
-                            <option value='11' {% if i.card.card_id == 11 %} selected {% endif %}>카카오뱅크카드</option>
-                        </select>
-                    </th>
-                </tr>
-                <tr> <!-- 행선언 -->
-                    <th width="200" height="60"><a class="span_list_title">메모</a></th>
-                    <th width="240" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo" placeholder="메모">{{i.memo}}</textarea></th>
-                </tr>
+                        <th width="240" style="text-align: end;">
+                            <select class="span_list_select" name="category" style="text-align:center;">
+                                <option value="0" {% if i.category.category_id == 0 %} selected {% endif %}>선택안함</option>
+                                <option value='1' {% if i.category.category_id == 1 %} selected {% endif %}>금융/보험</option>
+                                <option value='2' {% if i.category.category_id == 2 %} selected {% endif %}>저축</option>
+                                <option value='3' {% if i.category.category_id == 3 %} selected {% endif %}>온라인쇼핑</option>
+                                <option value='4' {% if i.category.category_id == 4 %} selected {% endif %}>출금</option>
+                                <option value='5' {% if i.category.category_id == 5 %} selected {% endif %}>생활/마트</option>
+                                <option value='6' {% if i.category.category_id == 6 %} selected {% endif %}>카페/간식</option>
+                                <option value='7' {% if i.category.category_id == 7 %} selected {% endif %}>기타지출(사회생활비)
+                                </option>
+                                <option value='8' {% if i.category.category_id == 8 %} selected {% endif %}>교통/차량유지
+                                </option>
+                                <option value='9' {% if i.category.category_id == 9 %} selected {% endif %}>주거생활/통신
+                                </option>
+                                <option value='10' {% if i.category.category_id == 10 %} selected {% endif %}>식사</option>
+                                <option value='11' {% if i.category.category_id == 11 %} selected {% endif %}>의료/건강
+                                </option>
+                                <option value='12' {% if i.category.category_id == 12 %} selected {% endif %}>문화/예술
+                                </option>
+                                <option value='13' {% if i.category.category_id == 13 %} selected {% endif %}>교육비</option>
+                            </select>
+                        </th>
+                    </tr>
+                    <tr>
+                        <!-- 행선언 -->
+                        <th width="200" height="60"><a class="span_list_title">카드사</a></th>
+                        <th width="240" style="text-align: end;">
+                            <select class="span_list_select" name="card" style="text-align:center;">
+                                <option value='0' {% if i.card.card_id == 0 %} selected {% endif %}>선택안함</option>
+                                <option value='1' {% if i.card.card_id == 1 %} selected {% endif %}>국민카드</option>
+                                <option value='2' {% if i.card.card_id == 2 %} selected {% endif %}>롯데카드</option>
+                                <option value='3' {% if i.card.card_id == 3 %} selected {% endif %}>BC카드</option>
+                                <option value='4' {% if i.card.card_id == 4 %} selected {% endif %}>삼성카드</option>
+                                <option value='6' {% if i.card.card_id == 6 %} selected {% endif %}>신한카드</option>
+                                <option value='7' {% if i.card.card_id == 7 %} selected {% endif %}>하나카드</option>
+                                <option value='8' {% if i.card.card_id == 8 %} selected {% endif %}>현대카드</option>
+                                <option value='9' {% if i.card.card_id == 9 %} selected {% endif %}>농협카드</option>
+                                <option value='10' {% if i.card.card_id == 10 %} selected {% endif %}>시티카드</option>
+                                <option value='11' {% if i.card.card_id == 11 %} selected {% endif %}>카카오뱅크카드</option>
+                            </select>
+                        </th>
+                    </tr>
+                    <tr>
+                        <!-- 행선언 -->
+                        <th width="200" height="60"><a class="span_list_title">메모</a></th>
+                        <th width="240" style="text-align: end;"><textarea class="input_textarea" rows="1" name="memo"
+                                placeholder="메모">{{i.memo}}</textarea></th>
+                    </tr>
 
-            </table>
-        </div>
-            <input type="button" class="addBtn" value="수정" onclick="submit()" style="line-height:37px;text-align:center;"/>
-         </form>
-        <script>
-            function submit(){
-            var str = $('#where').val();
-            var stockcode = str.slice(-6);
-            var stockname = str.replace(":"+stockcode,"");
-            document.getElementById('place').value = stockname;
-            document.getElementById('stock').value = stockcode;
+                </table>
+            </div>
+            <div class="addBtn" onclick="submit()" style="line-height:44px;text-align:center;">수정</div>
+    </form>
+    <script>
+        function submit() {
             const form = document.getElementById('seidt_form');
-            form.action="{%url 'calendars:sedit_calendar' i.spend_id %}"
+            form.action = "{%url 'calendars:sedit_calendar' i.spend_id %}"
             form.submit();
-            }
-        </script>
+        }
+    </script>
     {% endfor %}
-    </div>
+</div>
 </div>
 
 <script>
 
-    $(function() {
+    $(function () {
         var cardlist_Tags = [{% for i in wntlr %}
-        '{{i.ss_isukorabbrv}} :{{i.ss_isusrtcd}}',
+        '{{i.ss_isukorabbrv}}',
         {% endfor %}];
-        $('#where').autocomplete({
-            source: cardlist_Tags,
-        });
+    $('#where').autocomplete({
+        source: cardlist_Tags,
+    });
      });
 
     //textarea auto height increaze...
-<!--    $("textarea.input_textarea").on('keydown keyup', function () {-->
-<!--        $(this).height(1).height( $(this).prop('scrollHeight')+12 );-->
-<!--      });-->
-
-
-     $(function() {
-        var cardlist_Tags = [{% for i in wntlr %}'{{i.ss_isukorabbrv}} : {{i.ss_isusrtcd}}',{% endfor %}];
-        $('#place').autocomplete({
-            source: cardlist_Tags,
-            max:10
-        });
-    });
-
-    /*
-    $(document).ready(function(){
-        //키를 누르거나 떼었을때 이벤트 발생
-        $("#numcomma").bind('keyup keydown',function(){
-            inputNumberFormat(this);
-        });
-
-        //입력한 문자열 전달
-        function inputNumberFormat(obj) {
-            obj.value = comma(uncomma(obj.value));
-        }
-
-        //콤마찍기
-        function comma(str) {
-            str = String(str);
-            return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
-        }
-
-        //콤마풀기
-        function uncomma(str) {
-            str = String(str);
-            return str.replace(/[^\d]+/g, '');
-        }
-
-        //숫자만 리턴(저장할때)
-        //alert(cf_getNumberOnly('1,2./3g')); -> 123 return
-        function cf_getNumberOnly (str) {
-            var len      = str.length;
-            var sReturn  = "";
-
-            for (var i=0; i<len; i++){
-                if ( (str.charAt(i) >= "0") && (str.charAt(i) <= "9") ){
-                    sReturn += str.charAt(i);
-                }
-            }
-            return sReturn;
-        }
-    });*/
+< !--$("textarea.input_textarea").on('keydown keyup', function () {
+        -->
+< !--$(this).height(1).height($(this).prop('scrollHeight') + 12); -->
+< !--      }); -->
 </script>
 
 {% endblock %}

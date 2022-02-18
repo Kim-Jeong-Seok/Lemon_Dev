@@ -46,7 +46,7 @@
     padding: 0;
   }
   #pagenation_calendar{
-    background-color: #4C8AE5;
+    background-color: #93bcf9;
   }
   #pagenation_calendar a{
     color: #fff;
@@ -61,8 +61,8 @@
   }
   .footer-line-calendar{
     width:50px;
-    padding: 12px 0 10px 0;
-    border-bottom: 2px solid #FFF;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
   }
   </style>
   <!-- pagenation -->
@@ -91,9 +91,9 @@
             <!-- 행시작 -->
             <tr>
               <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
-              <td style="text-align: left;" width='60'>
+              <td style="text-align: left;" width='90'>
                 {% if category.category == 0 %}
-                <a class="myPattern-a" >카테고리 선택안함</a>
+                <a class="myPattern-a" >카테고리 미선택</a>
                 {% elif category.category == 1 %}
                 <a class="myPattern-a">금융/보험</a>
                 {% elif category.category == 2 %}
@@ -143,30 +143,34 @@ var ctx = document.getElementById("myChart").getContext('2d');
 var myChart = new Chart(ctx, {
 type: 'pie',
 data: {
-    //labels: {% if Category_count_label.0 == 7 %} ['기타지출(사회생활비)'] {% endif %},
-    labels: {{ Category_count_label }},
+    //labels: {% if Category_count_label.0 == 1 %} ['기타지출(사회생활비)'] {% endif %},
+    //labels: {% if Category_count_label.0 == 1 %} ['기타지출(사회생활비)'] {% endif %},
     datasets: [{
         //label: {{ Category_count_label.1 }},
         label:{{ Category_count_label }} ,
         data: {{ Category_count_data }},
         backgroundColor: [
-            'rgba(147, 188, 249, 0.2)',
-            'rgba(204, 237, 246,0.2)',
-            'rgb(126, 166, 191,0.2)',
-            'rgb(122, 154, 198,0.2)',
-            'rgba(87, 107, 158,0.2)'
+            '#034B95',
+            '#6A9CFD',
+            '#AEE4FF',
+            '#FEEAE5',
+            '#FED490'
         ],
         borderColor: [
-            'rgba(147, 188, 249, 1)',
-            'rgba(204, 237, 246,1)',
-            'rgb(126, 166, 191,1)',
-            'rgb(122, 154, 198,1)',
-            'rgba(87, 107, 158,0.2)'
+            '#FFF',
+            '#FFF',
+            '#FFF',
+            '#FFF',
+            '#FFF',
+
         ],
-        borderWidth: 0
+        borderWidth: 5
     }]
 },
 options: {
+  tooltips: {
+    enabled: 0,
+  },
   legend: { display: false },
     scales: {
         yAxes: [{
@@ -179,8 +183,6 @@ options: {
 onClick:function(e){
     var activePoints = myChart.getElementsAtEvent(e);
     var selectedIndex = activePoints[0]._index;
-    //console.log(this.data.datasets[0].data[selectedIndex]);
-    //console.log(this.data.datasets[0].label[selectedIndex]);
     window.location.href="/category_detail/"+this.data.datasets[0].label[selectedIndex];
 }
 }
@@ -325,9 +327,9 @@ function click_evt() {
       {% for category in Category_count %}
       <tr>
         <td width='10'><li style="font-weight: bold; color:#8e8e8e;"></li></td>
-        <td style="text-align: left;" width='60'>
+        <td style="text-align: left;" width='90'>
             {% if category.category == 0 %}
-            <a class="myPattern-a">카테고리 선택안함</a>
+            <a class="myPattern-a">카테고리 미선택</a>
             {% elif category.category == 1 %}
             <a class="myPattern-a">금융/보험</a>
             {% elif category.category == 2 %}

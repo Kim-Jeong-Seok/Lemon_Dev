@@ -27,65 +27,20 @@
   .footer-line-myinfo{
     /* 하단바 선택시 밑줄 */
     width: 50px;
-    padding: 12px 0 10px 0;
-    border-bottom: 2px solid #fff;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
   }
   .loader-main{
     bottom:0px !important;
     }
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-  }
-  .switch input { 
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-  }
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-  }
-
-  input:checked + .slider {
-    background-color: #2196F3;
-  }
-
-  input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
-  }
-
-  input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-  }
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
-  }
-  .slider.round:before {
-    border-radius: 50%;
+  .changePhone-btn{
+    border: 0;
+    border-radius: 10px;
+    background-color:#93bcf9;
+    height: 35px;
+    width: 80px;
+    color: #fff;
+    float: right;
   }
 </style>
 {% block nav %}
@@ -122,6 +77,7 @@
       <div class="input_design">
         <div class="input_title">성별</div>
           <select id="gender" name="gender">
+            <option value="0" {% if user.gender == '0' %} selected {% endif %}>--성별을 선택해주세요--</option>
             <option value="M" {% if user.gender == 'M' %} selected {% endif %}>남</option>
             <option value="F" {% if user.gender == 'F' %} selected {% endif %}>여</option>
           </select>
@@ -131,6 +87,7 @@
       <div class="input_design">
       <div class="input_title">직업</div>
         <select id="job" name="job">
+          <option value="0" {% if user.job == 0 %} selected {% endif %}>--직업을 선택해주세요--</option>
           <option value="1" {% if user.job == 1 %} selected {% endif %}>학생</option>
           <option value="2" {% if user.job == 2 %} selected {% endif %}>직장인</option>
           <option value="3" {% if user.job == 3 %} selected {% endif %}>사업자</option>
@@ -143,15 +100,21 @@
     <!-- 생년월일 부분 영역 -->
       <div class="input_design">
         <div class="input_title">생년월일</div>
-          <input type="text" value="{{ user.birthday }}" disabled>
+          <input style="text-align: left;" name="birthday" type="date" value="{{user.birthday|date:'Y-m-d'}}"/>
       </div>
 
     <!-- 연락처 부분 영역 -->
-      <div class="input_design">
+      <div class="input_design" style="width:100%;">
         <div class="input_title">연락처</div>
-          <input type="text" id="phonenumber" value="{{ user.phonenumber }}" disabled name="phonenumber">
+          <input style="width:75%;" type="text" id="phonenumber" value="{{ user.phonenumber|default:'연락처를 등록해주세요.'}}" disabled name="phonenumber"> <button type="button" onclick="phonechange();" class="changePhone-btn">변경</button>
       </div>
-    <div style="text-align:center;margin-top:35px;position:fixed;bottom:15px;width:100%;left:0px;"><button class="changeInfo-btn" type="submit">정보 수정</button></div>
+    <div style="text-align:center;margin-top:35px;position:absolute;bottom:15px;width:100%;left:0px;"><button class="changeInfo-btn" type="submit">정보 수정</button></div>
   </form>
 </div>
+
+<script>
+  function phonechange() {
+    location.href='update/changephone';
+  }
+</script>
 {% endblock %}

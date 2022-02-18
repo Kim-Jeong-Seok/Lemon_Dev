@@ -1,3 +1,8 @@
+<style>
+  .loader-main{
+  bottom:0px !important;
+  }
+</style>
 {% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
@@ -21,15 +26,15 @@
     margin-top:30px;
     padding:10px;
     width:80%;
-    border:1px solid #31bc8a;
+    border:1px solid #93bcf9;
     text-align:center;
   }
   
   .footer-line-myinfo{
     /* 하단바 선택시 밑줄 */
     width: 50px;
-    padding: 12px 0 10px 0;
-    border-bottom: 2px solid #fff;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
   }
 </style>
 
@@ -38,9 +43,9 @@
   <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
     <div>
       <div style="text-align:center;">
-        <a style="color: #fff;" href="{% url 'accounts:myinfo' %}">
+        <a style="color: #fff;" href="javascript:history.back();">
           <i class="fa fa-angle-left"></i>
-        </a>가상투자 금액 상세
+        </a>가상투자 금액 추가
       </div>
     </div>
   </div>
@@ -73,7 +78,7 @@
     
     <div>
       {% if can_date|date:"Y-m-d" <= now_date|date:"Y-m-d" %}
-      <input class="invest" type="text" name="invest" value="{{ user.invest|intcomma }}" required>
+      <input class="invest" type="text" name="invest" value="" required>
       {% else %}
       <input class="invest" type="text" name="invest" value="{{ user.invest|intcomma }}" disabled>
       {% endif %}
@@ -84,17 +89,42 @@
   <div class="setup">
     <h1>가상투자 금액 설정</h1>
       <div>
-        <input class="setup-invest" type="text" name="invest" required>
+        <input class="setup-invest invest" type="text" name="invest" required>
       </div>
   </div>
   {% endif %}
 
     <div class="changeinvest-wrap">
-      {% if can_date|date:"Y-m-d" <= now_date|date:"Y-m-d" %} <button class="changeinvest_btn" type="submit">변경</button>
+      {% if can_date|date:"Y-m-d" <= now_date|date:"Y-m-d" %}
+      <div class="changeinvest_btn" onclick="submit()">추가</div>
         {% else %}
-        <div class="changeinvest_btn" onclick="alert('30일 동안 변경을 하실수 없습니다.')">변경</div>
+        <div class="changeinvest_btn" onclick="alert('30일 동안 변경을 하실수 없습니다.')">추가</div>
         {% endif %}
     </div>
   </form>
-</div> <!-- 가상투자 영역 끝 -->
+</div>
+<!-- 가상투자 영역 끝 -->
+<script>
+  function submit(){
+  var input_money = $('.invest').val();
+  $.ajax({
+                type: "POST",
+                url: "{% url 'admins:edit_invest' %}",
+                data: {
+                    input_money: input_money,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function(data){
+                    console.log('성공');
+                    var here = window.location.href;
+                        location.replace(here);
+                },
+                fail: function(data) {
+                    console('실패');
+                },
+            });
+  }
+
+</script>
 {% endblock %}
