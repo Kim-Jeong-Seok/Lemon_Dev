@@ -169,16 +169,11 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 
 # Media Files
+# ---For Local Env---
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = 'http://{AWS_S3_CUSTOM_DOMAIN}/media/'
-DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 
 # Static Files
-# ---For Prod Env---
-# STATIC_URL = 'http://{AWS_S3_CUSTOM_DOMAIN}/static/'
-# STATICFILES_STORAGE = 'config.storages.StaticStorage'
-
 # ---For Local Env---
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static') # 배포서버 static
