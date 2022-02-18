@@ -28,14 +28,15 @@
     }
     .footer-line-home{
         width:50px;
-        padding: 12px 0 10px 0;
-        border-bottom: 2px solid #FFF;
+        padding: 7px 0 5px 0;
+        border-bottom: 2px solid #93bcf9;
     }
     .home-property-content{
     font-size:16px;
     display:flex;
     justify-content:space-between;
     }
+
     .home-stock-input {
     font-size:22px;
     }
@@ -71,7 +72,7 @@
             <a>개인정보 수집 동의(필수)</a><br>
             <textarea rows="10" style="width:100%;" disabled="disabled">{% include "persnal.html" %}</textarea><br>
             <label style="text-align:end;">
-                <input type="checkbox" name="u_chk" value="1" id="require_chk2">
+                <input type="checkbox" name="u_chk" value="1" id="require_chk2" style="-webkit-appearance: checkbox;">
                 <span>이용약관에 동의합니다.</span>
             </label>
         </div>
@@ -398,8 +399,8 @@ document.addEventListener('keydown', function(event) {
         </div>
 
         <div class="home-spand-buttons">
-            <button onclick="location.href='{% url 'calendars:history' %}'" style="margin-right:15px; white-space: nowrap;" class="home-spand-button">소비 내역</button>
-            <button onclick="location.href='{% url 'calendars:top5' %}'" style="margin-left:15px; white-space: nowrap;" class="home-spand-button">소비 분석</button>
+            <div onclick="location.href='{% url 'calendars:history' %}'" style="margin-left: 15px; white-space: nowrap; display: inline-block;line-height: 40px;" class="home-spand-button">소비 내역</div>
+            <div onclick="location.href='{% url 'calendars:top5' %}'" style="margin-left: 15px; white-space: nowrap; display: inline-block;line-height: 40px;"class="home-spand-button">소비 분석</div>
         </div>
     </div><!-- 소비 영역 끝 -->
 
@@ -420,9 +421,9 @@ document.addEventListener('keydown', function(event) {
 
 
         <div class="home-stock-buttons">
-            <button style="margin-right:15px; white-space: nowrap;" class="home-stock-button" onclick="location.href='{% url 'stocks:stock' %}'">보유 주식</button>
-            <button style="margin-left:15px; white-space: nowrap;" class="home-stock-button" onclick="location.href='{% url 'stocks:portfolio' %}'">포트폴리오</button>
-        </div>
+           <div onclick="location.href='{% url 'calendars:history' %}'" style="margin-left: 15px; white-space: nowrap; display: inline-block;line-height: 40px;" class="home-spand-button">소비 내역</div>
+            <div onclick="location.href='{% url 'calendars:top5' %}'" style="margin-left: 15px; white-space: nowrap; display: inline-block;line-height: 40px;"class="home-spand-button">소비 분석</div>
+       </div>
     </div><!-- 주식 영역 끝 -->
 
     <!-- 총자산 영역 -->
@@ -430,7 +431,7 @@ document.addEventListener('keydown', function(event) {
       <div class="home-property-title">
         <strong><a>총 자산</a></strong>
         <a id="todayDateView" style="font-size:14px; float: right;"></a>
-          <div class="home-property-contentsWrap" style="width:80%;padding-top:5px;">
+          <div class="home-property-contentsWrap" style="width:100%;padding-top:5px;">
             <div class="home-property-content">
               <strong><a>지출</a></strong><a>{{Expenditure.amount__sum|default_if_none:'0'|intcomma}}원</a>
             </div>
@@ -444,9 +445,9 @@ document.addEventListener('keydown', function(event) {
             </div>
 
             <div class="home-stock-buttons">
-                <button style="margin-right:15px; white-space: nowrap;" class="home-stock-button" onclick="location.href='{% url 'stocks:stock' %}'">보유 주식</button>
-                <button style="margin-left:15px; white-space: nowrap;" class="home-stock-button" onclick="location.href='{% url 'stocks:portfolio' %}'">포트폴리오</button>
-            </div>
+             <div onclick="location.href='{% url 'calendars:history' %}'" style="margin-left: 15px; white-space: nowrap; display: inline-block;line-height: 40px;" class="home-spand-button">소비 내역</div>
+            <div onclick="location.href='{% url 'calendars:top5' %}'" style="margin-left: 15px; white-space: nowrap; display: inline-block;line-height: 40px;"class="home-spand-button">소비 분석</div>
+        </div>
           </div>
       </div>
     </div><!-- 총자산 영역 끝-->
@@ -460,6 +461,8 @@ document.addEventListener('keydown', function(event) {
     const tmp = document.getElementById("todayDateView");
     tmp.innerHTML = today;
     console.log(today);
+
+    
   });
 </script>
 

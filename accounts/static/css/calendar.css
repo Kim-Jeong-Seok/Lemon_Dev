@@ -83,7 +83,7 @@
 		margin: 5%;
 		padding: 1px;
 		text-align: left;
-		background: #31bc8a;  /* Chrome 10-25, Safari 5.1-6 */
+		background: #93bcf9;  /* Chrome 10-25, Safari 5.1-6 */
 		border-radius: 15px;
   }
 
@@ -144,7 +144,7 @@
     height: 40px;
     border: none;
     border-radius: 15px;
-    background: #31bc8a;
+    background: #93bcf9;
 	}
 
   /* Fullcalendar 관련 css */
@@ -164,7 +164,7 @@
   .fc-next-button.fc-button.fc-button-primary{
     background-color: transparent;
     border-color: transparent;
-    color: #32BC8B;
+    color: #93bcf9;
     margin: 0;
   }
 
@@ -247,7 +247,7 @@
     height: 40px;
     font-size: 18px;
     font-weight: 500;
-    background-color: #31bc8a;
+    background-color: #93bcf9;
     border: 0px;
     border-radius: 5px;
     color: #fff;
@@ -281,7 +281,7 @@
 
   .addevent-btn{ /* 내역추가하기 */
 		border-radius: 50%;
-		background-color: #31bc8a;
+		background-color: #93bcf9;
 		font-size: 35px;
 		width: 45px;
 		height: 45px;
@@ -300,7 +300,7 @@
 		width: 95%;
     background-color:#fff;
     border-radius:10px;
-    margin: 15px 10px 0px 10px;
+    margin: 0px 10px 0px 10px;
     padding:0 20px 60px 20px;
     border-collapse:separate;
     border-spacing:0 20px;
@@ -495,7 +495,7 @@
     font-weight: bold;
     font-size: 18px;
     color: #fff;
-    background: #31bc8a;
+    background: #93bcf9;
     margin-top: 20px;
   }
 }

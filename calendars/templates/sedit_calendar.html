@@ -13,23 +13,23 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <style>
+    #footer{display:none;}
     #container{
         margin: 0 20px !important;
     }
       /* FOOTER에서 사용하는 CSS */
-  .bottom-nav-calendar{
-    color: #FFD859 !important;
-  }
-
-  .bottom-nav-calendar a{
-    color: #FFD859 !important;
-  }
 
     #ui-id-1{
         height:20%;
         width:230px !important;
         overflow:scroll;
     }
+
+  .footer-line-calendar{
+    width:50px;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
+  }
 
 @media screen and (max-width: 420px) {
   .span_table a{
@@ -193,16 +193,14 @@
         background: #31bc8a;
     }
     .delBtn{
-        margin-left:5px;
-        border: 1px solid #FC615D;
         border-radius: 10px;
         height: 40px;
         font-weight: bold;
         font-size: 1rem;
         color: #FC615D;
-        padding:5px;
-        background: #FFF;  /* Chrome 10-25, Safari 5.1-6 */
-
+    }
+    fa-ban{
+        color: #FC615D !important;
     }
     @media screen and (max-width: 420px) {
         .span_table a{
@@ -234,15 +232,24 @@
     {% for i in spe %}
     <form action = "{% url 'calendars:delete_shistory' i.spend_id %}" method="POST" style="position:absolute;right:13px;">
             {% csrf_token %}
-          <input class="delBtn" type = "submit" value = " 삭제 ">
+             <div class="delBtn" onclick="del()"><i class="fa fa-ban" aria-hidden="true"></i></div>
         </form>
+        <script>
+    function del(){
+       if (confirm('삭제 하시겠습니까?') == true){
+    const form = document.getElementById('del');
+            form.action="{% url 'calendars:delete_shistory' i.spend_id %}"
+            form.submit();
+    }else{return;
+    }
+    }
+</script>
     <div class="list">
         <input type="radio" name="jtags" value="지출" id="span" checked>
-        <label for="span">지출내역</label>
     </div>
     <form id="seidt_form" action="{%url 'calendars:sedit_calendar' i.spend_id %}" method="POST">
         {% csrf_token %}
-    <a class="span_div" id="span_div">
+    <div class="span_div" id="span_div">
         <div class="span_list">
                 <input type="text" style="display: none;" readonly name="user" value="{{user.user_id}}"/>
                 <input type="text" style="display: none;" readonly name="kind" value="지출"/>
@@ -251,16 +258,14 @@
                     <th width="200" height="60"><a class="span_list_title">금액</a></th>
                     <th width="240" style="text-align: end;"><input class="input_span" type="number" name="amount" pattern="\\d*" value="{{i.amount}}"></th>
                 </tr>
-<!--          -->
-                <tr> <!-- 행선언 -->
+                    <!--  행선언 -->
+                <tr>
                     <th width="200" height="60"><a class="span_list_title">날짜</a></th>
                     <th width="240" style="text-align: end;"><input class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{i.spend_date|date:'Y-m-d'}}"></th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">소비처</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="where" name="where" autocomplete="on" value="{{i.place}}:{{i.stock}}">
-                    <input type="hidden" id="place" name="place">
-                     <input type="hidden" id="stock" name="stock">
+                    <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="place" name="place" autocomplete="on" value="{{i.place}}">
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">결제수단 </a></th>
@@ -317,16 +322,11 @@
                 </tr>
 
             </table>
-        </div>
-            <input type="button" class="addBtn" value="수정" onclick="submit()" style="line-height:37px;text-align:center;"/>
+    </div>
+            <div class="addBtn" onclick="submit()" style="line-height:44px;text-align:center;">수정</div>
          </form>
         <script>
             function submit(){
-            var str = $('#where').val();
-            var stockcode = str.slice(-6);
-            var stockname = str.replace(":"+stockcode,"");
-            document.getElementById('place').value = stockname;
-            document.getElementById('stock').value = stockcode;
             const form = document.getElementById('seidt_form');
             form.action="{%url 'calendars:sedit_calendar' i.spend_id %}"
             form.submit();

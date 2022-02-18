@@ -1,4 +1,4 @@
-{% extends 'password_base.html' %}
+{% extends 'login_base.html' %}
 {% load socialaccount %}
 {% block title %}레몬::로그인{% endblock title %}
 {% block container %}
@@ -11,7 +11,7 @@
     padding-top:0 !important;
     padding-bottom:0 !important;
     background-color: #F5F5F5;
-    height: 100%;
+    height: calc(100%);
     margin : 0;
   }
 	#nav,#footer{
@@ -36,12 +36,15 @@
     textarea:focus {outline: none;}
     input{
       -webkit-appearance: none
+      -webkit-border-radius: 0;
     }
     select{
       -webkit-appearance: none
+      -webkit-border-radius: 0;
     }
     textarea{
       -webkit-appearance: none
+      -webkit-border-radius: 0;
     }
 </style>
 
@@ -72,11 +75,19 @@
         </div>
     </div>
 </div>
-    <!-- 임시 배포 주석 -->
-    <!-- <div class="login-wrap2" style="width:100%; padding:0px 20px 20px 20px; margin-top:20px;">
+    
+    <div class="login-wrap2" style="width:100%; bottom:-20px; padding:0px 20px 20px 20px; margin-top:20px;">
         <button class="kakao-login-btn" onclick="location.href='{% provider_login_url 'kakao' %}'"><img class="logo" src="/media/kakao.png">카카오계정으로 로그인</button>
         <button class="naver-login-btn" onclick="location.href='{% provider_login_url 'naver' %}'"><img class="logo" src="/media/naverbtn1.png">네이버계정으로 로그인</button>
         <button class="google-login-btn" onclick="location.href='{% provider_login_url 'google' %}'"><img class="logo" src="/media/google.png">Google계정으로 로그인</button>
         {% comment %} <button class="apple-login-btn" onclick="location.href='{% provider_login_url 'google' %}'"><img class="logo" src="/media/apple.png">Apple계정으로 로그인</button> {% endcomment %}
-    </div> -->
+    </div>
+
+<script>
+// Display 'none' if Apple Device
+const mobile = (/iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase()));
+if(mobile) {
+    $('.login-wrap2').hide();
+}
+</script>
 {% endblock container %}

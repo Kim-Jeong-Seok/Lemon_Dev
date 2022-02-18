@@ -31,7 +31,7 @@
         width: 100%;
     }
     .invest{
-    background-color:#31bc8a;
+    background-color:#93bcf9;
     border-radius:10px;
     padding-top:20px;
     padding-bottom:20px;
@@ -59,8 +59,8 @@
     }
 .footer-line-myinfo{
     width:50px;
-    padding: 12px 0 10px 0;
-    border-bottom: 2px solid #FFF;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
     }
 </style>
 <div class="profile-wrap">
@@ -73,7 +73,7 @@
 <div class="profile-wrap invest">
     {% if user.invest == 0 or user.invest == NULL %}
     <a style="padding-right:5px;">보유 가상 자산</a>
-    <div class="invest_money"><a onclick="location.replace('{% url 'admins:edit_invest' %}')">가상자산을 설정해주세요.</a></div>
+    <div class="invest_money"><a href="{% url 'admins:edit_invest' %}">가상자산 설정</a></div>
     {% else %}
     <a style="padding-right:5px;">보유 가상 자산</a>
     <div class="invest_money"><span style="color:black;">{{ user.invest|default_if_none:'0'|intcomma }}원</span>
@@ -171,6 +171,7 @@
     }
 }
 </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
 // Display 'none' if Apple Device
 const mobile = (/iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase()));

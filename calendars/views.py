@@ -94,9 +94,7 @@ def home(request):
     else:
         total_current_price = total_current_price
     son = total_current_price + total_use_investment_amount
-    print(total_current_price)
     home_chartjs_data = [invest, son]
-    print( home_chartjs_data)
     for spend_sum_value in spend_sum_value:
         if spend_sum_value == None:
             home_chartjs_data.append(0)

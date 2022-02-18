@@ -16,7 +16,7 @@
   }
   /* 내역페이지 페이지 네이션 */
   #pagenation_list{
-    background-color: #4C8AE5;
+    background-color: #93bcf9;
   }
   #pagenation_list a{
     color: #fff;
@@ -26,8 +26,8 @@
   }
 .footer-line-calendar{
     width:50px;
-    padding: 12px 0 10px 0;
-    border-bottom: 2px solid #FFF;
+    padding: 7px 0 5px 0;
+    border-bottom: 2px solid #93bcf9;
     }
 </style>
 <!-- pagenation -->
@@ -53,7 +53,7 @@
         {% csrf_token %}
         <div style="margin-bottom: 10px;">
           <button style="margin-right: 15px;" class="prev_btn"  id="prev_btn">
-            <i style="color: #31bc8a;" class="fas fa-chevron-left"></i></button>
+            <i style="color: #93bcf9;" class="fas fa-chevron-left"></i></button>
 
           <b><a style="color:#3a3a3a;" id="year_atag">{{year}}</a>
             <a style="color:#3a3a3a;" id="year_atag2">년 </a>
@@ -62,7 +62,7 @@
           <input type="hidden" name ="input_year" id="input_year" value="">
           <input type="hidden" name="input_month" id="input_month" value="">
           
-          <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right" style="color:#31bc8a"></i></button> <br>
+          <button style="margin-left: 15px;" class="next_btn" id="next_btn"><i class="fas fa-chevron-right" style="color:#93bcf9"></i></button> <br>
         </div>
   </form>    
   </div><!-- list-filter 끝 -->
@@ -125,7 +125,7 @@
 
   <div class="filter-menu">
     <div class="filter-menu-title">
-      <div class="fa fa-search color-mc" style="padding-right:10px;color:#31bc8a"></div><a>상세검색</a>
+      <div class="fa fa-search color-mc" style="padding-right:10px;color:#93bcf9"></div><a>상세검색</a>
       <a style="float: right; display:none;" onclick="hideBtn()" id="hide-btn"><i style="margin-right: 5px;" class="fas fa-chevron-up"></i></a>
       <a style="float: right;" onclick="showBtn()" id="show-btn"><i style="margin-right: 5px;" class="fas fa-chevron-down"></i></a>
   </div>

@@ -114,9 +114,7 @@
                 </tr>
                 <tr>
                     <th width="200" height="60"><a class="span_list_title">소비처</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="where" name="where" autocomplete="on" value="">
-                    <input type="hidden" id="place" name="place">
-                     <input type="hidden" id="stock" name="stock">
+                    <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="place" name="place" autocomplete="on" value="">
                 </tr>
                 </tr>
                 <tr> <!-- 행선언 -->
@@ -178,8 +176,8 @@
         <div style="text-align:center; margin-top:15px;">
         <div class="addBtn" onclick="submit()" style="line-height:47px;">추가하기</div>
         </div>
-    </form>
     </div>
+    </form>
 </div>
 
 <script>
@@ -216,9 +214,9 @@ function submit(){
 
     $(function() {
         var cardlist_Tags = [{% for i in wntlr %}
-        '{{i.ss_isukorabbrv}} :{{i.ss_isusrtcd}}',
+        '{{i.ss_isukorabbrv}}',
         {% endfor %}];
-        $('#where').autocomplete({
+        $('#place').autocomplete({
             source: cardlist_Tags,
         });
      });

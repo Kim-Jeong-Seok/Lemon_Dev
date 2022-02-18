@@ -66,7 +66,7 @@
 
 	.invest-setup{
 		width:100%;
-		background-color:#31bc8a;
+		background-color:#93bcf9;
 		padding:30px 10px 30px 10px;
 		border-radius:10px;
 		color:white;
@@ -108,7 +108,7 @@
 		width:80%;
 		border-radius:10px;
 		color:white !important;
-		background-color:#31bc8a;
+		background-color:#93bcf9;
 		border: 0;
   }
 /* ###### invest.html 끝 부분 ###### */
@@ -134,7 +134,7 @@
 		width:80%;
 		border-radius:10px;
 		color:white !important;
-		background-color:#31bc8a;
+		background-color:#93bcf9;
 		border: none;
 	}
 /* ###### edit_myinfo.html 끝 부분 ###### */
@@ -159,7 +159,7 @@
     width: 80%;
     border-radius: 10px;
     color: white !important;
-    background-color: #31bc8a;
+    background-color: #93bcf9;
 		border: none;
   }
 /* ###### input_pin.html 끝 부분 ###### */

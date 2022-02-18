@@ -77,33 +77,9 @@
   </head>
 
   <style>
-  .fa-home,
-.fa-calendar,
-.fa-portfolio,
-.fa-stock,
-.fa-myinfo{
-filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) contrast(95%) !important;
-}
-  * { -ms-user-select: none;
-      -moz-user-select: -moz-none;
-      -khtml-user-select: none;
-      -webkit-user-select: none;
-      user-select: none; }
-
     a:link, a:visited, a:hover {
         color: #2b2b2b;
         text-decoration-line: none;
-    }
-
-    input[type="password"] {
-      border-radius: 10px;
-      margin-top: 30px;
-      padding: 10px;
-      width: 80%;
-      border: 1px solid #93bcf9;
-      text-align: left;
-      padding-left: 20%;
-      letter-spacing: 40px;
     }
 
     select {
@@ -129,7 +105,6 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
     }
 
   .bottom-nav-calendar img,
@@ -159,9 +134,6 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
     width: 100%;
     z-index: 1024 !important;
   }
-  .bottom{
-  bottom:0px !important;
-  }
   </style>
 
   <script>
@@ -176,62 +148,6 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
     </script>
 
 <body>
-  {% if user.u_chk == 1 %}
-  <script>
-    $( document ).ready(function() {
-        let pin_date = '{{ user.pin_date | date:'Y/n/d H:i'}}';
-        let today = new Date();
-        var year = today.getFullYear();
-        let month = today.getMonth() + 1;  // 월
-        let date = today.getDate();  // 날짜
-        let hours = today.getHours(); // 시
-        let minutes = today.getMinutes();
-        var now = year + '/' + month + '/' + date + ' ' + hours + ':' + minutes;
-        if ( pin_date > now ){
-            $('.pin_saver').hide()
-        }else{
-            $('.fa-search').hide();
-            $('.loader-main').addClass(bottom);
-            $('#footer').hide();
-        }
-    });
-
-    function pin_saver(pin){
-      let password = $('#pin').val()
-        if ( password == pin ){
-          $('.pin_saver').fadeOut()
-          $('.fa-search').show()
-          $('#footer').show()
-          const form = document.getElementById('pin_form');
-            form.action ="/pin_date_save" ;
-            form.submit();
-            } else {
-                alert('핀번호가 틀렸습니다.');
-            }
-    }
-    </script>
-
-    <!-- 핀 번호 로드 -->
-    <div id="pin-preload">
-        <div class="pin_saver">
-            <div class="pin-input-wrap" style="flex-direction: column;">
-                <input type="password" pattern="[0-9]*" inputmode="numeric" name="pin" id="pin" maxlength='4' />
-                <a id="forget-pin-kakao-link" style="color: rgba(0, 0, 0, 0.5); text-decoration: underline;">Pin번호를 잊으셨나요?</a>
-            </div>
-            <div>
-            </div>
-            <div class="pin-btn-wrap">
-                <div onclick="pin_saver({{user.pin}})" class="pinBtn">Pin 번호</div>
-            </div>
-        </div>
-    </div>
-
-    <form id="pin_form" method="post">
-        {% csrf_token %}
-    </form>
-    {% endif %}
-    
-
  <!-- 페이지 로딩 에니메이션 -->
   <div id="page-preloader">
       <div class="loader-main">
@@ -251,7 +167,7 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
                 width="100px">
       </div>
       <div style="margin-right:15px; float:right;">
-          <a href="{% url 'stocks:search_stock' %}"><i class="fa fa-search" style="color:#93bcf9"></i></a>
+          <a href="{% url 'stocks:search_stock' %}"><i class="fa fa-search" style="color:#31bc8a"></i></a>
       </div>
     </div>
   </div>
@@ -264,42 +180,42 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
       <table class="bottom-nav-wrap" style="padding-left:0 !important;">
         <!-- 홈버튼 -->
         <tr>
-          <li class="bottom-nav-home" style="width: 20%; height:60px; text-align:center;font-size: 10px;">
-            <a class="footer-line-home" href="{% url 'calendars:home' %}" style="display: flex;justify-content: center; flex-direction: column;align-items: center;font-size: 10px;">
-              <img id="footer_home" class="fa-home" src="/media/home.png"><span style="padding-top: 1px;color:#464646">홈</span>
+          <li class="bottom-nav-home" style="width: 20%; height:100%; text-align:center;">
+            <a class="footer-line-home" href="{% url 'calendars:home' %}">
+              <img id="footer_home" class="fa-home" src="/media/home.png">
             </a>
             <div class="footer-selector"></div>
           </li>
         </tr>
         <!-- 가계부 -->
         <tr>
-          <li class="bottom-nav-calendar" style="width: 20%; height:60px; text-align:center;font-size: 10px;">
-            <a class="footer-line-calendar" href="{% url 'calendars:history' %}" style="display: flex;justify-content: center; flex-direction: column;align-items: center;font-size: 10px;">
-              <img id="footer_calendar" class="fa-calendar" src="/media/calendar.png"><span style="padding-top: 1px;color:#464646">가계부</span>
+          <li class="bottom-nav-calendar" style="width: 20%; height:100%; text-align:center;">
+            <a class="footer-line-calendar" href="{% url 'calendars:history' %}">
+              <img id="footer_calendar" class="fa-calendar" src="/media/calendar.png">
             </a>
           </li>
         </tr>
         <!-- 포트폴리오 -->
         <tr>
-          <li class="bottom-nav-portfolio" style="width: 20%; height:60px; text-align:center;font-size: 10px;">
-            <a class="footer-line-portfolio" href="{% url 'stocks:portfolio' %}" style="display: flex;justify-content: center; flex-direction: column;align-items: center;font-size: 10px;">
-              <img id="footer_portfolio" class="fa-portfolio" src="/media/portfolio.png"><span style="padding-top: 1px;color:#464646">포트폴리오</span>
+          <li class="bottom-nav-portfolio" style="width: 20%; height:100%; text-align:center;">
+            <a class="footer-line-portfolio" href="{% url 'stocks:portfolio' %}">
+              <img id="footer_portfolio" class="fa-portfolio" src="/media/portfolio.png">
             </a>
           </li>
         </tr>
         <!-- 주식 -->
         <tr>
-          <li class="bottom-nav-stock" style="width: 20%; height:60px; text-align:center;font-size: 10px;">
-            <a class="footer-line-stock" href="{% url 'stocks:stock' %}" style="display: flex;justify-content: center; flex-direction: column;align-items: center;font-size: 10px;">
-              <img id="footer_stock" class="fa-stock" src="/media/stock.png"><span style="padding-top: 1px;color:#464646">보유 주식</span>
+          <li class="bottom-nav-stock" style="width: 20%; height:100%; text-align:center;">
+            <a class="footer-line-stock" href="{% url 'stocks:stock' %}">
+              <img id="footer_stock" class="fa-stock" src="/media/stock.png">
             </a>
           </li>
         </tr>
         <!-- 내정보 -->
             <tr>
-              <li class="bottom-nav-myinfo" style="width: 20%; height:60px; text-align:center;font-size: 10px;">
-                <a class="footer-line-myinfo" href="{% url 'accounts:myinfo' %}" style="display: flex;justify-content: center; flex-direction: column;align-items: center;font-size: 10px;">
-                  <img id="footer_myinfo" class="fa-myinfo" src="/media/myinfo.png"><span style="padding-top: 1px;color:#464646">내 정보</span>
+              <li class="bottom-nav-myinfo" style="width: 20%; height:100%; text-align:center;">
+                <a class="footer-line-myinfo" href="{% url 'accounts:myinfo' %}">
+                  <img id="footer_myinfo" class="fa-myinfo" src="/media/myinfo.png">
                 </a>
               </li>
             </tr>
@@ -314,17 +230,5 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
             {% endblock %}
         </div>
     </div>
-<script>
-  document.querySelector("#forget-pin-kakao-link").addEventListener("click", kakaoChat);
-    });
-  };
-
-  (function (d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = 'https://developers.kakao.com/sdk/js/kakao.channel.min.js';
-    fjs.parentNode.insertBefore(js, fjs);
-  })(document, 'script', 'kakao-js-sdk');
-</script>
+</body>
 </html>

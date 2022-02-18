@@ -25,6 +25,7 @@
     -webkit-appearance:none; /* 화살표 없애기 for chrome*/
     -moz-appearance:none; /* 화살표 없애기 for firefox*/
     appearance:none /* 화살표 없애기 공통*/
+    -webkit-border-radius: 0;
   }
   /* input number  */
   /* Chrome, Safari, Edge, Opera */
@@ -32,6 +33,7 @@
   input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+  -webkit-border-radius: 0;
   }
   /* Firefox */
   input[type=number] {
@@ -43,7 +45,7 @@
     margin-right: 12px;
     width: 73px;
     height: 35px;
-    background: #31BC89;
+    background: #93bcf9;
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: bold;
     font-size: 14px;
@@ -53,6 +55,13 @@
     border-radius: 1px;
     color: white;
     border-radius: 10px;
+    line-height: 35px;
+  }
+  .signup-form{
+  padding-top:5px;
+  }
+  .options_info{
+  padding-top:5px;
   }
 </style>
 
@@ -60,11 +69,15 @@
 <!-- 회원가입 navbar -->
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
     <div>
-        <div style="text-align:center;">회원가입</div>
+        <a style="color: #fff;" href="{% url 'accounts:login' %}"><i class="fa fa-angle-left" style="position: absolute;
+    left: 5px;
+    padding: 14px 15px;
+    top: 0;
+    font-size: 25px;
+    font-weight: 600;color:black;"></i></a><div style="text-align:center;">회원가입</div>
     </div>
 </div>
 <!-- 회원가입 navbar 끝 -->
-
 <!-- 회원가입 Wrapper -->
 <div class="signup-wrapper" style="padding:70px 20px 40px 20px;">
   <form class="validation-form" style="width:100%;" method="POST" action="{% url 'accounts:signup' %}" id="signupForm">
@@ -74,7 +87,7 @@
         <a>개인정보 수집 동의(필수)</a><br>
         <textarea cols="30" rows="10" style="width:100%;" disabled="disabled">{% include 'persnal.html' %}</textarea><br>
         <label style="text-align:end;">
-            <input type="checkbox" name="u_chk" value ="1" id="require_chk2">
+            <input type="checkbox" name="u_chk" value ="1" id="require_chk2" style="-webkit-appearance: checkbox;">
             <span>이용약관에 동의합니다.</span>
         </label>
       </div>
@@ -87,7 +100,7 @@
     <a>아이디 <strong>(필수)</strong></a><br>
         <div>
             <input type="text" class="add_info_select_signup" style="width:70%; margin-top: 10px; margin-bottom:10px;"
-          id="Vailduid" name="Vailduid" placeholder="(영문시작/숫자 포함 6~20자)" value="" ><button type="button" onclick="checkID();" id="check_ID" class="idVailed_btn">중복확인</button>
+          id="Vailduid" name="Vailduid" placeholder="(영문시작/숫자 포함 6~20자)" value="" ><div onclick="checkID();" id="check_ID" class="idVailed_btn">중복확인</div>
         </div>
         <br><input type="hidden" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;"
           id="uid" name="uid" placeholder="" value="">
@@ -119,7 +132,7 @@
     <a>이메일 <strong>(필수)</strong></a>
     <div>
       <input type="email" class="add_info_select_signup" style="width: 70%; margin-top: 10px; margin-bottom:10px;" id="Vailemail" name="Vailemail" placeholder="" value="">
-        <button type="button" onclick="checkEmail();" id="check_Email" class="idVailed_btn">중복확인</button>
+        <div onclick="checkEmail();" id="check_Email" class="idVailed_btn">중복확인</div>
     </div>
     <input type="hidden" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;" id="email" name="email"
         placeholder="" value="">
@@ -138,25 +151,11 @@
             id="pin" placeholder="최대 4자리" value=""/>
     </div>
 
-    <a style="margin-top: 10px; display:none;" onclick="hideBtn()" id="hide-btn">닫기<i style="margin-left: 5px;" class="fas fa-chevron-up"></i></a>
-    <a style="margin-top: 10px;" onclick="showBtn()" id="show-btn">추가정보 입력하기<i style="margin-left: 5px;" class="fas fa-chevron-down"></i></a>
+      <div class="signup-form">
+        <a>옵션</a>
+    </div>
 
-    <script>
-        function hideBtn() {
-            $('#options_info').fadeOut();
-            document.getElementById('hide-btn').style.display = "none";
-            document.getElementById('show-btn').style.display = "";
-        }
-        function showBtn() {
-            $('#options_info').fadeIn();
-            document.getElementById('hide-btn').style.display = "";
-            document.getElementById('show-btn').style.display = "none";
-        }
-    </script>
-
-    <div class="options_info" id="options_info" style="display: none;">
-        <a>추가 정보 입력란은 회원가입후 <strong>"내정보 > 회원정보 수정하기"</strong> 에서 입력하실 수 있습니다. </a>
-        <!-- 성별 입력 input -->
+    <div class="options_info" id="options_info">
         <div class="signup-form" style="margin-top: 20px;">
             <a>성별 (선택)</a>
             <select name="gender" class="add_info_select" style="margin-top: 10px; margin-bottom:10px;">
@@ -188,14 +187,13 @@
                     <input class="add_info_phone_signup" id="vaildPhonenumber" name="vaildPhonenumber" type="number"
                         placeholder="- 를 제외하고 입력하세요" style="margin-top: 10px; margin-bottom:5px;">
                     <input type="hidden" name="phonenumber">
-                    <button type="button" id="codeBtn" class="phone_code_btn_signup">발송</button>
+                    <div id="codeBtn" class="phone_code_btn_signup">발송</div>
                 </div>
                 <div style="display: flex;align-items: center;justify-content: space-between;">
                     <input id="inputCode" class="add_info_phonecode_signup" type="number" placeholder="인증번호 입력" disabled>
                     <div style="display: flex; align-items: center;justify-content: space-between;"><a id="count"
                             class="count-signup" style="width:50px;margin-top: 5px; margin-bottom:10px;"></a>
-                        <button type="button" id="certBtn" onclick="certfun();" class="phone_code_btn_signup"
-                            disabled>확인</button>
+                        <div id="certBtn" onclick="certfun();" class="phone_code_btn_signup" disabled>확인</div>
                     </div>
                 </div>
             </div>

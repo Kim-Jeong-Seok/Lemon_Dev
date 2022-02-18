@@ -6,7 +6,7 @@
   }
 
   .stock-container{
-    background-color:#31bc8a;
+    background-color:#93bcf9;
     border-radius:10px;
     padding:20px;
     margin-top:10px;
@@ -28,7 +28,7 @@
     margin: 15px auto;
     width: 100%;
     height: 45px;
-    border: 3px solid #31bc8a;
+    border: 3px solid #93bcf9;
     border-radius: 10px;
     background-color: #FFF;
     color: #1a1a1a;
@@ -45,7 +45,8 @@
 
   .my_stock-btn{
     width:40%;
-    color:#31bc8a !important;
+    font-weight: 500;
+    color:#5697f8 !important;
     padding:10px 20px 10px 20px;
     border-radius: 10px;
     background-color:#FFF;
