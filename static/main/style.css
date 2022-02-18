@@ -225,7 +225,7 @@ body {
     position: absolute;
     width: 40%;
     left: 35%;
-    top: 45%;
+    top: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
@@ -233,7 +233,7 @@ body {
     position: absolute;
     width: 40%;
     left: 20%;
-    top: 45%;
+    top: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
@@ -241,7 +241,7 @@ body {
     position: absolute;
     width: 40%;
     left: 40%;
-    top: 45%;
+    top: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
@@ -788,7 +788,7 @@ width:50%
      position: absolute;
     width: 100%;
     left: 50%;
-    top: 80%;
+    top: 75%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
@@ -796,7 +796,7 @@ width:50%
     position: absolute;
     width: 100%;
     left: 50%;
-    top: 80%;
+    top: 75%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
