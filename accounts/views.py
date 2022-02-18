@@ -108,8 +108,6 @@ def signup(request):
             return redirect('/')
         return render(request, 'signup.html')
     return render(request, 'signup.html')
-
-
 def pin_date_save(request):
     now_time = datetime.now() + timedelta(days=1)
     if request.method == 'POST':
