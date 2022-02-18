@@ -125,6 +125,12 @@
         placeholder="" value="">
     </div>
 
+    <!-- 생년월일 입력 input -->
+    <div class="signup-form">
+        <a>생년월일 <strong>(필수)</strong></a>
+        <input class="add_info_select_signup" name=birthday type="date" id="year" maxlength="8" placeholder="생년월일을 입력해주세요. 예시)19801210" style="margin-top: 10px; margin-bottom:25px;">
+    </div>
+
     <!-- 핀번호 입력 input -->
     <div class="signup-form">
         <a>Pin번호 <strong>(필수)</strong></a>
@@ -194,14 +200,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 생년월일 입력 input -->
-        <div class="signup-form">
-            <a>생년월일 (선택)</a>
-            <input class="add_info_select_signup" name=birthday type="date" id="year" maxlength="8"
-                placeholder="생년월일을 입력해주세요. 예시)19801210" style="margin-top: 10px; margin-bottom:25px;">
-        </div>
-
         <!-- 모의투자금액 입력 input -->
         <div class="signup-form">
             <a>모의투자 금액 (선택)</a>
@@ -247,6 +245,10 @@
         }
         else if ($('#email').val() == '') {
             alert('이메일 입력 또는 중복확인 해주세요.');
+            return false;
+        }
+        else if ($('#year').val() == '') {
+            alert('생년월일을 입력해주세요.');
             return false;
         }
         else if (!$('#pin').val().match(/^[0-9]{4}$/)) {
