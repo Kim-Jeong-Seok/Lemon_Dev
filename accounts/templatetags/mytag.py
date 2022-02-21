@@ -22,6 +22,13 @@ def find_income_money(queryset, day):
 def sub(value, arg):
     return value - arg
 
+@register.filter
+def div(value, arg):
+    if arg:
+        return value / arg
+    else:
+        return float('0')
+
 
 @register.filter
 def rounds(value, arg):

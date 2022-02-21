@@ -36,13 +36,13 @@ def home(request):
         invest = request.POST['invest']
         birthday = request.POST['birthday']
         pin = request.POST['pin']
-        
+
         if invest == '0':
             #invest_date = None
             invest_date = date(1111,1,11)
         else:
             invest_date = datetime.now()
-        
+
         if birthday == '':
             #birthday = date(1111, 1, 11)
             birthday = datetime.now()
@@ -53,7 +53,7 @@ def home(request):
             pin = '0000'
         else:
             pin = pin
-        
+
         user = get_user_model().objects.filter(user_id=user).update(
             u_chk=request.POST['u_chk'],
             username=request.POST['username'],
@@ -92,7 +92,21 @@ def home(request):
         total_current_price = 0
     else:
         total_current_price = total_current_price
-    son = total_current_price + total_use_investment_amount
+    son = total_current_price - total_investment_amount
+    sin = total_investment_amount - total_current_price
+    sun = total_current_price - sin
+    
+    print(sun)
+    print('--------------')
+    print(sin)
+    print('--------------')
+    print(son)
+    print('--------------')
+    print(total_current_price)
+    print('--------------')
+    print(total_investment_amount)
+    print('--------------')
+
     home_chartjs_data = [invest, son]
     for spend_sum_value in spend_sum_value:
         if spend_sum_value == None:
@@ -105,7 +119,7 @@ def home(request):
         else:
             home_chartjs_data.append(income_sum_value)
     return render(request, 'home.html', {'month': month, 'Expenditure': spend_sum, 'Income': income_sum, 'income_sum_value':income_sum_value,
-                                         'total_current_price': total_current_price,'Home_chartjs_data': home_chartjs_data, 'Total_investment_amount': total_investment_amount, 'son': son})
+                                         'total_current_price': total_current_price,'Home_chartjs_data': home_chartjs_data, 'Total_investment_amount': total_investment_amount, 'sun':sun,'son': son})
 
 
 def recom(request):
@@ -376,7 +390,7 @@ def sms_add_spend_calendar(request):
         amount = request.POST.get("amount", None)
         place = request.POST.get("place", None)
         wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
-    
+
     return render(request, 'sms_add_spend_calendar.html', {'date': date, 'amount': amount, 'place': place, 'wntlr': wntlr})
 
 

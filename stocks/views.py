@@ -38,6 +38,28 @@ def stock(request):
         bookmark_date.append([element.marketcode,element.isuSrtCd, current_price, name])
     return render(request, 'stock.html', {'stock_data': stock_data,'bookmark_date':bookmark_date})
 
+def tlqkf(request):
+    categorys =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd','sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')
+    category_list = list(categorys.values('sh_idxindmidclsscd'))
+    categorys_isurtcd = list(categorys.values('sh_isusrtcd'))
+    category_keep = category_list[0:3]
+    category_arr = []
+    isurtcd_arr = []
+    for i in category_keep:
+        category_arr.append(i['sh_idxindmidclsscd'])
+    for i in categorys_isurtcd:
+        isurtcd_arr.append(i['sh_isusrtcd'])
+    #stock_list = Category.objects.select_related('spend').filter(category=4)
+    print(category_arr)
+    tlqkf = nasdaq_test.objects.filter(category__in =category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
+    tlqkf2 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =tlqkf).values("id",'per','pbr',"marketcode","name","category").annotate(
+    ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+
+
+    stock_suggestion1 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =category_arr[0:3]).values("id",'per','pbr',"marketcode","name","category").annotate(
+    ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+    stock_suggestion2 =list(stock_suggestion1)
+    return render(request, 'tlqkf.html',{'tlqkf':tlqkf, 'tlqkf2':tlqkf2})
 
 def portfolio(request):
     categorys =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd','sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')
@@ -50,6 +72,7 @@ def portfolio(request):
         category_arr.append(i['sh_idxindmidclsscd'])
     for i in categorys_isurtcd:
         isurtcd_arr.append(i['sh_isusrtcd'])
+    #stock_list = Category.objects.select_related('spend').filter(category=4)
 
     stock_suggestion1 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =category_arr[0:3]).values("id",'per','pbr',"marketcode","name","category").annotate(
     ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
@@ -62,15 +85,18 @@ def portfolio(request):
 
     result = {}
     stock_cal = cal.calculator()
+    user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
     total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
     total_current_price = stock_cal.total_current_price(request.user.user_id)
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
-    if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False:
+
+    if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False or user_total_investment_amount is False:
         result['total_investment_amount'] = 0
+        result['user_total_investment_amount'] = 0
         result['total_current_price'] = 0
         result['total_use_investment_amount'] = 0
     else:
-        result['category_stock'] = category_stock
+        result['user_total_investment_amount'] = user_total_investment_amount
         result['total_investment_amount'] = total_investment_amount
         result['total_current_price'] = total_current_price
         result['total_use_investment_amount'] = total_use_investment_amount
@@ -98,13 +124,11 @@ def stock_info(request, marketcode, issuecode):
         result['marketcode'] = marketcode
         result['total_allow_invest'] = request.user.invest - stock_cal.total_use_investment_amount(request.user.user_id)
 
-
         result['year_history'] = day_trdDd_matching(
             cal_year_history(koscom_api.get_stock_history(marketcode, issuecode,
                                                                 'M', '19800101', datetime.today().strftime('%Y%m%d'), 50)))
         if result['year_history'] is False:
                 result['year_history'] = str(0)
-
         result['month_history'] = day_trdDd_matching(
             koscom_api.get_stock_history(marketcode, issuecode,
                                         'M', '19800101', datetime.today().strftime('%Y%m%d'), 50))
@@ -113,10 +137,8 @@ def stock_info(request, marketcode, issuecode):
         result['week_history'] = day_trdDd_matching(
             koscom_api.get_stock_history(marketcode, issuecode,
                                         'W', '19800101', datetime.today().strftime('%Y%m%d'), 50))
-
         if result['week_history'] is False:
             result['week_history'] = str(0)
-
         result['day_history'] = day_trdDd_matching(
             koscom_api.get_stock_history(marketcode, issuecode,
                                         'D', '19800101', datetime.today().strftime('%Y%m%d'), 50))
