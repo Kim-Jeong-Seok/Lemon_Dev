@@ -96,7 +96,7 @@
 
     <div class="changeinvest-wrap">
       {% if can_date|date:"Y-m-d" <= now_date|date:"Y-m-d" %}
-      <div class="changeinvest_btn" onclick="submit()">추가</div>
+      <div class="changeinvest_btn" onclick="check()">추가</div>
         {% else %}
         <div class="changeinvest_btn" onclick="alert('30일 동안 변경을 하실수 없습니다.')">추가</div>
         {% endif %}
@@ -105,7 +105,7 @@
 </div>
 <!-- 가상투자 영역 끝 -->
 <script>
-  function submit(){
+  function check(){
   var input_money = $('.invest').val();
   $.ajax({
                 type: "POST",
