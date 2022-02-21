@@ -26,8 +26,17 @@
     padding: 7px 0 5px 0;
     border-bottom: 2px solid #fff;
   }
-  input[type=number] {-webkit-text-security:disc;
-  letter-spacing: 40px;}
+  input[type=number] {
+      border-radius: 10px;
+    margin-top: 30px;
+    padding: 10px;
+    width: 320px;
+    border: 1px solid #93bcf9;
+    text-align: left;
+    padding-left: 60px;
+    -webkit-text-security: disc;
+    letter-spacing: 60px;
+            }
 </style>
 {% block nav %}
 <!-- 상단바 영역 시작 -->
@@ -46,7 +55,7 @@
   <form action="" method="POST" id="pin_saver">
     {% csrf_token %}
     <div class="pin-wrap">
-      <input id="pin_save" type="number" pattern="[0-9]*" inputmode="numeric" name="pin" maxlength='4' />
+      <input id="pin_save" type="text" pattern="[0-9]{4}" inputmode="numeric" name="pin" maxlength='4' />
     </div>
     <div class="pin-btn-wrap">
       <button class="pin-btn" type="button" onclick="check()">Pin 번호 변경</button>
@@ -58,9 +67,11 @@
     var pin = $('#pin_save').val();
     if ( pin == ''){
       alert('핀번호를 입력 부탁드립니다.');
+      return false;
     }
     if (!pin.match(/^[0-9]{4}$/)) {
        alert('Pin 번호 4자리를 입력해주세요.');
+       return false;
     }
     else{
       alert('핀번호가 변경되었습니다.');

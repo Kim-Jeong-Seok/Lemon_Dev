@@ -236,7 +236,7 @@
       <table min-width="300" class="span_table">
         <tr> <!-- 행선언 -->
           <th width="200" height="60"><a class="span_list_title">금액</a></th>
-          <th width="240" style="text-align: end;"><input class="input_span" type="number" name="amount" pattern="\\d*" value="{{ amount|default_if_none:'' }}"></th>
+          <th width="240" style="text-align: end;"><input class="input_span" type="number" name="amount" pattern="[0-9]*" inputmode="numeric"  value="{{ amount|default_if_none:'' }}"></th>
         </tr>
         <tr> <!-- 행선언 -->
           <th width="200" height="60"><a class="span_list_title">날짜</a></th>

@@ -210,23 +210,22 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
           </script>
         <style>
         input[id=pin_save] {
-            border-radius: 10px;
-            margin-top: 30px;
-            padding: 10px;
-              width: 80%;
-              border: 1px solid #93bcf9;
-             text-align: left;
-             padding-left: 23%;
-             }
-        input[id=pin_save] {-webkit-text-security:disc;
-        letter-spacing: 40px;
+                border-radius: 10px;
+                margin-top: 30px;
+                padding: 10px;
+                width: 320px;
+                border: 1px solid #93bcf9;
+                text-align: left;
+                padding-left: 60px;
+                -webkit-text-security: disc;
+                letter-spacing: 60px;
           }
           </style>
     <!-- 핀 번호 로드 -->
     <div id="pin-preload">
         <div class="pin_saver">
             <div class="pin-input-wrap" style="flex-direction: column;">
-                  <input id="pin_save" type="number" pattern="[0-9]*" inputmode="numeric" name="pin" maxlength='4' />
+                  <input id="pin_save" type="text" pattern="[0-9]{4}" inputmode="numeric" name="pin" maxlength='4' />
                   <a id="forget-pin-kakao-link" style="color: rgba(0, 0, 0, 0.5); text-decoration: underline;">Pin번호를 잊으셨나요?</a>
                 </div>
                 <div>
