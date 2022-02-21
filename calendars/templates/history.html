@@ -147,8 +147,8 @@
       <form class="check_box_form" action="{% url 'calendars:detail_search' %}" method="post" id="search_form">
     {% csrf_token %}
       <div style="text-align: center;">
-      <input class="search-date" type="date" id="start_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="start_date" value=""> ~
-      <input class="search-date" type="date" id="end_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="end_date" value="">
+      <input class="search-date" type="date" id="start_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="start_date" value="" style="color:grey"> ~
+      <input class="search-date" type="date" id="end_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="end_date" value="" style="color:grey">
         <div style="display: flex;justify-content: center;">
     <div class="search-btn" onclick="check_date()">상세 검색</div></div>
       </div></form>

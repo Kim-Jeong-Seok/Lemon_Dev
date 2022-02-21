@@ -208,7 +208,6 @@
         }
     }
 </style>
-
 {% block nav %}
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
             <div>
@@ -225,7 +224,7 @@
 {% endblock nav %}
 <div class="addEvent-wrap">
     {% for i in income %}
-    <form id="del" action = "{% url 'calendars:delete_ihistory' i.income_id %}" method="POST"  style="position:absolute;right:13px;">
+    <form id="del" action = "{% url 'calendars:delete_ihistory' i.income_id %}" method="POST"  style="position:absolute;right:13px;top: 5px;">
             {% csrf_token %}
         <div class="delBtn" onclick="del()"><i class="fa fa-ban" aria-hidden="true"></i></div>
         </form>
@@ -288,10 +287,10 @@
             </table>
         </div>
     </div>
-         <div class="addBtn" onclick="submit()" style="line-height:37px;text-align:center;">수정</div>
+         <div class="addBtn" onclick="check()" style="line-height:37px;text-align:center;">수정</div>
     </form>
     <script>
-            function submit(){
+            function check(){
             const form = document.getElementById('ieidt_form');
             form.action="{% url 'calendars:iedit_calendar' i.income_id %}"
             form.submit();

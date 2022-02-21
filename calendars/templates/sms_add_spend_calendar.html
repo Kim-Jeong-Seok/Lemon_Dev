@@ -240,13 +240,11 @@
         </tr>
         <tr> <!-- 행선언 -->
           <th width="200" height="60"><a class="span_list_title">날짜</a></th>
-          <th width="240" style="text-align: end;"><input style="text-align:center;" class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{ date|default_if_none:'' }}"></th>
+          <th width="240" style="text-align: end;"><input style="text-align:center;" class="input_span" type="date" id="datepicker3" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value=" "></th>
         </tr>
         <tr>
           <th width="200" height="60"><a class="span_list_title">소비처</a></th>
-          <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="where" name="where" autocomplete="on" value="{{ place|default_if_none:'' }}">
-          <input type="hidden" id="place" name="place">
-          <input type="hidden" id="stock" name="stock">
+          <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="place" name="place" autocomplete="on" value="{{ place|default_if_none:'' }}">
         </tr>
         </tr>
         <tr> <!-- 행선언 -->
@@ -306,23 +304,38 @@
     </div>
 
     <div style="text-align:center; margin-top:15px;">
-    <div type="button" class="addBtn" value="spendbtn" onclick="submit()" style="line-height:47px;"/>추가하기</div>
+    <div class="addBtn" onclick="check()" style="line-height:47px;">추가하기</div>
     </div>
   </form>
   </div>
 </div>
 
 <script>
-function submit(){
-var str = $('#where').val();
-var stockcode = str.slice(-6);
-var stockname = str.replace(":"+stockcode,"");
-document.getElementById('place').value = stockname;
-document.getElementById('stock').value = stockcode;
-const form = document.getElementById('spend_form');
-form.action="{%url 'calendars:add_spend_calendar' %}"
-form.submit();
-}
+function check(){
+    var max_int = 210000000;
+    if ($('#amount').val() == '') {
+        alert('금액을 입력 해주세요.');
+        $("#amount").focus();
+        return false;
+    }
+    if ($('#amount').val() >= max_int) {
+        alert('입력 받을 수 있는 금액 범위를 초과 하였습니다.');
+        $("#amount").focus();
+        return false;
+    }
+    if ($('#place').val() == '') {
+        alert('소비처를 작성 해주세요.');
+        $("#place").focus();
+        return false;
+    }
+    if (doubleSubmitCheck()) {
+    return false;
+    }else{
+    const form = document.getElementById('spend_form');
+    form.action="{%url 'calendars:add_spend_calendar' %}"
+    form.submit();
+    }
+    }
 
 $(function() {
   var cardlist_Tags = [{% for i in wntlr %}

@@ -262,7 +262,7 @@
 {% endblock nav %}
 <div class="addEvent-wrap">
     {% for i in spe %}
-    <form action="{% url 'calendars:delete_shistory' i.spend_id %}" method="POST" style="position:absolute;right:13px;">
+    <form id="del" action="{% url 'calendars:delete_shistory' i.spend_id %}" method="POST" style="position:absolute;right:13px;top: 5px;">
         {% csrf_token %}
         <div class="delBtn" onclick="del()"><i class="fa fa-ban" aria-hidden="true"></i></div>
     </form>
@@ -373,10 +373,11 @@
 
                 </table>
             </div>
-            <div class="addBtn" onclick="submit()" style="line-height:44px;text-align:center;">수정</div>
+            <div class="addBtn" onclick="check()" style="line-height:44px;text-align:center;">수정</div>
+            </div>
     </form>
     <script>
-        function submit() {
+        function check() {
             const form = document.getElementById('seidt_form');
             form.action = "{%url 'calendars:sedit_calendar' i.spend_id %}"
             form.submit();

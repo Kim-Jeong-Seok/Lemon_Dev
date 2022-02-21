@@ -39,6 +39,12 @@
 </div>
 <!-- pagenation 끝 -->
 
+
+<div class="addevent-btn" onclick="more_btn()"><i class="fas fa-pencil-alt" style="color: #fff;font-size:18px;"></i></div>
+<div class="addevent-btn spend_btn" style="bottom:100px;display:none;"><a style="color: #fff;font-size:18px;" href="{% url 'calendars:add_spend_calendar' %}">지출</a></div>
+<div class="addevent-btn income_btn" style="bottom:150px;display:none;"><a style="color: #fff;font-size:18px;" href="{% url 'calendars:add_income_calendar' %}">수입</a></div>
+
+
 <div class="filter-menu">
   <div class="filter-menu-title">
     <a>상세검색</a>
@@ -72,14 +78,25 @@
       form.action="{% url 'calendars:detail_search' %}" ;
       form.submit();
       }};
+
+      // 연필모양(지출,수입 내역 입력시)
+    function more_btn() {
+      if ($('.spend_btn').css('display') == 'none') {
+        $('.spend_btn').fadeIn();
+        $('.income_btn').fadeIn();
+        } else {
+          $('.spend_btn').fadeOut();
+          $('.income_btn').fadeOut();
+      }
+    };
     </script>
 
   <div class="filter-menu-contents" id="filter-contents" style="display: none;padding-top:15px;">
     <form class="check_box_form" action="{% url 'calendars:detail_search' %}" method="post" id="search_form">
       {% csrf_token %}
       <div style="text-align: center;">
-        <input class="search-date" type="date" id="start_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="start_date" value=""> ~
-        <input class="search-date" type="date" id="end_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="end_date" value="">
+        <input class="search-date" type="date" id="start_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="start_date" value="" style="color:grey"> ~
+        <input class="search-date" type="date" id="end_date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="end_date" value="" style="color:grey">
         <div style="display: flex;justify-content: center;">
           <div class="search-btn" onclick="check_date()">상세 검색</div></div>
       </div></form>

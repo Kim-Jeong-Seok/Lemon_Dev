@@ -30,6 +30,7 @@
   <meta name="msapplication-TileImage" content="media/favicon/ms-icon-144x144.png">
   <meta name="theme-color" content="#ffffff">
   <meta charset="UTF-8">
+
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta http-equiv="Expires" content="-1">
@@ -83,12 +84,6 @@
 .fa-myinfo{
 filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) contrast(95%) !important;
 }
-  * { -ms-user-select: none;
-      -moz-user-select: -moz-none;
-      -khtml-user-select: none;
-      -webkit-user-select: none;
-      user-select: none; }
-
     a:link, a:visited, a:hover {
         color: #2b2b2b;
         text-decoration-line: none;
@@ -196,7 +191,11 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
     });
 
     function pin_saver(pin){
-      let password = $('#pin').val()
+      let password = $('#pin_save').val()
+        if (!password.match(/^[0-9]{4}$/)) {
+           alert('Pin 번호 4자리를 입력해주세요.');
+             return false;
+        }
         if ( password == pin ){
           $('.pin_saver').fadeOut()
           $('.fa-search').show()
@@ -207,30 +206,41 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
             } else {
                 alert('핀번호가 틀렸습니다.');
             }
-    }
-    </script>
-
+         }
+          </script>
+        <style>
+        input[id=pin_save] {
+            border-radius: 10px;
+            margin-top: 30px;
+            padding: 10px;
+              width: 80%;
+              border: 1px solid #93bcf9;
+             text-align: left;
+             padding-left: 23%;
+             }
+        input[id=pin_save] {-webkit-text-security:disc;
+        letter-spacing: 40px;
+          }
+          </style>
     <!-- 핀 번호 로드 -->
     <div id="pin-preload">
         <div class="pin_saver">
             <div class="pin-input-wrap" style="flex-direction: column;">
-                <input type="password" pattern="[0-9]*" inputmode="numeric" name="pin" id="pin" maxlength='4' />
-                <a id="forget-pin-kakao-link" style="color: rgba(0, 0, 0, 0.5); text-decoration: underline;">Pin번호를 잊으셨나요?</a>
+                  <input id="pin_save" type="number" pattern="[0-9]*" inputmode="numeric" name="pin" maxlength='4' />
+                  <a id="forget-pin-kakao-link" style="color: rgba(0, 0, 0, 0.5); text-decoration: underline;">Pin번호를 잊으셨나요?</a>
+                </div>
+                <div>
             </div>
-            <div>
-            </div>
+
             <div class="pin-btn-wrap">
                 <div onclick="pin_saver({{user.pin}})" class="pinBtn">Pin 번호</div>
             </div>
         </div>
     </div>
-
     <form id="pin_form" method="post">
         {% csrf_token %}
     </form>
     {% endif %}
-    
-
  <!-- 페이지 로딩 에니메이션 -->
   <div id="page-preloader">
       <div class="loader-main">
@@ -246,8 +256,7 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
   <div id="nav">
     <div>
       <div style="margin-left:15px; float:left; width:35%;">
-          <img onclick="location.href='{% url 'calendars:home' %}'" src="{% static 'main/assets/img/lemon_horizontal.png'%}"
-                width="100px">
+          <img onclick="location.href='{% url 'calendars:home' %}'" src="{% static 'main/assets/img/lemon_horizontal.png'%}" width="100px">
       </div>
       <div style="margin-right:15px; float:right;">
           <a href="{% url 'stocks:search_stock' %}"><i class="fa fa-search" style="color:#93bcf9"></i></a>
