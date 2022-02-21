@@ -3,7 +3,7 @@
 {% block title %}레몬::주식{% endblock title %}
 {% block container %}
 {% load humanize %}
-{% load mathfilters %}
+{% load mytag %}
 <style>
     .footer-line-stock{
     width:50px;
@@ -118,7 +118,7 @@
             <i class="fas fa-angle-down blue"></i>
             <i class="fas fa-minus"></i>
                 <div id="howup" style="display:inline-block;"> {{  result.curPrice|sub:result.prevddClsprc|intcomma }}</div><div class="percent" style="display:inline-block">원</div>
-                 <div class="percent" style="display:inline-block;">({{ result.curPrice|sub:result.prevddClsprc|div:result.prevddClsprc|mul:100|floatformat:2 }}%)</div>
+                 <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|rounds:3 }}%)</div>
                  {% comment %} <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|floatformat:2 }}%)</div> {% endcomment %}
         </div>
         {% else %}
