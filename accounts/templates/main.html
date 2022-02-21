@@ -320,32 +320,20 @@
             <script src="{% static 'main/index.js'%}"></script>
     <script>
         function goto_market() {
-        var visitedAt = (new Date()).getTime();
         setTimeout(function () {
-            if ((new Date()).getTime() - visitedAt < 2000) {
-                location.href = "Intent://open?url=" + url + "#Intent;scheme=mycampus;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=kr.co.mycampus.android;end";
-            }
-        }, 500);
-        setTimeout(function () {
-            location.href = "https://play.google.com/store/apps/details?id=kr.co.mycampus.android";
+            location.href = "https://play.google.com/store/apps/details?id=com.lemonbs.android";
         }, 0);
     }
     function goto_store() {
-        var visitedAt = (new Date()).getTime();
         setTimeout(function () {
-            if ((new Date()).getTime() - visitedAt < 2000) {
-                location.href = "mycampus://" ;
-            }
-        }, 500);
-        setTimeout(function () {
-            location.href = "https://itunes.apple.com/app/id1533306020";
+            location.href = "https://itunes.apple.com/app/id1605531480";
         }, 0);
     }
     </script>
+    </body>
     <style>
         .swiper-pagination-bullet-active {
         background:white;
         }
     </style>
-        </body>
     </html>
