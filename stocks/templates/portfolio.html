@@ -107,7 +107,8 @@
 
    <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;">
     <div style="text-align:left; font-weight: bold; font-size:16px;">
-      <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">포트폴리오 기반 추천 Top 5</a><button type="button" onclick="usdkrw()">클릭미</button>
+      <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">포트폴리오 기반 추천 Top 5</a><div onclick="usdkrw()" style="display: inline-block;float: right;border-radius: 10px; border: 1px solid black; padding: 0 10px 0 10px;margin-top: 4px;"><div class="dollar">$</div><div class="won" style="display:none">₩</div></div>
+        <input type="hidden" id="price" value="0">
     </div>
         <form id="form" method="post">
             {% csrf_token %}
@@ -194,29 +195,39 @@ $(document).ready(function(){
         }
     }
 </script>
-
 <script>
   // 환율 정보 가져오기
   function usdkrw(){
     fetch('https://api.manana.kr/exchange/rate/KRW/USD.json', {
       method: 'POST',
     })
-      // 환율 정보를 가져왔다면, json으로 변환시키고
       .then((res) => {
         return res.json();
       })
-      // data로 받고, data arry에 환율만 뽑아오기
       .then((data) => {
-        console.log(data);
-        let usd = data[0].rate; // usd 에 환율을 넣는다
-
-        for (var i = 0; i < 5; i++) {
-          // 포트폴리오 기반 추천 top5 테이블 내 id=usdtd 인 td 태그의 값들을 가져오고 ',' '원' 제거하고 int 타입으로 변환
-          let getTable = $('#porfolTable td[id=usdtd]')[i].innerText.replace('원','').replace(',','')*1;
-          // 원화를 달러로 바꾸고 소숫점 2번째 자리에서 반올림
-          let clac = (getTable / usd).toFixed(2)
-          // 변환된 값을 다시 제자리에 넣어준다.
-          let result = $('#porfolTable td[id=usdtd]')[i].innerText = clac +' $';
+        var price = $('#price').val();
+        if (price == 0 ){
+            $('#price').val(1);
+            $('.dollar').hide();
+            $('.won').show();
+            let real_usd = data[0].rate;
+            let usd = Math.floor(real_usd);
+            for (var i = 0; i < 5; i++) {
+              let getTable = $('#porfolTable td[id=usdtd]')[i].innerText.replace('원','').replace(',','')*1;
+              let clac = (getTable / usd).toFixed(2)
+              let result = $('#porfolTable td[id=usdtd]')[i].innerText = '$ ' + clac ;
+            }
+        }else {
+        $('#price').val(0);
+        $('.won').hide();
+        $('.dollar').show();
+        let real_usd = data[0].rate;
+        let usd = Math.floor(real_usd);
+            for (var i = 0; i < 5; i++) {
+              let getTable = $('#porfolTable td[id=usdtd]')[i].innerText.replace('$','');
+              let clac = Math.ceil(getTable * usd / 10) * 10;
+              let result = $('#porfolTable td[id=usdtd]')[i].innerText = clac.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") +' 원';
+            }
         }
       });
   };
