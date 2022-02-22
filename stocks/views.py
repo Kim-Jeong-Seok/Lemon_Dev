@@ -40,7 +40,8 @@ def stock(request):
 
 
 def portfolio(request):
-    categorys =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd','sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')
+    categorys = Stockheld.objects.filter(sh_userid=request.user.user_id).values(
+        'sh_idxindmidclsscd', 'sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')
     category_list = list(categorys.values('sh_idxindmidclsscd'))
     categorys_isurtcd = list(categorys.values('sh_isusrtcd'))
     category_keep = category_list[0:3]
@@ -50,27 +51,37 @@ def portfolio(request):
         category_arr.append(i['sh_idxindmidclsscd'])
     for i in categorys_isurtcd:
         isurtcd_arr.append(i['sh_isusrtcd'])
+    #stock_list = Category.objects.select_related('spend').filter(category=4)
 
-    stock_suggestion1 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =category_arr[0:3]).values("id",'per','pbr',"marketcode","name","category").annotate(
-    ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
-    stock_suggestion2 =list(stock_suggestion1)
+    stock_suggestion1 = Totalmerge.objects.exclude(id__in=isurtcd_arr).filter(category__in=category_arr[0:3]).values("id", 'per', 'pbr', "marketcode", "name", "category").annotate(
+        ROA=(F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+    stock_suggestion2 = list(stock_suggestion1)
     category_stock = []
     koscom_api = kocom.api()
     for element in stock_suggestion2:
-        stock_suggestion = koscom_api.s_get_current_price(element['marketcode'],element['id'])
-        category_stock.append([stock_suggestion,element['id'],element['per'],element['pbr'],element['marketcode'],element['name'],element['category']  ])
+        stock_suggestion = koscom_api.s_get_current_price(
+            element['marketcode'], element['id'])
+        category_stock.append([stock_suggestion, element['id'], element['per'],
+                              element['pbr'], element['marketcode'], element['name'], element['category']])
 
     result = {}
     stock_cal = cal.calculator()
-    total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+    user_total_investment_amount = stock_cal.user_total_investment_amount(
+        request.user.user_id)
+    total_investment_amount = stock_cal.total_investment_amount(
+        request.user.user_id)
     total_current_price = stock_cal.total_current_price(request.user.user_id)
-    total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
-    if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False:
+    total_use_investment_amount = stock_cal.total_use_investment_amount(
+        request.user.user_id)
+
+    if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False or user_total_investment_amount is False:
         result['total_investment_amount'] = 0
+        result['user_total_investment_amount'] = 0
         result['total_current_price'] = 0
         result['total_use_investment_amount'] = 0
     else:
         result['category_stock'] = category_stock
+        result['user_total_investment_amount'] = user_total_investment_amount
         result['total_investment_amount'] = total_investment_amount
         result['total_current_price'] = total_current_price
         result['total_use_investment_amount'] = total_use_investment_amount

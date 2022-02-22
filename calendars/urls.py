@@ -10,7 +10,7 @@ app_name = 'calendars'
 
 urlpatterns = [
 
-    path('', views.home, name='home'),
+    path('home', views.home, name='home'),
     path('top5', views.top5, name='top5'),
     path('summary', views.summary, name='summary'), # 요약페이 지
     path('recom', views.recom, name='recom'), # 추천페이지

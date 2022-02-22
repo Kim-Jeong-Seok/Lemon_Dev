@@ -105,7 +105,7 @@ def signup(request):
                                             birthday = birthday,
                                             )
             auth.login(request, user)
-            return redirect('/')
+            return redirect('/home')
         return render(request, 'signup.html')
     return render(request, 'signup.html')
 
@@ -117,7 +117,7 @@ def pin_date_save(request):
         user_db = user.objects.get(user_id=user_id)
         user_db.pin_date = now_time
         user_db.save()
-        return redirect('/')
+        return redirect('/home')
 
 
 class UserPasswordResetView(PasswordResetView):

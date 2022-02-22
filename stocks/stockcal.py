@@ -123,3 +123,23 @@ class calculator:
     # 주식 수익률
     def stock_yield(self, know_price, compare_price):
         return round((know_price - compare_price) * 100 / compare_price, 2)
+
+        # 보유 하고 있는 주식 들에 대한 이득금 계산 용도 주식 이득금 계산용도 입니다
+    def user_total_investment_amount(self, user_id):
+        total_buy = 0
+        try:
+            stockheld = Stockheld.objects.filter(
+                sh_userid=user_id).exclude(sh_share__lte=0)
+            if stockheld.exists():
+                for element in stockheld:
+                    stocktrading = Stocktrading.objects.filter(st_userid=user_id,
+                                                               st_isusrtcd=element.sh_isusrtcd,
+                                                               st_date__gt=element.sh_z_date).aggregate(
+                        total=Sum(F('st_price') * F('st_share')))['total']
+                    total_buy += stocktrading
+                return -total_buy
+            else:
+                return False
+        except Exception as e:
+            print('Error in total_buy_investment_amount: \n', e)
+            return False

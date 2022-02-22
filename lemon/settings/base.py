@@ -54,8 +54,8 @@ INSTALLED_APPS = [
     'storages',
 ]
 
-LOGIN_REDIRECT_URL = '/' # 로그인 후 리디렉션할 페이지
-ACCOUNT_LOGOUT_REDIRECT_URL = "/"  # 로그아웃 후 리디렉션 할 페이지
+LOGIN_REDIRECT_URL = '/home' # 로그인 후 리디렉션할 페이지
+ACCOUNT_LOGOUT_REDIRECT_URL = "/login"  # 로그아웃 후 리디렉션 할 페이지
 ACCOUNT_LOGOUT_ON_GET = True # 로그아웃 버튼 클릭 시 자동 로그아웃
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 ACCOUNT_USER_MODEL_EMAIL_FIELD: None
@@ -136,7 +136,7 @@ USE_L10N = True
 
 USE_TZ = False
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/home'
 LOGOUT_REDIRECT_URL = '/login'
 SIGNUP_REDIRECT_URL = '/signup'
 
