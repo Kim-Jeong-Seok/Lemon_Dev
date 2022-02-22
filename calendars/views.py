@@ -88,14 +88,25 @@ def home(request):
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
     #son = total_current_price + total_use_investment_amount
     total_current_price = stock_cal.total_current_price(request.user.user_id)
-    if total_current_price is None:
+    if total_current_price is False:
         total_current_price = 0
     else:
         total_current_price = total_current_price
+
+    if total_use_investment_amount is False:
+        total_current_price = 0
+    else:
+        total_current_price = total_use_investment_amount
+
+    if total_investment_amount is False:
+        total_current_price = 0
+    else:
+        total_current_price = total_investment_amount
+
     son = total_current_price - total_investment_amount
     sin = total_investment_amount - total_current_price
     sun = total_current_price - sin
-    
+
     print(sun)
     print('--------------')
     print(sin)
@@ -254,12 +265,14 @@ def top5(request):
     for element in category_place:
         find_market_code = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_marketcode', flat=True)
         find_market_code1 = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_isusrtcd', flat=True)
-
+        
+        print(find_market_code1)
         find_market_code = list(find_market_code)
         find_market_code1 = list(find_market_code1)
         market_code = find_market_code[0] if find_market_code else None
         issuecode = find_market_code1[0] if find_market_code1 else None
         current_price = koscom_api.get_current_price(market_code , issuecode  )
+        # naqdaq_price = nasdaq_api.get_current_price(symbol, marketcode)
         category_stock.append([current_price, element['amount'], element['place'], issuecode, market_code])
 
     category_amount_data = []
@@ -272,6 +285,17 @@ def top5(request):
     for item in category_amount_count:
         category_count_data.append(item['count'])
         category_count_label.append(item['category'])
+    #
+    # nasdaq_category = nasdaq_test.objects.filter(category__in =category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
+    # nasdaq_top5 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =nasdaq_category).values("id",'per','pbr',"marketcode","name","category").annotate(
+    # ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+    # nasdaq_top5_price = []
+    # nasdaq_api = iex.api()
+    # for element in nasdaq_top5:
+    #     symbol = element['id']
+    #     marketcode= element['marketcode']
+    #     naqdaq_price = nasdaq_api.get_current_price(symbol, marketcode)
+    #     nasdaq_top5_price.append([naqdaq_price,element['id'],element['per'],element['pbr'],element['marketcode'],element['name'],element['category']  ])
 
     return render(request, 'top5.html',
                   {'month': month,

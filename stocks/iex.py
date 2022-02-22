@@ -1,13 +1,14 @@
 import json
 import requests
-from mysettings import IEX_C_TOKEN
+from mysettings import IEX_C_TOKEN,IEX_S_TOKEN
+
 
 
 class api:
     def __init__(self):
         self.timeout = 3
 
-    def get_current_stock(self, symbol):
+    def get_current_stock(self, marketcode, symbol):
         try:
             url = f'https://cloud.iexapis.com/stable/stock/{symbol}/quote?token={IEX_C_TOKEN}'
             response = requests.get(url, timeout=self.timeout)
@@ -19,9 +20,11 @@ class api:
             print('Error in get_current_stock: \n', e)
             return False
 
-    def get_current_price(self, symbol):
+    def get_current_price(self, marketcode, symbol):
         try:
             url = f'https://cloud.iexapis.com/stable/stock/{symbol}/price?token={IEX_C_TOKEN}'
+            url = f'https://sandbox.iexapis.com/stable/stock/{symbol}/price?token={IEX_S_TOKEN}'
+
             response = requests.get(url, timeout=self.timeout)
             if response.status_code == 200:
                 return json.loads(response.text)
@@ -31,9 +34,9 @@ class api:
             print('Error in get_current_price: \n', e)
             return False
 
-    def get_stock_master(self, symbol):
+    def get_stock_master(self, marketcode, symbol):
         try:
-            url = f'https://cloud.iexapis.com/stable/stock/{symbol}/company?token={IEX_C_TOKEN}'
+            url = f'https://cloud.iexapis.com/stable/stock/{symbol}/quote?token={IEX_C_TOKEN}'
             response = requests.get(url, timeout=self.timeout)
             if response.status_code == 200:
                 return json.loads(response.text)
@@ -46,6 +49,7 @@ class api:
     def get_selectivemaster(self, symbol):
         try:
             url = f'https://cloud.iexapis.com/stable/time-series/FUNDAMENTAL_VALUATIONS/{symbol}?token={IEX_C_TOKEN}'
+            url = f'https://sandbox.iexapis.com/stable/time-series/FUNDAMENTAL_VALUATIONS/{symbol}?token={IEX_S_TOKEN}'
             response = requests.get(url, timeout=self.timeout)
             if response.status_code == 200:
                 result = json.loads(response.text)
@@ -101,9 +105,9 @@ class api:
             print('Error in get_stocksector: \n', e)
             return False
 
-    def get_stock_history(self, symbol, h_range, h_date=None):
+    def get_stock_history(self, marketcode, symbol, h_range, h_date=None):
         try:
-            url = f'https://cloud.iexapis.com/stable/stock/{symbol}/chart'f'/{h_range}'
+            url = f'https://cloud.iexapis.com/stable/stock/{symbol}/chart/{h_range}'
             url += f'/{h_date}?token={IEX_C_TOKEN}' if h_date is not None else f'?token={IEX_C_TOKEN}'
             response = requests.get(url, timeout=self.timeout)
             if response.status_code == 200:

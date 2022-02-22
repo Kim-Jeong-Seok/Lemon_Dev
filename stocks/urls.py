@@ -21,6 +21,6 @@ urlpatterns = [
     path('stocksector_update', views.stocksector_update, name='stocksector_update'),
     path('get_history', views.get_history, name='get_history'),
     path('stock_search_result', views.stock_search_result, name='stock_list_result'),
-    path('per_pbr_update', views.per_pbr_update, name='per_pbr_update'),
+    path('per_pbr_update/<str:marketcode>', views.per_pbr_update, name='per_pbr_update'),
     path('tlqkf', views.tlqkf, name='tlqkf'),
 ]

@@ -6,12 +6,15 @@ from django.http import JsonResponse
 from datetime import datetime
 from django.db import transaction
 from . import kocom
+from . import iex
 from . import stockcal as cal
 from .models import *
 from accounts import models as acc_models
 from stocks.models import Stocksector
 from django.db.models import Sum, Count, F
 from decimal import *
+from mysettings import IEX_S_TOKEN
+
 
 def search_stock(request):
     wntlr = Totalmerge.objects.all().values('id', 'name')
@@ -51,15 +54,21 @@ def tlqkf(request):
         isurtcd_arr.append(i['sh_isusrtcd'])
     #stock_list = Category.objects.select_related('spend').filter(category=4)
     print(category_arr)
-    tlqkf = nasdaq_test.objects.filter(category__in =category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
-    tlqkf2 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =tlqkf).values("id",'per','pbr',"marketcode","name","category").annotate(
+    nasdaq_category = nasdaq_test.objects.filter(category__in =category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
+    nasdaq_top5 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =nasdaq_category).values("id",'per','pbr',"marketcode","name","category").annotate(
     ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+    print(nasdaq_top5)
+    nasdaq_top5_price = []
+    nasdaq_api = iex.api()
+    for element in nasdaq_top5:
+        symbol = element['id']
+        marketcode= element['marketcode']
+        naqdaq_price = nasdaq_api.get_current_price(symbol , marketcode)
+        nasdaq_top5_price.append([naqdaq_price,element['id'],element['per'],element['pbr'],element['marketcode'],element['name'],element['category']  ])
 
 
-    stock_suggestion1 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =category_arr[0:3]).values("id",'per','pbr',"marketcode","name","category").annotate(
-    ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
-    stock_suggestion2 =list(stock_suggestion1)
-    return render(request, 'tlqkf.html',{'tlqkf':tlqkf, 'tlqkf2':tlqkf2})
+
+    return render(request, 'tlqkf.html',{'nasdaq_top5_price':nasdaq_top5_price})
 
 def portfolio(request):
     categorys =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd','sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')
@@ -82,23 +91,53 @@ def portfolio(request):
     for element in stock_suggestion2:
         stock_suggestion = koscom_api.s_get_current_price(element['marketcode'],element['id'])
         category_stock.append([stock_suggestion,element['id'],element['per'],element['pbr'],element['marketcode'],element['name'],element['category']  ])
+    nasdaq_category = nasdaq_test.objects.filter(category__in =category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
+    nasdaq_top5 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =nasdaq_category).values("id",'per','pbr',"marketcode","name","category").annotate(
+    ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+    nasdaq_top5_price = []
+    nasdaq_api = iex.api()
+    for element in nasdaq_top5:
+        symbol = element['id']
+        marketcode= element['marketcode']
+        naqdaq_price = nasdaq_api.get_current_price(marketcode, symbol)
+        nasdaq_top5_price.append([naqdaq_price,element['id'],element['per'],element['pbr'],element['marketcode'],element['name'],element['category']  ])
 
     result = {}
     stock_cal = cal.calculator()
     user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
+    print('----B,S 포함한 총가격--------')
+    print(user_total_investment_amount)
+
     total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+    print('-------    # 현재 있는 주식에 대한 전체 구매한 양-----')
+    print(total_investment_amount)
+
     total_current_price = stock_cal.total_current_price(request.user.user_id)
+    print('-----    # 현재 있는 주식에 대한 전체 현재가-------')
+    print(total_current_price)
+    total_user = total_investment_amount -user_total_investment_amount
+    print('-----  total_investment_amount -user_total_investment_amount  # -------')
+    print(total_user)
+
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+    print('------총손익금------')
+    print(total_use_investment_amount)
 
     if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False or user_total_investment_amount is False:
+        result['category_stock'] = category_stock
+        result['nasdaq_top5_price'] = nasdaq_top5_price
+        result['total_current_price'] = 0
         result['total_investment_amount'] = 0
         result['user_total_investment_amount'] = 0
-        result['total_current_price'] = 0
+        result['total_user'] = 0
         result['total_use_investment_amount'] = 0
     else:
+        result['total_current_price'] = total_current_price
+        result['category_stock'] = category_stock
+        result['nasdaq_top5_price'] = nasdaq_top5_price
         result['user_total_investment_amount'] = user_total_investment_amount
         result['total_investment_amount'] = total_investment_amount
-        result['total_current_price'] = total_current_price
+        result['total_user'] = total_user
         result['total_use_investment_amount'] = total_use_investment_amount
     return render(request, 'portfolio.html', result)
 
@@ -147,6 +186,7 @@ def stock_info(request, marketcode, issuecode):
 
     else:
         return redirect('/stock_info' + '/' + marketcode + '/' + issuecode)
+    print(result)
 
     return render(request, 'stock_info.html', {'result': result,'star':star})
 
@@ -244,6 +284,7 @@ def buy_stock(request):
                     stockheld_update(request.user.user_id, data, stock_master, 'B')
                     stocktrading_insert(request.user.user_id, data, stock_master, 'B')
                     stockprofit_input(request.user.user_id, data, 'B')
+                    print(stockprofit_input)
                 result = True
         except Exception as e:
             print('Error in buy_stock: \n', e)
@@ -393,18 +434,22 @@ def get_history(request):
     return JsonResponse({'result': result}, content_type='application/json')
 
 
-def per_pbr_update(request):
+def per_pbr_update(request, marketcode):
+
     result = False
     if request.method == 'POST':
+        i = request.POST['marketcode']
+        print(i)
         koscom_api = kocom.api()
-        try:
-            per_pbr_bundle = koscom_api.get_per_pbr_bundle()
-            if per_pbr_bundle:
-                per_pbr_insert(per_pbr_bundle)
-                result = True
-        except Exception as e:
-            print('Error in per_pbr_update: \n', e)
-        return JsonResponse({'result': result}, content_type='application/json')
+        return redirect('/')
+        # try:
+        #     per_pbr_bundle = koscom_api.get_per_pbr_bundle()
+        #     if per_pbr_bundle:
+        #         per_pbr_insert(per_pbr_bundle)
+        #         result = True
+        # except Exception as e:
+        #     print('Error in per_pbr_update: \n', e)
+        # return JsonResponse({'result': result}, content_type='application/json')
 
 
 def per_pbr_insert(per_pbr_bundle):

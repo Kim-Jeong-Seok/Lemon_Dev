@@ -35,9 +35,9 @@
 {% comment %} <div style="text-align:center;font-size:22px;">{{total_current_amount|intcomma}}원</div> {% endcomment %}
 <!--<div style="text-align:center;font-size:22px;">{{total_invest_amount|intcomma}}원</div>-->
 
-    <div style="text-align:center;font-size:22px;font-weight:bold;">{{total_current_price|intcomma}}원</div>
+    <div style="text-align:center;font-size:22px;font-weight:bold;">{{user_total_investment_amount|intcomma}}원</div>
     <div style="text-align:center;font-size:14px;color:white;">
-       {{total_current_price|sub:user_total_investment_amount|intcomma}} ({{total_current_price|yields:user_total_investment_amount|rounds:2}}%) </div>
+       {{total_investment_amount|sub:user_total_investment_amount|intcomma}} ({{user_total_investment_amount|yields:total_user|rounds:2}}%) </div>
     <div class="my_stock"><a class="my_stock-btn" href="{% url 'stocks:stock' %}">보유 주식</a></div>
 
 </div>
@@ -103,7 +103,6 @@
     <div class="my_stock"><a href="{% url 'admins:edit_invest' %}" class="my_stock-btn" >추가</a></div>
     </div>
 </div>
-
    <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;">
     <div style="text-align:left; font-weight: bold; font-size:16px;">
       <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">포트폴리오 기반 추천 Top 5</a>
@@ -117,6 +116,7 @@
       <ol style="padding-left: 1rem !important;">
         <table style="width: 100%; margin-top:10px; border-collapse:inherit;">
           {% for recom in category_stock %}
+
           <tr onclick="info('{{ recom.1 }}','{{ recom.4 }}')">
             <td width='10'>
               <li style="font-weight: bold; color:#8e8e8e;"></li>
@@ -136,7 +136,34 @@
       </ol>
     </div>
   </div><!-- 건수 탑5 div 끝-->
+  <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;">
+   <div style="text-align:left; font-weight: bold; font-size:16px;">
+     <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">포트폴리오 기반(nasdaq) 추천 Top 5</a>
+   </div>
+   <div>
+     <ol style="padding-left: 1rem !important;">
+       <table style="width: 100%; margin-top:10px; border-collapse:inherit;">
+         {% for recom in nasdaq_top5_price %}
 
+         <tr onclick="info('{{ recom.1 }}','{{ recom.4 }}')">
+           <td width='10'>
+             <li style="font-weight: bold; color:#8e8e8e;"></li>
+           </td>
+           <td class="spendTop5-tableTitle" width='50'>
+             <a>{{recom.5}}</a>
+           </td>
+           <td style="text-align: right;" width='25'>
+             <a style="font-weight:400; color:#3a3a3a">{{ recom.0|truncatechars:500|intcomma }}$</a>
+           </td>
+         {% empty %}
+         <div class="summary-nodata-wrap">
+           <a>주식 구매후 추천해드릴게요</a>
+         </div>
+           {% endfor %}
+       </table>
+     </ol>
+   </div>
+ </div><!-- 건수 탑5 div 끝-->
 <script>
 $(document).ready(function(){
     //$('.footer-selector').fadeIn(550);
@@ -164,7 +191,7 @@ $(document).ready(function(){
         var headers = new Headers();
         headers.append('Content-Type', 'application/json')
         headers.append('X-CSRFToken', csrftoken)
-        fetch('/per_pbr_update', {
+        fetch('/per_pbr_update/marketcode', {
             method: "POST",
             headers: headers,
         })
