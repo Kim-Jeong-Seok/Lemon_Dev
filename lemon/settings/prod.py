@@ -11,10 +11,10 @@ ALLOWED_HOSTS = [
 
 # Media Files
 # ---For Prod Env---
-MEDIA_URL = 'http://{AWS_S3_CUSTOM_DOMAIN}/media/'
+MEDIA_URL = 'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 
 # Static Files
 # ---For Prod Env---
-STATIC_URL = 'http://{AWS_S3_CUSTOM_DOMAIN}/static/'
+STATIC_URL = 'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
 STATICFILES_STORAGE = 'config.storages.StaticStorage'
