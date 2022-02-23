@@ -14,6 +14,7 @@ urlpatterns = [
     path('portfolio', views.portfolio, name='portfolio'),
     path('stock_info/<str:marketcode>/<str:issuecode>', views.stock_info, name='stock_info'),
     path('boomark/<str:marketcode>/<str:isuSrtCd>', views.boomark, name='boomark'),#
+    path('boomark/<str:marketcode>/<str:symbol>', views.boomark, name='boomark'),
     path('current_stock', views.current_stock, name='current_stock'),
     path('buy_stock', views.buy_stock, name='buy_stock'),
     path('sold_stock', views.sold_stock, name='sold_stock'),

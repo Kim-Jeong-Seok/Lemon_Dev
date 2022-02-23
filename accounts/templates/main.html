@@ -62,10 +62,10 @@
         <meta name="description" content="레몬 - 가계부와 가상투자를 결합한 재테크 앱.">
         <meta property="og:image:width" content="700"/>
         <meta property="og:image:height" content="300"/>
-        <link rel="icon" href="{% static 'main/assets/img/favicon-16x16.png'%}">
+        <link rel="icon" href="./static/main/assets/img/favicon-16x16.png">
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-        <link rel="stylesheet" href="{% static 'main/assets/css/bootstrap.min.css'%}">
-        <link rel="stylesheet" href="{% static 'main/style.css'%}">
+        <link rel="stylesheet" href="./static/main/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./static/main/style.css">
         <link rel="stylesheet" href="https://unpkg.com/fullpage.js/dist/fullpage.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.3/css/swiper.min.css"/>
         <link href="https://owlcarousel2.github.io/OwlCarousel2/assets/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
@@ -102,6 +102,7 @@
                                                 <div class="hero-text-img" style="text-align:center;">
                                                     <a onclick="goto_market()"><img src="{% static 'main/assets/img/googleplay.png'%}" alt=""></a>
                                                     <a onclick="goto_store()"><img src="{% static 'main/assets/img/appstore.png'%}" alt=""></a>
+                                                    <button onclick="location.href='/home'" style="position: absolute; top: 27%; right: 50%; background-color: transparent; border: transparent;"></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -130,9 +131,9 @@
                                 </div>
                                 <div class="header_inner">
                                     <div class="hero-text-inner">
-                                        <div class="hero-text">
+                                        <div class="hero-text" style="text-align:center;">
                                             <h4><span style="color:#4c8ae5;">(- And +) = </span>Positive Or Negative?</h4>
-                                         <h3><span style="color:#4c8ae5;">소비</span>와<span style="color:#4c8ae5;">투자</span>를 연계하다</h3>
+                                         <h3><span style="color:#4c8ae5;">소비</span>와 <span style="color:#4c8ae5;">투자</span>를 연계하다</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -316,8 +317,8 @@
                 </full-page>
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
-            <script src="{% static 'main/assets/js/vue-fullpage.min.js'%}"></script>
-            <script src="{% static 'main/index.js'%}"></script>
+            <script src="./static/main/assets/js/vue-fullpage.min.js"></script>
+            <script src="./static/main/index.js"></script>
     <script>
         function goto_market() {
         setTimeout(function () {
