@@ -69,6 +69,7 @@ def portfolio(request):
     nasdaq_category = nasdaq_test.objects.filter(category__in=category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
     nasdaq_top5 = Totalmerge.objects.exclude(id__in=isurtcd_arr).filter(category__in=nasdaq_category).values("id", 'per', 'pbr', "marketcode", "name", "category").annotate(ROA=(F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
     nasdaq_top5_price = []
+
     nasdaq_api = iex.api()
     for element in nasdaq_top5:
         symbol = element['id']
@@ -79,15 +80,45 @@ def portfolio(request):
 
     result = {}
     stock_cal = cal.calculator()
-    user_total_investment_amount = stock_cal.user_total_investment_amount(
-        request.user.user_id)
-    total_investment_amount = stock_cal.total_investment_amount(
-        request.user.user_id)
+
+    total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+    total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+    total = total_use_investment_amount - total_investment_amount
+
+
+    user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
+    total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+    total = total_use_investment_amount - total_investment_amount
     total_current_price = stock_cal.total_current_price(request.user.user_id)
     total_use_investment_amount = stock_cal.total_use_investment_amount(
         request.user.user_id)
     invest = request.user.invest
     total_invest = invest + total_use_investment_amount
+
+
+    user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
+    print('----B,S 포함한 총가격--------')
+    print(user_total_investment_amount)
+
+    total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+    print('-------    # 현재 있는 주식에 대한 전체 구매한 양-----')
+    print(total_investment_amount)
+
+    total_current_price = stock_cal.total_current_price(request.user.user_id)
+    print('-----    # 현재 있는 주식에 대한 전체 현재가-------')
+    print(total_current_price)
+    # total_user = total_investment_amount -user_total_investment_amount
+    # print('-----  total_investment_amount -user_total_investment_amount  # -------')
+    # print(total_user)
+
+    total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+    print('------총손익금------')
+    print(total_investment_amount + total_use_investment_amount)
+    invest = request.user.invest
+    total_invest = invest + total_use_investment_amount
+    print(total_invest)
+
+
 
     if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False or user_total_investment_amount is False:
         result['total_investment_amount'] = 0
@@ -97,14 +128,19 @@ def portfolio(request):
         result['category_stock'] = category_stock
         result['nasdaq_top5_price'] = nasdaq_top5_price
         result['total_invest'] = 0
+        result['total'] = total
     else:
         result['nasdaq_top5_price'] = nasdaq_top5_price
+        result['total'] = total
         result['category_stock'] = category_stock
         result['user_total_investment_amount'] = user_total_investment_amount
         result['total_investment_amount'] = total_investment_amount
         result['total_current_price'] = total_current_price
         result['total_use_investment_amount'] = total_use_investment_amount
         result['total_invest'] = total_invest
+    print(invest)
+    print(total_investment_amount)
+    print(total_use_investment_amount)
     return render(request, 'portfolio.html', result)
 
 
