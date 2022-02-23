@@ -77,6 +77,18 @@
   </head>
 
   <style>
+    #pin_save {
+      display: block;
+      caret-color: transparent !important;
+      font-size:18px;
+      border-radius: 10px;
+      margin-top: 30px;
+      width: 80%;
+      border: 1px solid #93bcf9;
+      /*padding-left: 35px;*/
+      letter-spacing: 43px;
+      text-align: center;
+    }
   .fa-home,
 .fa-calendar,
 .fa-portfolio,
@@ -191,7 +203,7 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
     });
 
     function pin_saver(pin){
-      let password = $('#pin_save').val()
+      var password = $('#pin_1').val() + $('#pin_2').val() + $('#pin_3').val() + $('#pin_4').val();
         if (!password.match(/^[0-9]{4}$/)) {
            alert('Pin 번호 4자리를 입력해주세요.');
              return false;
@@ -209,23 +221,41 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
          }
           </script>
         <style>
-        input[id=pin_save] {
-                border-radius: 10px;
-                margin-top: 30px;
-                padding: 10px;
-                width: 320px;
-                border: 1px solid #93bcf9;
-                text-align: left;
-                padding-left: 60px;
-                -webkit-text-security: disc;
-                letter-spacing: 60px;
+          .pin-code input {
+          border: none;
+          text-align: center;
+          width: 48px;
+          height:48px;
+          font-size: 20px;
+          margin-right:5px;
+          padding-bottom: 10px;
           }
+
+        .pin-code input:focus {
+          border: 1px solid #573D8B;
+          outline:none;
+        }
+
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+            }
           </style>
     <!-- 핀 번호 로드 -->
     <div id="pin-preload">
         <div class="pin_saver">
             <div class="pin-input-wrap" style="flex-direction: column;">
-                  <input id="pin_save" type="text" pattern="[0-9]{4}" inputmode="numeric" name="pin" maxlength='4' />
+                <input type="hidden" name="pin">
+                 <div class="pin-wrap">
+                        <div class="pin-code">
+                        <input type="number" id="pin_1" maxlength="1" autofocus>
+                        <input type="number" id="pin_2" maxlength="1">
+                        <input type="number" id="pin_3" maxlength="1">
+                      <input type="number"  id="pin_4" maxlength="1">
+                   </div>
+                </div>
                   <a id="forget-pin-kakao-link" style="color: rgba(0, 0, 0, 0.5); text-decoration: underline;">Pin번호를 잊으셨나요?</a>
                 </div>
                 <div>
@@ -240,6 +270,42 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
         {% csrf_token %}
     </form>
     {% endif %}
+  <script>
+      var pinContainer = document.querySelector(".pin-code");
+pinContainer.addEventListener('keyup', function (event) {
+    var target = event.srcElement;
+
+    var maxLength = parseInt(target.attributes["maxlength"].value, 10);
+    var myLength = target.value.length;
+
+    if (myLength >= maxLength) {
+        var next = target;
+        while (next = next.nextElementSibling) {
+            if (next == null) break;
+            if (next.tagName.toLowerCase() == "input") {
+                next.focus();
+                break;
+            }
+        }
+    }
+
+    if (myLength === 0) {
+        var next = target;
+        while (next = next.previousElementSibling) {
+            if (next == null) break;
+            if (next.tagName.toLowerCase() == "input") {
+                next.focus();
+                break;
+            }
+        }
+    }
+}, false);
+
+pinContainer.addEventListener('keydown', function (event) {
+    var target = event.srcElement;
+    target.value = "";
+}, false);
+  </script>
  <!-- 페이지 로딩 에니메이션 -->
   <div id="page-preloader">
       <div class="loader-main">

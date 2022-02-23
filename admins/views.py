@@ -82,7 +82,7 @@ def user_delete(request, user_id):
     user2 = user_id
     user1 = get_user_model().objects.get(user_id = user2)
     user1.delete()
-    return redirect('/')
+    return redirect('/login')
     return render(request, 'user_delete.html')
 
 # FAQ(자주 묻는 질문)
