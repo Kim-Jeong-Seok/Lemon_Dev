@@ -16,7 +16,7 @@ class calculator:
                 for element in stockheld:
                     stocktrading = Stocktrading.objects.filter(st_userid=user_id,
                                                                st_isusrtcd=element.sh_isusrtcd,
-                                                               st_kind='B', # 제거 해야할듯 한데 일단 대기
+                                                               st_kind='B',
                                                                st_date__gt=element.sh_z_date).aggregate(
                         total=Sum(F('st_price') * F('st_share')))['total']
                     total_buy += stocktrading

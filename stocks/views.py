@@ -14,6 +14,7 @@ from stocks.models import Stocksector
 from django.db.models import Sum, Count, F
 from decimal import *
 from mysettings import IEX_S_TOKEN
+from accounts.models import user
 
 
 def search_stock(request):
@@ -104,6 +105,8 @@ def portfolio(request):
 
     result = {}
     stock_cal = cal.calculator()
+
+
     user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
     print('----B,S 포함한 총가격--------')
     print(user_total_investment_amount)
@@ -115,13 +118,16 @@ def portfolio(request):
     total_current_price = stock_cal.total_current_price(request.user.user_id)
     print('-----    # 현재 있는 주식에 대한 전체 현재가-------')
     print(total_current_price)
-    total_user = total_investment_amount -user_total_investment_amount
-    print('-----  total_investment_amount -user_total_investment_amount  # -------')
-    print(total_user)
+    # total_user = total_investment_amount -user_total_investment_amount
+    # print('-----  total_investment_amount -user_total_investment_amount  # -------')
+    # print(total_user)
 
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
     print('------총손익금------')
     print(total_use_investment_amount)
+    invest = request.user.invest
+    total_invest = invest + total_use_investment_amount
+    print(total_invest)
 
     if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False or user_total_investment_amount is False:
         result['category_stock'] = category_stock
@@ -129,7 +135,7 @@ def portfolio(request):
         result['total_current_price'] = 0
         result['total_investment_amount'] = 0
         result['user_total_investment_amount'] = 0
-        result['total_user'] = 0
+        result['total_invest'] = 0
         result['total_use_investment_amount'] = 0
     else:
         result['total_current_price'] = total_current_price
@@ -137,7 +143,7 @@ def portfolio(request):
         result['nasdaq_top5_price'] = nasdaq_top5_price
         result['user_total_investment_amount'] = user_total_investment_amount
         result['total_investment_amount'] = total_investment_amount
-        result['total_user'] = total_user
+        result['total_invest'] = total_invest
         result['total_use_investment_amount'] = total_use_investment_amount
     return render(request, 'portfolio.html', result)
 

@@ -21,6 +21,7 @@ from dateutil.relativedelta import relativedelta
 from django.http import JsonResponse
 from stocks import stockcal as cal
 from stocks import kocom
+from stocks import iex
 from stocks.models import Stocksector
 
 # Create your views here.
@@ -84,8 +85,11 @@ def home(request):
     income_sum = income_month_filter2.values('amount').aggregate(Sum('amount'))
     income_sum_value = list(income_sum.values())
     stock_cal = cal.calculator()
+
     total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+    user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
+    invest = invest - total_investment_amount
     #son = total_current_price + total_use_investment_amount
     total_current_price = stock_cal.total_current_price(request.user.user_id)
     if total_current_price is False:
@@ -103,14 +107,16 @@ def home(request):
     else:
         total_current_price = total_investment_amount
 
-    son = total_current_price - total_investment_amount
-    sin = total_investment_amount - total_current_price
-    sun = total_current_price - sin
+    if user_total_investment_amount is False:
+        user_total_investment_amount = 0
+    else:
+        user_total_investment_amount = user_total_investment_amount
 
-    print(sun)
-    print('--------------')
-    print(sin)
-    print('--------------')
+
+    son = total_investment_amount - user_total_investment_amount
+
+
+
     print(son)
     print('--------------')
     print(total_current_price)
@@ -129,8 +135,18 @@ def home(request):
             home_chartjs_data.append(0)
         else:
             home_chartjs_data.append(income_sum_value)
-    return render(request, 'home.html', {'month': month, 'Expenditure': spend_sum, 'Income': income_sum, 'income_sum_value':income_sum_value,
-                                         'total_current_price': total_current_price,'Home_chartjs_data': home_chartjs_data, 'Total_investment_amount': total_investment_amount, 'sun':sun,'son': son})
+
+    result = {}
+    result['month'] = month
+    result['Expenditure'] = spend_sum
+    result['Income'] = income_sum
+    result['income_sum_value'] = income_sum_value
+    result['total_current_price'] = total_current_price
+    result['Home_chartjs_data'] = home_chartjs_data
+    result['Total_investment_amount'] = total_investment_amount
+    result['son'] = son
+
+    return render(request, 'home.html', result)
 
 
 def recom(request):
@@ -171,19 +187,18 @@ def summary(request):
     spend_sum = spend_month_filter2.aggregate(Sum('amount'))
     income_sum = income_month_filter2.aggregate(Sum('amount'))
 
-    return render(request, 'summary.html', {
-        'Spend_day': spend_day_sum2,
-        'Income_day': income_day_sum2,
-        'Detail_month': detail_month,
-        'detail_day': detail_day,
-        'Expenditure': spend_sum,
-        'Income': income_sum,
+    result = {}
+    result['Spend_day'] = spend_day_sum2
+    result['Income_day'] = income_day_sum2
+    result['Detail_month'] = detail_month
+    result['detail_day'] = detail_day
+    result['Expenditure'] = spend_sum
+    result['month'] = month
+    result['Income'] = income_sum
+    result['spend_day_sum2'] = spend_day_sum2
+    result['income_day_sum2'] = income_day_sum2
 
-        'month': month,
-        'spend_day_sum2': spend_day_sum2,
-        'income_day_sum2': income_day_sum2,
-
-    })
+    return render(request, 'summary.html', result)
 
 
 def history(request):
@@ -212,24 +227,20 @@ def history(request):
     income_sum = income_month_filter.aggregate(Sum('amount'))
     # 월별 쿼리셋 합치기
     detail_month = spend_month_filter.union(income_month_filter).order_by('-spend_date')
-
-    spend_day_sum = spend_month_filter.values('spend_date__day').annotate(amount=Sum('amount')).order_by(
-        '-spend_date__day')
-    income_day_sum = income_month_filter.values('income_date__day').annotate(amount=Sum('amount')).order_by(
-        '-income_date__day')
-
+    spend_day_sum = spend_month_filter.values('spend_date__day').annotate(amount=Sum('amount')).order_by('-spend_date__day')
+    income_day_sum = income_month_filter.values('income_date__day').annotate(amount=Sum('amount')).order_by('-income_date__day')
     # detail_day = income_day_sum.union(spend_day_sum)
+    result = {}
+    result['year'] = year
+    result['month'] = month
+    result['Spend_day'] = spend_day_sum
+    result['Income_day'] = income_day_sum
+    result['Detail_month'] = detail_month
+    result['Expenditure'] = spend_sum
+    result['Income'] = income_sum
+    #result['detail_day'] = detail_day
 
-    return render(request, 'history.html',
-                  {'year': year,
-                   'month': month,
-                   'Spend_day': spend_day_sum,
-                   'Income_day': income_day_sum,
-                   'Detail_month': detail_month,
-                   # 'detail_day':detail_day,
-                   'Expenditure': spend_sum,
-                   'Income': income_sum,
-                   })
+    return render(request, 'history.html', result)
 
 
 @login_required(login_url=URL_LOGIN)
@@ -262,17 +273,19 @@ def top5(request):
 
     category_stock = []
     koscom_api = kocom.api()
+    nasdaq_api = iex.api()
     for element in category_place:
         find_market_code = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_marketcode', flat=True)
-        find_market_code1 = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_isusrtcd', flat=True)
-        
-        print(find_market_code1)
-        find_market_code = list(find_market_code)
-        find_market_code1 = list(find_market_code1)
+        find_isusrtcd = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_isusrtcd', flat=True)
+
+
         market_code = find_market_code[0] if find_market_code else None
-        issuecode = find_market_code1[0] if find_market_code1 else None
-        current_price = koscom_api.get_current_price(market_code , issuecode  )
-        # naqdaq_price = nasdaq_api.get_current_price(symbol, marketcode)
+        issuecode = find_isusrtcd[0] if find_isusrtcd else None
+        if market_code == 'kospi':
+            current_price = koscom_api.get_current_price(market_code , issuecode )
+        else:
+            symbol = issuecode
+            current_price = nasdaq_api.get_current_price(market_code, symbol)
         category_stock.append([current_price, element['amount'], element['place'], issuecode, market_code])
 
     category_amount_data = []
@@ -285,29 +298,20 @@ def top5(request):
     for item in category_amount_count:
         category_count_data.append(item['count'])
         category_count_label.append(item['category'])
-    #
-    # nasdaq_category = nasdaq_test.objects.filter(category__in =category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
-    # nasdaq_top5 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =nasdaq_category).values("id",'per','pbr',"marketcode","name","category").annotate(
-    # ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
-    # nasdaq_top5_price = []
-    # nasdaq_api = iex.api()
-    # for element in nasdaq_top5:
-    #     symbol = element['id']
-    #     marketcode= element['marketcode']
-    #     naqdaq_price = nasdaq_api.get_current_price(symbol, marketcode)
-    #     nasdaq_top5_price.append([naqdaq_price,element['id'],element['per'],element['pbr'],element['marketcode'],element['name'],element['category']  ])
 
-    return render(request, 'top5.html',
-                  {'month': month,
-                   'Category_amount_data': category_amount_data,
-                   'Category_amount_labels': category_amount_label,
-                   'Category_count_data': category_count_data,
-                   'Category_count_label': category_count_label,
-                   'Category_count': category_amount_count,
-                   'Category_sum': category_sum,
-                   'category_card': category_card,
-                   'category_place': category_place,
-                   'category_stock':category_stock})
+        category = {}
+        category['month'] = month
+        category['Category_amount_data']=category_amount_data
+        category['Category_amount_labels']=category_amount_label
+        category['Category_count_data']=category_count_data
+        category['Category_count_label']=category_count_label
+        category['Category_count']=category_amount_count
+        category['Category_sum']=category_sum
+        category['category_card']=category_card
+        category['category_place']=category_place
+        category['category_stock']=category_stock
+
+    return render(request, 'top5.html', category)
 
 
 def category_detail(request, int):
