@@ -1,0 +1,419 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/style.css'%}">
+  <link rel="stylesheet" href="{% static 'css/account.css'%}">
+  <!-- Fontawesome 선언 -->
+  <script src="https://kit.fontawesome.com/51db22a717.js" crossorigin="anonymous"></script>
+  <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+  <title>레몬::소셜-추가정보</title>
+</head>
+
+<style>
+  body, html {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  select {
+    border-radius:0; /* 아이폰 사파리 보더 없애기 */
+    -webkit-appearance:none; /* 화살표 없애기 for chrome*/
+    -moz-appearance:none; /* 화살표 없애기 for firefox*/
+    appearance:none /* 화살표 없애기 공통*/
+    -webkit-border-radius: 0;
+  }
+  /* input number  */
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    -webkit-border-radius: 0;
+  }
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+  .idVailed_btn {
+    float: right;
+    margin-top: 11px;
+    margin-right: 0px;
+    width: 73px;
+    height: 35px;
+    background: #93bcf9;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    vertical-align: top;
+    border: 0px;
+    border-radius: 1px;
+    color: white;
+    border-radius: 10px;
+    line-height: 35px;
+  }
+  .signup-form {
+    padding-top:5px;
+  }
+  .options_info {
+    padding-top:5px;
+  }
+</style>
+
+<body>
+<!-- 회원가입 navbar -->
+<div id="nav" style="border-bottom: 1px solid #f1f1f1;">
+  <div>
+    <a style="color: #fff;" href="{% url 'accounts:login' %}">
+      <i class="fa fa-angle-left" style="position: absolute;
+      left: 5px;
+      padding: 14px 15px;
+      top: 0;
+      font-size: 25px;
+      font-weight: 600;color:black;"></i>
+    </a>
+    <div style="text-align:center;">추가정보 입력</div>
+  </div>
+</div>
+<!-- 회원가입 navbar 끝 -->
+<!-- 회원가입 Wrapper -->
+<div class="signup-wrapper" style="padding:70px 20px 40px 20px;">
+  <form class="validation-form" style="width:100%;" method="POST" action="{% url 'accounts:social_info' %}" id="signupForm">
+    {% csrf_token %}
+    <div class="persnal_info_access" style="padding-bottom: 20px;">
+      <div class="require_chk_wrap">
+        <a>개인정보 수집 동의(필수)</a><br>
+        <textarea cols="30" rows="10" style="width:100%;" disabled="disabled">{% include 'persnal.html' %}</textarea><br>
+        <label style="text-align:end;">
+            <input type="checkbox" name="u_chk" value ="1" id="require_chk2" style="-webkit-appearance: checkbox;">
+            <span>이용약관에 동의합니다.</span>
+        </label>
+      </div>
+    </div>
+
+  <!-- 회원가입 폼 시작 -->
+  <div class="signup-form-wrap"> 
+    <!-- 이름 입력 input -->
+    <div class="signup-form">
+      <a>이름 <strong>(필수)</strong></a>
+      <input type="text" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;" id="name" name="username" placeholder="" value="">
+    </div>
+
+    <!-- 이메일 입력 input -->
+    <div class="signup-form">
+      <a>이메일 <strong>(필수)</strong></a>
+      <div style="display: flex; justify-content: space-between;">
+        <input type="email" class="add_info_select_signup" style="width: 70%; margin-top: 10px; margin-bottom:10px;" id="Vailemail" name="Vailemail" placeholder="" value="">
+        <div onclick="checkEmail();" id="check_Email" class="idVailed_btn">중복확인</div>
+      </div>
+      <input type="hidden" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;" id="email" name="email" placeholder="" value="">
+    </div>
+
+    <!-- 생년월일 입력 input -->
+    <div class="signup-form">
+      <a>생년월일 <strong>(필수)</strong></a>
+      <input class="add_info_select_signup" name=birthday type="date" id="year" maxlength="8" placeholder="생년월일을 입력해주세요. 예시)19801210" style="margin-top: 10px; margin-bottom:25px;">
+    </div>
+
+    <!-- 핀번호 입력 input -->
+    <div class="signup-form">
+      <a>Pin번호 <strong>(필수)</strong></a>
+      <input type="number" name="pin" class="add_info_select_signup" id="pin" placeholder="최대 4자리" value=""/>
+    </div>
+
+    <div class="signup-form">
+      <a>옵션</a>
+    </div>
+    
+    <!-- 성별 입력 input -->
+    <div class="options_info" id="options_info">
+      <div class="signup-form" style="margin-top: 20px;">
+        <a>성별 (선택)</a>
+        <select name="gender" class="add_info_select" style="margin-top: 10px; margin-bottom:10px;">
+          <option value="0"> -- 선택 -- </option>
+          <option value="M"> 남자 </option>
+          <option value="F"> 여자 </option>
+        </select>
+      </div>
+
+      <!-- 직업군 입력 input -->
+      <div class="signup-form">
+        <a>직업군 (선택)</a>
+        <select name=job class="add_info_select" style="margin-top: 10px; margin-bottom:10px;">
+          <option value="0"> -- 선택 -- </option>
+          <option value="1">학생</option>
+          <option value="2">직장인</option>
+          <option value="3">사업자</option>
+          <option value="4">공무원</option>
+          <option value="5">기타(프리랜서)</option>
+          <option value="6">무직</option>
+        </select>
+      </div>
+
+      <!-- 연락처 입력 input -->
+      <div class="signup-form">
+        <a>전화번호 (선택)</a>
+        <div style="width:100%;">
+          <div style="display: flex;align-items: center;justify-content: space-between;">
+            <input class="add_info_phone_signup" id="vaildPhonenumber" name="vaildPhonenumber" type="number" placeholder="- 를 제외하고 입력하세요" style="margin-top: 10px; margin-bottom:5px;">
+            <input type="hidden" name="phonenumber">
+            <div id="codeBtn" class="phone_code_btn_signup">발송</div>
+          </div>
+          <div style="display: flex;align-items: center;justify-content: space-between;">
+            <input id="inputCode" class="add_info_phonecode_signup" type="number" placeholder="인증번호 입력" disabled>
+            <div style="display: flex; align-items: center;justify-content: space-between;">
+              <a id="count" class="count-signup" style="width:50px;margin-top: 5px; margin-bottom:10px;"></a>
+              <div id="certBtn" onclick="certfun();" class="phone_code_btn_signup" disabled>확인</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 모의투자금액 입력 input -->
+      <div class="signup-form">
+        <a>모의투자 금액 (선택)</a>
+        <input type="number" class="add_info_select_signup" id="invest" name="invest" placeholder="모의 투자금액을 입력하세요." value="0" style="margin-top: 10px; margin-bottom:25px;">
+        <br>
+      </div>
+    </div>
+    <div class="signup-btn" id="signupBtn" onclick="signup_check();" style="width:100%">회원가입</span>
+    </div><!-- 회원가입 폼 끝 -->
+  </form>
+</div><!-- 회원가입 Wrapper 끝 -->
+</body>
+
+<script>
+  /* Form 유효성 검사 START */
+  function signup_check() {
+    let require_chk =  $('input[id="require_chk2"]').is(":checked");
+    if (!require_chk) {
+      alert('이용약관을 동의해 주세요.')
+    }
+    else if ($('#name').val() == '') {
+      alert('이름을 입력해주세요.');
+      return false;
+    }
+    else if ($('#email').val() == '') {
+      alert('이메일 입력 또는 중복확인 해주세요.');
+      return false;
+    }
+    else if ($('#year').val() == '') {
+      alert('생년월일을 입력해주세요.');
+      return false;
+    }
+    else if (!$('#pin').val().match(/^[0-9]{4}$/)) {
+      alert('Pin 번호 4자리를 입력해주세요.');
+      return false;
+    }
+    else {
+      const form = document.getElementById('signupForm');
+      alert($('#name').val()+'님, 회원가입을 축하합니다.')
+      form.action = "{% url 'accounts:social_info' %}"
+      form.submit();
+    }
+  }
+  /* Form 유효성 검사 END */
+</script>
+<script>
+  $( document ).ready(function() {
+    let temp_date = document.getElementById('invest').value;
+    if (temp_date == 0) {
+      $('input[name=invest_date]').attr('value', date);
+    }
+  });
+</script>
+<script>
+  /* 전화번호 길이 검증 스크립트 */
+  document.addEventListener('keydown', function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+    };
+  }, true);
+
+  document.addEventListener('keydown', function(event) {
+  if (event.keyCode === 13) {
+    event.preventDefault();
+  };
+}, true);
+</script>
+<script>
+    document.getElementById('codeBtn').addEventListener('click', codebtn);
+
+    KEY = undefined;
+    function codebtn(){
+        KEY = makeRandomNum(4);
+        var timer = null;
+        var isRunning = false;
+        var display = $('#count');
+        var leftSec = 180;
+        var phoneInput = document.getElementById('vaildPhonenumber');
+
+        // Phonenumber Check Regular Expression -> 01* **** ****
+        const phoneRegEx = /^01([0|1|6|7|8|9])([0-9]{3,4})([0-9]{4})$/;
+
+        if(phoneInput.value.match(phoneRegEx)) {
+            alert('입력하신 휴대번호로 인증번호를 전송하였습니다.');
+            $('#inputCode').removeAttr('disabled');
+            $('#certBtn').removeAttr('disabled');
+            $('#codeBtn').attr('disabled',true);
+            if (isRunning){
+                clearInterval(timer);
+                display.html("");
+                startTimer(leftSec, display);
+            }else{
+                startTimer(leftSec, display);
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'calendars:ajax_sendSMS' %}",
+                data: {
+                    NUM: $('#vaildPhonenumber').val(),
+                    KEY: KEY,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function(data){
+                    console.log('성공');
+                    $('#phonce_check').val(1);
+                },
+                fail: function(data) {
+                    console('실패');
+                },
+            });
+            return 0;
+        }
+        else{
+            alert('전화번호를 확인해주세요.');
+        }
+        
+        // 난수 설정
+        function makeRandomNum(n) {
+            let value = '';
+            for(let i = 0; i < n; i++) {
+                value += Math.floor(Math.random() * 10);
+            }
+            return value;
+        }
+    }
+
+    function certfun() {
+        if(document.querySelector("#inputCode").value == KEY){
+            alert('확인되었습니다.');
+            clearInterval(timer);
+            let temp = $('input[name=vaildPhonenumber]').val();
+            $('input[name=phonenumber]').attr('value', temp);
+            $('#vaildPhonenumber').attr('disabled', true);
+            $('#inputCode').attr('disabled', true);
+            $('#codeBtn').attr('disabled', true);
+            $('#certBtn').attr('disabled', true);
+            document.querySelector("#count").style.display = "none";
+        }
+        else if(document.querySelector("#inputCode").value != KEY) {
+            alert('인증번호가 일치하지 않습니다. 다시 확인해주세요.');
+        }
+        else{
+            alert('알수없는 오류가 발생하였습니다. 다시 진행해주세요.');
+        }
+    }
+
+    function startTimer(count, display) {
+        var minutes, seconds;
+        timer = setInterval(function () {
+            minutes = parseInt(count / 60, 10);
+            seconds = parseInt(count % 60, 10);
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+            display.html(minutes + ":" + seconds);
+        // 타이머 끝
+        if (--count < 0) {
+            clearInterval(timer);
+            alert("입력시간이 초과되었습니다.");
+            display.html("00:00");
+            $('#certBtn').attr('disabled', true);
+            $('#codeBtn').removeAttr('disabled');
+            $('.btn_chk').attr("disabled","disabled");
+            isRunning = false;
+            }
+        }, 1000);
+            isRunning = true;
+    }
+</script>
+
+<script>
+    function checkID() {
+        var vailID = document.getElementById('Vailduid').value;
+        // ID Check Regular Expression -> 6~20 only num & eng
+        const IDRegEx = /^[a-z]+[0-9a-zA-Z]{5,19}$/g;
+
+        if(vailID.match(IDRegEx)) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'accounts:ajax_checkID' %}",
+                data: {
+                    Vaildid: vailID,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (result_msg) {
+                    if (result_msg == 0){
+                        alert('사용중인 아이디입니다.');
+                        return false;
+                    }
+                    else{
+                        alert('사용가능한 아이디입니다.');
+                        $('input[name=uid]').attr('value', vailID);
+                        $('input[name=Vailduid]').attr('disabled', true);
+                    }
+                },
+                fail: function () {
+                    console.log('ajax send error!');
+                },
+            });
+        } else {
+            alert('아이디를 확인해주세요.');
+            return false;
+        }
+    }
+
+    function checkEmail() {
+        var vailEmail = document.getElementById('Vailemail').value;
+        // Email Check Regular Expression -> your_email@domain_name.com
+        const emiailRegEx = /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
+
+        if(vailEmail.match(emiailRegEx)) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'accounts:ajax_checkEmail' %}",
+                data: {
+                    vailEmail: vailEmail,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+                success: function (result_msg) {
+                    if (result_msg == 0) {
+                        alert('사용중인 이메일입니다.');
+                        return false;
+                    }
+                    else {
+                        alert('사용가능한 이메일입니다.');
+                        $('input[name=email]').attr('value', vailEmail);
+                        $('input[name=Vailemail]').attr('disabled', true);
+                    }
+                },
+                fail: function () {
+                    console.log('ajax send error!');
+                },
+            });
+        } else {
+            alert('이메일을 확인해주세요.');
+            return false;
+        }
+    }
+</script>
+</html>
