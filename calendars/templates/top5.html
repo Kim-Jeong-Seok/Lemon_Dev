@@ -303,7 +303,7 @@ function click_evt() {
               <a style="font-weight:400; color:#3a3a3a">{{ area.1|truncatechars:500|intcomma }}원</a>
             </td>
             <td width='10' style="text-align: right;">
-              <a style="font-size:9pt; font-weight:300; color:#ff5d51">{{area.0|intcomma}} {{result}} 원</a>
+              <a style="font-size:9pt; font-weight:300; color:#ff5d51">{% if area.4 == 'nasdaq'%}$ {{area.0|intcomma}} {%else%} {{area.0|intcomma}}원 {% endif %}</a>
             </td>
           </tr>
           {% empty %}

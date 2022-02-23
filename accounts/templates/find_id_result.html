@@ -17,6 +17,13 @@
 
 {% block container %}
 <style>
+    *{
+        user-select: all;
+        -webkit-user-select: text; /* Safari fallback only */
+        -webkit-user-select: all; /* Chrome/Safari */
+        -moz-user-select: all; /* Firefox */
+        -ms-user-select: all; /* IE10+ */
+    }
   #footer{display:none;}
 
   .email-form{

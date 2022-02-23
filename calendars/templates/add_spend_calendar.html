@@ -3,6 +3,13 @@
 {% block title %}레몬::추가하기{% endblock title %}
 {% block nav %}
 <style>
+    *{
+        user-select: all;
+        -webkit-user-select: text; /* Safari fallback only */
+        -webkit-user-select: all; /* Chrome/Safari */
+        -moz-user-select: all; /* Firefox */
+        -ms-user-select: all; /* IE10+ */
+    }
     .loader-main{
     bottom:0px !important;
     }
@@ -106,11 +113,11 @@
             <table min-width="300" class="span_table">
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">금액</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span" id="amount" type="number" name="amount" pattern="\\d*" value="{{form.amount.value|default_if_none:''}}"></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" id="amount" type="number" name="amount" pattern="[0-9]*" inputmode="numeric" value=""></th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">날짜</a></th>
-                    <th width="240" style="text-align: end;"><input style="text-align:center;" class="input_span" type="date" id="date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value="{{form.spend_date.value|default_if_none:''}}"></th>
+                    <th width="240" style="text-align: end;"><input style="text-align:center;" class="input_span" type="date" id="date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value=""></th>
                 </tr>
                 <tr>
                     <th width="200" height="60"><a class="span_list_title">소비처</a></th>
@@ -174,7 +181,7 @@
         </div>
 
         <div style="text-align:center; margin-top:15px;">
-        <div class="addBtn" onclick="submit()" style="line-height:47px;">추가하기</div>
+        <div class="addBtn" onclick="check()" style="line-height:47px;">추가하기</div>
         </div>
     </div>
     </form>
@@ -187,30 +194,42 @@ $(document).ready(function(){
     $('#date').attr('value', today2);
     });
 
-function submit(){
-    var max_int = 210000000;
+var doubleSubmitFlag = false;
 
+function doubleSubmitCheck() {
+        if (doubleSubmitFlag) {
+        return doubleSubmitFlag;
+        } else {
+        doubleSubmitFlag = true;
+        return false;
+        }
+    }
+
+function check(){
+    var max_int = 210000000;
     if ($('#amount').val() == '') {
-        alert('금액을 입력해주세요.');
+        alert('금액을 입력 해주세요.');
+        $("#amount").focus();
         return false;
     }
-    else if ($('#amount').val() >= max_int) {
-        alert('입력받을수 있는 금액 범위를 초과하였습니다.');
+    if ($('#amount').val() >= max_int) {
+        alert('입력 받을 수 있는 금액 범위를 초과 하였습니다.');
+        $("#amount").focus();
         return false;
     }
-    else if ($('#where').val() == '') {
-        alert('소비처를 작성해주세요.');
+    if ($('#place').val() == '') {
+        alert('소비처를 작성 해주세요.');
+        $("#place").focus();
         return false;
     }
-    else{
+    if (doubleSubmitCheck()) {
+    return false;
+    }else{
     const form = document.getElementById('spend_form');
     form.action="{%url 'calendars:add_spend_calendar' %}"
     form.submit();
     }
     }
-
-
-
 
     $(function() {
         var cardlist_Tags = [{% for i in wntlr %}

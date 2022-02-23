@@ -65,7 +65,7 @@
 </style>
 <div class="profile-wrap">
     {% if user.is_authenticated %}
-    <div class="title">{{user.uid}}</div>
+    <div class="title">{{user.username}}</div>
     <div class="last_login">{{user.last_login|date:"M d일 D H:i"}} 마지막 접속</div>
     {% endif %}
 

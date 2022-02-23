@@ -108,18 +108,18 @@
         {% if result %}
 
         <div class="title">
-                <div class="stock-name">{{ result.isuKorAbbrv }} </div>
+                <div class="stock-name">{{ result.symbol }} </div>
                 <div class="code">{{ result.isuSrtCd }} </div>
             <div class="pick {% if star == 1  %} gold {% endif %}" onclick="pick()"><i class="fas fa-star"></i></div>
             <div class="marketcode"> {{ result.marketcode }}</div>
                 <div class="curprice">{{ result.curPrice|intcomma }}원</div>
-                <div class="lastprice"> 종가 : {{ result.prevddClsprc|intcomma }}원</div>
+                <div class="lastprice"> 종가 : {{ result.iexClose|intcomma }}원</div>
             <i class="fas fa-angle-up red"></i>
             <i class="fas fa-angle-down blue"></i>
             <i class="fas fa-minus"></i>
-                <div id="howup" style="display:inline-block;"> {{  result.curPrice|sub:result.prevddClsprc|intcomma }}</div><div class="percent" style="display:inline-block">원</div>
-                 <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|rounds:3 }}%)</div>
-                 {% comment %} <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|floatformat:2 }}%)</div> {% endcomment %}
+                <div id="howup" style="display:inline-block;"> {{  result.curPrice|sub:result.iexClose|intcomma }}</div><div class="percent" style="display:inline-block">원</div>
+                 <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.iexClose|rounds:3 }}%)</div>
+                 {% comment %} <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.iexClose|floatformat:2 }}%)</div> {% endcomment %}
         </div>
         {% else %}
             상세정보가 없습니다.
@@ -167,7 +167,7 @@
     </table>
                 <div class="buy">
                 <input type="hidden" id="buy_marketcode" name="buy_marketcode" value="{{ result.marketcode }}">
-                <input type="hidden" id="buy_issuecode" name="buy_issuecode" value="{{ result.isuSrtCd }}">
+                <input type="hidden" id="buy_issuecode" name="buy_issuecode" value="{{ result.symbol }}">
                 <input type="hidden" id="buy_price" name="price" value="{{ result.curPrice}}"/>
                 <div class="title_1">현재가</div><input type="text" name="price" value="{{ result.curPrice|intcomma}}"/>
                 <div class="title_1">주문 가능 주 </div><input disabled type="text" id="howmuch" value=" "/>
@@ -956,7 +956,7 @@ $.ajaxSetup({
         alert('관심 종목에 등록이 되었습니다.');
          $.ajax({
         type:'post',
-        url:'{% url 'stocks:boomark' result.marketcode result.isuSrtCd  %}',
+        url:'{% url 'stocks:boomark' result.marketcode result.symbol  %}',
         data:JSON.stringify(data),
         success:function(json){
         $('.pick').addClass('gold');
@@ -970,7 +970,7 @@ $.ajaxSetup({
         alert('관심 종목에 등록이 해지 되었습니다.');
          $.ajax({
         type:'post',
-        url:'{% url 'stocks:boomark' result.marketcode result.isuSrtCd  %}',
+        url:'{% url 'stocks:boomark' result.marketcode result.symbol  %}',
         data:JSON.stringify(data),
         success:function(json){
         $('.pick').removeClass('gold');
@@ -983,7 +983,7 @@ $.ajaxSetup({
 
 </script>
 <div  style="display:none;">
-    <form action = "{% url 'stocks:boomark' result.marketcode result.isuSrtCd  %}" method="POST" id="form3">
+    <form action = "{% url 'stocks:boomark' result.marketcode result.symbol  %}" method="POST" id="form3">
         {% csrf_token %}
     </form>
 </div>

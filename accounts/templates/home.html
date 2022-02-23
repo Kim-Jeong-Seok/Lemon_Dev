@@ -193,7 +193,7 @@ document.addEventListener('keydown', function(event) {
         }
         else {
             const form = document.getElementById('signupForm');
-            alert($('#name').val() + '님, 소셜아이디 회원가입을 축하합니다.')
+            alert($('#name').val() + '님, 소셜 아이디 회원가입을 축하합니다.')
             form.action = "{% url 'calendars:home' %}"
             form.submit();
         }
@@ -415,11 +415,12 @@ document.addEventListener('keydown', function(event) {
         </div>
 
         <div class="home-stock-input">
-            <a>{{Total_investment_amount|default_if_none:'0'|intcomma}}원</a>
+            <a>{{total_investment_amount|default_if_none:'0'|intcomma}}원</a>
+            
         </div>
 
         <div class="home-stock-input2">
-            <a>{{son|intcomma}}원({{total_current_price|default_if_none:'0'|yields:Total_investment_amount|rounds:2}}%)</a>
+            {{total_investment_amount|sub:user_total_investment_amount|intcomma}}원 ({{total_investment_amount|yields:user_total_investment_amount|rounds:2}}%)</a>
         </div>
 
 
@@ -444,7 +445,7 @@ document.addEventListener('keydown', function(event) {
             </div>
 
             <div class="home-property-content">
-              <strong><a>투자</a></strong><a>{{Total_investment_amount|default_if_none:'0'|intcomma}}원</a>
+              <strong><a>투자</a></strong><a>{{total_investment_amount|default_if_none:'0'|intcomma}}원</a>
             </div>
 
             <div class="home-stock-buttons">
