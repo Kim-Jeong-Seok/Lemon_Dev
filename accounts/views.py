@@ -162,3 +162,44 @@ def ajax_checkEmail(request):
             result_msg = 1
 
         return JsonResponse(result_msg, safe=False)
+
+
+# 소셜 로그인 추가정보 입력
+def social_info(request):
+    if request.method == 'POST':
+        user = request.user.user_id
+        phonenumber = request.POST.get('phonenumber', None)
+        phonenumber = str(phonenumber)
+        invest = request.POST['invest']
+        birthday = request.POST['birthday']
+        pin = request.POST['pin']
+        
+        if invest == '0':
+            #invest_date = None
+            invest_date = date(1111,1,11)
+        else:
+            invest_date = datetime.now()
+        
+        if birthday == '':
+            #birthday = date(1111, 1, 11)
+            birthday = datetime.now()
+        else:
+            birthday = birthday
+        if pin == '':
+            pin = '0000'
+        else:
+            pin = pin
+        
+        user = get_user_model().objects.filter(user_id=user).update(
+            u_chk=request.POST['u_chk'],
+            username=request.POST['username'],
+            gender=request.POST.get("gender"),
+            job=request.POST.get("job"),
+            phonenumber=phonenumber,
+            birthday=birthday,
+            pin=pin,
+            invest=invest,
+        )
+        return redirect('/home')
+    else:
+        return render(request, 'social_signup-aditional_info.html')

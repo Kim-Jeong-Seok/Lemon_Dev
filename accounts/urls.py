@@ -30,7 +30,7 @@ urlpatterns = [
 
     path('ajax_checkID/', views.ajax_checkID, name="ajax_checkID"),  # 아이디중복 체크
     path('ajax_checkEmail/', views.ajax_checkEmail, name="ajax_checkEmail"),  # 이메일 중복 체크
-    
+    path('social/info/', views.social_info, name="social_info"),  # 소셜 로그인 추가정보 입력
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
