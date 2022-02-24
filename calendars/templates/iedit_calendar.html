@@ -291,11 +291,27 @@
     </form>
     <script>
             function check(){
+            var max_int = 210000000;
+                if ($('#amount').val() == '') {
+                    alert('금액을 입력 해주세요.');
+                    $("#amount").focus();
+                    return false;
+                }
+                if ($('#amount').val() >= max_int) {
+                    alert('입력 받을 수 있는 금액 범위를 초과 하였습니다.');
+                    $("#amount").focus();
+                    return false;
+                }
+                if ($('#place').val() == '') {
+                    alert('소비처를 작성 해주세요.');
+                    $("#place").focus();
+                    return false;
+                }
             const form = document.getElementById('ieidt_form');
             form.action="{% url 'calendars:iedit_calendar' i.income_id %}"
             form.submit();
             }
-        </script>
+    </script>
 </div>
 {% endfor %}
 {% endblock %}

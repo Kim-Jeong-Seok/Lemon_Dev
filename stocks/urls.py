@@ -23,4 +23,5 @@ urlpatterns = [
     path('get_history', views.get_history, name='get_history'),
     path('stock_search_result', views.stock_search_result, name='stock_list_result'),
     path('per_pbr_update', views.per_pbr_update, name='per_pbr_update'),
+    path('suggestion', views.suggestion, name='suggestion'),
 ]

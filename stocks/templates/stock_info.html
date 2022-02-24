@@ -106,7 +106,6 @@
  </div>
 {% endblock nav %}
         {% if result %}
-
         <div class="title">
                 <div class="stock-name">{{ result.isuKorAbbrv }} </div>
                 <div class="code">{{ result.isuSrtCd }} </div>
@@ -118,7 +117,7 @@
             <i class="fas fa-angle-down blue"></i>
             <i class="fas fa-minus"></i>
                 <div id="howup" style="display:inline-block;"> {{  result.curPrice|sub:result.prevddClsprc|intcomma }}</div><div class="percent" style="display:inline-block">원</div>
-                 <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|rounds:3 }}%)</div>
+                 <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|floatformat:3 }}%)</div>
                  {% comment %} <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|floatformat:2 }}%)</div> {% endcomment %}
         </div>
         {% else %}

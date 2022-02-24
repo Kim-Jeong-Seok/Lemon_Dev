@@ -41,6 +41,10 @@
     .span_table a {
         font-size: 15px;
     }
+    #result_list{
+        font-size:12px !important;
+        font-weight:400 !important;
+    }
 
         .input_span {
             font-size: 15px;
@@ -290,7 +294,7 @@
                     <tr>
                         <!-- 행선언 -->
                         <th width="200" height="60"><a class="span_list_title">금액</a></th>
-                        <th width="240" style="text-align: end;"><input class="input_span" type="number" name="amount"
+                        <th width="240" style="text-align: end;"><input id="amount" class="input_span" type="number" name="amount"
                                 pattern="[0-9]*" inputmode="numeric"  value="{{i.amount}}"></th>
                     </tr>
                     <!--  행선언 -->
@@ -300,12 +304,15 @@
                                 min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date"
                                 value="{{i.spend_date|date:'Y-m-d'}}"></th>
                     </tr>
-                    <tr>
-                        <!-- 행선언 -->
-                        <th width="200" height="60"><a class="span_list_title">소비처</a></th>
-                        <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="place"
-                                name="place" autocomplete="on" value="{{i.place}}">
-                    </tr>
+                <tr> <!-- 행선언 -->
+                    <th width="200" height="60"><a class="span_list_title">소비처</a></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" autocomplete="off" type="text" id="place" name="place" value={{i.place}}>
+                        <div id="place" style="height: auto; width:100%;">
+                            <ol id="result_list" style="list-style:none">
+                            <li></li>
+                            </ol>
+                        </div></th>
+                </tr>
                     <tr>
                         <!-- 행선언 -->
                         <th width="200" height="60"><a class="span_list_title">결제수단 </a></th>
@@ -378,6 +385,22 @@
     </form>
     <script>
         function check() {
+            var max_int = 210000000;
+                if ($('#amount').val() == '') {
+                    alert('금액을 입력 해주세요.');
+                    $("#amount").focus();
+                    return false;
+                }
+                if ($('#amount').val() >= max_int) {
+                    alert('입력 받을 수 있는 금액 범위를 초과 하였습니다.');
+                    $("#amount").focus();
+                    return false;
+                }
+                if ($('#place').val() == '') {
+                    alert('소비처를 작성 해주세요.');
+                    $("#place").focus();
+                    return false;
+                }
             const form = document.getElementById('seidt_form');
             form.action = "{%url 'calendars:sedit_calendar' i.spend_id %}"
             form.submit();
@@ -388,21 +411,96 @@
 </div>
 
 <script>
+    function get_search(data) {
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json')
+        headers.append('X-CSRFToken', csrftoken)
+        var response = fetch('/spend_search_result', {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(data)
+        })
+        return response.then(res => {
+            if(res.status === 200) return res.json();
+            else console.log(res.statusText);
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
 
-    $(function () {
-        var cardlist_Tags = [{% for i in wntlr %}
-        '{{i.ss_isukorabbrv}}',
-        {% endfor %}];
-    $('#where').autocomplete({
-        source: cardlist_Tags,
-    });
-     });
+    var csrftoken = getCookie('csrftoken');
+    function getCookie(cname) {
+        var name = cname + "=";
+            decodedCookie = decodeURIComponent(document.cookie);
+            ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i].trim();
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
 
-    //textarea auto height increaze...
-< !--$("textarea.input_textarea").on('keydown keyup', function () {
-        -->
-< !--$(this).height(1).height($(this).prop('scrollHeight') + 12); -->
-< !--      }); -->
+    window.onload = function() {
+        const place = document.getElementById('place');
+        const result_window = document.getElementById('result_list');
+        place.addEventListener('keyup', async function(e) {
+            if (place.value != '') {
+                var result = await get_search(place.value);
+                result_window.innerHTML = '';
+                if (!result.result[0])
+                    result_window.innerHTML = '검색결과가 없습니다.';
+                if (result.result)
+                    insert_result(result.result, result_window);
+            } else
+                result_window.innerHTML = '';
+        });
+    }
+
+    function get_search(data) {
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json')
+        headers.append('X-CSRFToken', csrftoken)
+        var response = fetch('/spend_search_result', {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(data)
+        })
+        return response.then(res => {
+            if(res.status === 200) return res.json();
+            else console.log(res.statusText);
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
+    function insert_result(data, result_position) {
+        for ( elements in data ) {
+            var logo = data[elements]['logo'];
+            var isukorabbrv = data[elements]['isukorabbrv'];
+            var marketcode = data[elements]['marketcode'];
+
+            let push = document.getElementById('result_list li');
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.appendChild(document.createTextNode(isukorabbrv+'\u00A0\u00A0'));
+            a.href='javascript:insert_place("'+isukorabbrv+'")'
+            li.appendChild(a)
+            result_position.append(li);
+        }
+    }
+
+    function insert_place(name){
+    let values = document.getElementById("place").value = name ;
+    $('#result_list').hide();
+    }
+
 </script>
 
 {% endblock %}

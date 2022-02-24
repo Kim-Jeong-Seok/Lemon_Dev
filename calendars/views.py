@@ -22,7 +22,7 @@ from django.http import JsonResponse
 from stocks import stockcal as cal
 from stocks import kocom
 from stocks import iex
-from stocks.models import Stocksector
+from stocks.models import Stocksector, Totalmerge
 
 # Create your views here.
 URL_LOGIN = '/login'
@@ -30,42 +30,6 @@ URL_LOGIN = '/login'
 
 @login_required(login_url=URL_LOGIN)
 def home(request):
-    if request.method == 'POST':
-        user = request.user.user_id
-        phonenumber = request.POST.get('phonenumber', None)
-        phonenumber = str(phonenumber)
-        invest = request.POST['invest']
-        birthday = request.POST['birthday']
-        pin = request.POST['pin']
-        
-        if invest == '0':
-            #invest_date = None
-            invest_date = date(1111,1,11)
-        else:
-            invest_date = datetime.now()
-        
-        if birthday == '':
-            #birthday = date(1111, 1, 11)
-            birthday = datetime.now()
-        else:
-            birthday = birthday
-
-        if pin == '':
-            pin = '0000'
-        else:
-            pin = pin
-        
-        user = get_user_model().objects.filter(user_id=user).update(
-            u_chk=request.POST['u_chk'],
-            username=request.POST['username'],
-            gender=request.POST.get("gender"),
-            job=request.POST.get("job"),
-            phonenumber=phonenumber,
-            birthday=birthday,
-            pin=pin,
-            invest=invest,
-        )
-        return redirect('/home')
     invest = request.user.invest
     user = request.user.user_id
     now = datetime.datetime.now()
@@ -393,8 +357,7 @@ def add_spend_calendar(request):
             return redirect('/history')
     else:
         sform = SpendForm()
-    wntlr = Stocksector.objects.all().values('ss_isukorabbrv')
-    return render(request, 'add_spend_calendar.html', {'wntlr': wntlr})
+    return render(request, 'add_spend_calendar.html')
 
 
 # SMS문자내역 입력
@@ -412,8 +375,7 @@ def edit_calendar(request, spend_id, kind):
     user = request.user.user_id
     if kind == '지출':
         spe = Spend.objects.filter(spend_id=spend_id, user_id=user)
-        wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
-        return render(request, 'sedit_calendar.html', {'spe': spe, 'wntlr': wntlr})
+        return render(request, 'sedit_calendar.html', {'spe': spe})
     if kind == "수입":
         income = Income.objects.filter(income_id=spend_id, user_id=user)
         return render(request, 'iedit_calendar.html', {'income': income})
@@ -470,3 +432,20 @@ def ajax_pushdate(request):
         evens = {'msg1': even1}
 
         return JsonResponse(evens)
+
+def spend_search_result(request):
+    data = json.loads(request.body)
+    result = False
+    if request.method == 'POST':
+        try:
+            totalmerge = Totalmerge.objects.filter(name__icontains=data)[0:10]
+            result = []
+            for elements in totalmerge:
+                result.append({
+                    'logo': elements.logo,
+                    'isukorabbrv': elements.name,
+                    'marketcode': elements.marketcode
+                })
+        except Exception as e:
+            print('Error in stock_search_result: \n', e)
+    return JsonResponse({'result': result}, content_type='application/json')

@@ -153,25 +153,7 @@
     <div class="search-btn" onclick="check_date()">상세 검색</div></div>
       </div></form>
     </div>
-
   </div>
-
-  {% for message in messages %}
-  <div class="alert-auto-dismissible">
-  <div class="alert alert-{{message.tags}}" role="alert" style="margin: 1.5rem 15px 0 15px;">
-    {{message.message}}
-  </div>
-  </div>
-    
-  {% endfor %}
-    <script>
-      /*Django Message를 통해 alert 메시지를 출력하면 4초 뒤에 메시지 사라짐*/
-      window.setTimeout(function() {
-        $(".alert-auto-dismissible").fadeTo(500, 0).slideUp(500, function(){
-            $(this).remove();
-        });
-    }, 4000);
-    </script>
 
   <div> <!-- list-table 영역 시작 -->
     <table class="list-table" id="list-table">

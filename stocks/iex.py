@@ -7,6 +7,22 @@ class api:
     def __init__(self):
         self.timeout = 3
 
+    def get_ex_rate(self, codes):
+        try:
+            """
+            코드종류 : FRX.KRWUSD : 1달러 기준 원화, FRX.KRWJPY : 1엔화 기준 원화,
+                      FRX.KRWCNY 1위안 기준 원화, FRX.KRWEUR : 1유로 기준 원화
+            """
+            url = f'https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes={codes}'
+            response = requests.get(url, timeout=self.timeout)
+            if response.status_code == 200:
+                return json.loads(response.text)[0]['basePrice']
+            else:
+                return False
+        except Exception as e:
+            print('Error in get_ex_rate: \n', e)
+            return False
+
     def get_current_stock(self, marketcode, symbol):
         try:
             url = f'https://cloud.iexapis.com/stable/stock/{symbol}/quote?token={IEX_C_TOKEN}'

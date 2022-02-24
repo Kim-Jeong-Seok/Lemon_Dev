@@ -39,10 +39,10 @@ def stock(request):
         bookmark_date.append([element.marketcode,element.isuSrtCd, current_price, name])
     return render(request, 'stock.html', {'stock_data': stock_data,'bookmark_date':bookmark_date})
 
-
-def portfolio(request):
-    categorys = Stockheld.objects.filter(sh_userid=request.user.user_id).values(
-        'sh_idxindmidclsscd', 'sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')
+def suggestion(request):
+    koscom_api = kocom.api()
+    nasdaq_api = iex.api()
+    categorys = Stockheld.objects.exclude(sh_share=0).filter(sh_userid=request.user.user_id ).values('sh_idxindmidclsscd', 'sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count').distinct()
     category_list = list(categorys.values('sh_idxindmidclsscd'))
     categorys_isurtcd = list(categorys.values('sh_isusrtcd'))
     category_keep = category_list[0:3]
@@ -53,30 +53,46 @@ def portfolio(request):
     for i in categorys_isurtcd:
         isurtcd_arr.append(i['sh_isusrtcd'])
     #stock_list = Category.objects.select_related('spend').filter(category=4)
-
     stock_suggestion1 = Totalmerge.objects.exclude(id__in=isurtcd_arr).filter(category__in=category_arr[0:3]).values("id", 'per', 'pbr', "marketcode", "name", "category").annotate(
         ROA=(F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
-    stock_suggestion2 = list(stock_suggestion1)
+    print(stock_suggestion1)
+    #stock_suggestion2 = list(stock_suggestion1)
     category_stock = []
-    koscom_api = kocom.api()
-    for element in stock_suggestion2:
-        stock_suggestion = koscom_api.s_get_current_price(
-            element['marketcode'], element['id'])
-        category_stock.append([stock_suggestion, element['id'], element['per'],
+
+    for element in stock_suggestion1:
+        issuecode = element['id']
+        stock_suggestion = koscom_api.get_current_price(element['marketcode'], issuecode)
+        print(stock_suggestion)
+        category_stock.append([stock_suggestion, issuecode, element['per'],
                               element['pbr'], element['marketcode'], element['name'], element['category']])
-
-
+        print(category_stock)
     nasdaq_category = nasdaq_test.objects.filter(category__in=category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
+    print(nasdaq_category)
     nasdaq_top5 = Totalmerge.objects.exclude(id__in=isurtcd_arr).filter(category__in=nasdaq_category).values("id", 'per', 'pbr', "marketcode", "name", "category").annotate(ROA=(F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+    print(nasdaq_top5)
     nasdaq_top5_price = []
-    nasdaq_api = iex.api()
+
+
     for element in nasdaq_top5:
         symbol = element['id']
-        marketcode = element['marketcode']
-        naqdaq_price = nasdaq_api.get_current_price(marketcode,symbol)
+        print(symbol)
+        # marketcode = element['marketcode']
+        # print(marketcode)
+        naqdaq_price = nasdaq_api.get_current_price(element['marketcode'],symbol)
+        print(naqdaq_price)
         nasdaq_top5_price.append([naqdaq_price, element['id'], element['per'],
                                 element['pbr'], element['marketcode'], element['name'], element['category']])
+        print(nasdaq_top5_price)
 
+    # result = {}
+    # result['category_stock'] = category_stock
+    # result['nasdaq_top5_price'] = nasdaq_top5_price
+    # print(result)
+
+    return render(request, 'suggestions.html', {'category_stock':category_stock, 'nasdaq_top5_price':nasdaq_top5_price })
+
+
+def portfolio(request):
     result = {}
     stock_cal = cal.calculator()
     user_total_investment_amount = stock_cal.user_total_investment_amount(
@@ -94,12 +110,8 @@ def portfolio(request):
         result['user_total_investment_amount'] = 0
         result['total_current_price'] = 0
         result['total_use_investment_amount'] = 0
-        result['category_stock'] = category_stock
-        result['nasdaq_top5_price'] = nasdaq_top5_price
         result['total_invest'] = 0
     else:
-        result['nasdaq_top5_price'] = nasdaq_top5_price
-        result['category_stock'] = category_stock
         result['user_total_investment_amount'] = user_total_investment_amount
         result['total_investment_amount'] = total_investment_amount
         result['total_current_price'] = total_current_price
@@ -130,6 +142,7 @@ def stock_info(request, marketcode, issuecode):
         result['total_allow_invest'] = request.user.invest - stock_cal.total_use_investment_amount(request.user.user_id)
 
         if marketcode == 'nasdaq':
+            result['ex_rate'] = api.get_ex_rate('FRX.KRWUSD')
             result['year_history'] = str(0)
             result['month_history'] = str(0)
             result['week_history'] = str(0)

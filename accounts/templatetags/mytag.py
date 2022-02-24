@@ -24,16 +24,16 @@ def sub(value, arg):
 
 
 @register.filter
-def rounds(value, arg):
-    return round(value, arg)
-
-
-@register.filter
 def yields(value, arg):
     if arg:
         return (value - arg) * 100 / arg
     else:
         return float('0')
+
+
+@register.filter
+def mul(value, arg):
+    return value * arg
 
 
 @register.filter
