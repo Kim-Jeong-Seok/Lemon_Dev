@@ -472,18 +472,17 @@ def ajax_pushdate(request):
 
         return JsonResponse(evens)
 
-def stock_search_result(request):
+def spend_search_result(request):
     data = json.loads(request.body)
     result = False
     if request.method == 'POST':
         try:
-            totalmerge = Totalmerge.objects.filter(name__icontains=data)
+            totalmerge = Totalmerge.objects.filter(name__icontains=data)[0:10]
             result = []
             for elements in totalmerge:
                 result.append({
                     'logo': elements.logo,
                     'isukorabbrv': elements.name,
-                    'issuecode': elements.id,
                     'marketcode': elements.marketcode
                 })
         except Exception as e:

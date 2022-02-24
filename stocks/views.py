@@ -269,7 +269,7 @@ def stock_search_result(request):
     result = False
     if request.method == 'POST':
         try:
-            totalmerge = Totalmerge.objects.filter(name__icontains=data)[0:10]
+            totalmerge = Totalmerge.objects.filter(name__icontains=data)
             result = []
             for elements in totalmerge:
                 result.append({

@@ -298,7 +298,7 @@ function check(){
          var headers = new Headers();
          headers.append('Content-Type', 'application/json')
          headers.append('X-CSRFToken', csrftoken)
-         var response = fetch('/stock_search_result', {
+         var response = fetch('/spend_search_result', {
              method: "POST",
              headers: headers,
              body: JSON.stringify(data)
@@ -316,14 +316,12 @@ function check(){
          for ( elements in data ) {
              var logo = data[elements]['logo'];
              var isukorabbrv = data[elements]['isukorabbrv'];
-             var issuecode = data[elements]['issuecode'];
              var marketcode = data[elements]['marketcode'];
 
              let push = document.getElementById('result_list li');
              const li = document.createElement('li');
              const a = document.createElement('a');
              a.appendChild(document.createTextNode(isukorabbrv+'\u00A0\u00A0'));
-             a.appendChild(document.createTextNode(issuecode+'\u00A0\u00A0'));
              a.href='javascript:insert_place("'+isukorabbrv+'")'
              li.appendChild(a)
              result_position.append(li);
