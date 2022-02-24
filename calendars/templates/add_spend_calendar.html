@@ -4,11 +4,11 @@
 {% block nav %}
 <style>
     *{
-        user-select: all;
+        user-select: text;
         -webkit-user-select: text; /* Safari fallback only */
-        -webkit-user-select: all; /* Chrome/Safari */
-        -moz-user-select: all; /* Firefox */
-        -ms-user-select: all; /* IE10+ */
+        -webkit-user-select: text; /* Chrome/Safari */
+        -moz-user-select: text; /* Firefox */
+        -ms-user-select: text; /* IE10+ */
     }
     .loader-main{
     bottom:0px !important;
@@ -119,22 +119,27 @@
                     <th width="200" height="60"><a class="span_list_title">날짜</a></th>
                     <th width="240" style="text-align: end;"><input style="text-align:center;" class="input_span" type="date" id="date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="spend_date" value=""></th>
                 </tr>
-                <tr>
+                <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">소비처</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span stock" type="text" id="place" name="place" autocomplete="on" value="">
+                    <th width="240" style="text-align: end;"><input class="input_span" autocomplete="off" type="text" id="place" name="place">
+                      <div id="place" style="height: auto; width:100%;">
+                          <ol id="result_list" style="list-style:none">
+                              <li></li>
+                          </ol>
+                      </div></th>
                 </tr>
-                </tr>
+
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">결제수단</a></th>
                     <th width="240" style="text-align: end;">
                         <select class="span_list_select" id="way" name="way" style="text-align:center;">
                             <option style="text-align: center;" value='0' selected>선택</option>
                             <option value='1'>현금</option>
-                            <option value='2'>카드</option>    
+                            <option value='2'>카드</option>
                         </select></th>
                 </tr>
                 <tr> <!-- 행선언 -->
-                    
+
                     <th width="200" height="60"><a class="span_list_title">카테고리</a></th>
                     <th width="240" style="text-align: end;">
                         <select class="span_list_select" id="category" name="category" style="text-align:center;">
@@ -185,6 +190,11 @@
         </div>
     </div>
     </form>
+    <form id="form" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="issuecode" name="issuecode">
+        <input type="hidden" id="marketcode" name="marketcode">
+    </form>
 </div>
 
 <script>
@@ -231,44 +241,130 @@ function check(){
     }
     }
 
-    $(function() {
-        var cardlist_Tags = [{% for i in wntlr %}
-        '{{i.ss_isukorabbrv}}',
-        {% endfor %}];
-        $('#place').autocomplete({
-            source: cardlist_Tags,
-        });
-     });
+
+
+     function get_search(data) {
+         var headers = new Headers();
+         headers.append('Content-Type', 'application/json')
+         headers.append('X-CSRFToken', csrftoken)
+         var response = fetch('/stock_search_result', {
+             method: "POST",
+             headers: headers,
+             body: JSON.stringify(data)
+         })
+         return response.then(res => {
+             if(res.status === 200) return res.json();
+             else console.log(res.statusText);
+         })
+         .catch(err => {
+             console.log(err)
+         })
+     }
+
+     var csrftoken = getCookie('csrftoken');
+     function getCookie(cname) {
+         var name = cname + "=";
+             decodedCookie = decodeURIComponent(document.cookie);
+             ca = decodedCookie.split(';');
+         for(var i = 0; i <ca.length; i++) {
+             var c = ca[i].trim();
+             while (c.charAt(0) == ' ') {
+                 c = c.substring(1);
+             }
+             if (c.indexOf(name) == 0) {
+                 return c.substring(name.length, c.length);
+             }
+         }
+         return "";
+     }
+
+     window.onload = function() {
+         const place = document.getElementById('place');
+         const result_window = document.getElementById('result_list');
+         place.addEventListener('keyup', async function(e) {
+             if (place.value != '') {
+                 var result = await get_search(place.value);
+                 result_window.innerHTML = '';
+                 if (!result.result[0])
+                     result_window.innerHTML = '검색결과가 없습니다.';
+                 if (result.result)
+                     insert_result(result.result, result_window);
+             } else
+                 result_window.innerHTML = '';
+         });
+     }
+
+     function get_search(data) {
+         var headers = new Headers();
+         headers.append('Content-Type', 'application/json')
+         headers.append('X-CSRFToken', csrftoken)
+         var response = fetch('/stock_search_result', {
+             method: "POST",
+             headers: headers,
+             body: JSON.stringify(data)
+         })
+         return response.then(res => {
+             if(res.status === 200) return res.json();
+             else console.log(res.statusText);
+         })
+         .catch(err => {
+             console.log(err)
+         })
+     }
+
+     function insert_result(data, result_position) {
+         for ( elements in data ) {
+             var logo = data[elements]['logo'];
+             var isukorabbrv = data[elements]['isukorabbrv'];
+             var issuecode = data[elements]['issuecode'];
+             var marketcode = data[elements]['marketcode'];
+
+             let push = document.getElementById('result_list li');
+             const li = document.createElement('li');
+             const a = document.createElement('a');
+             a.appendChild(document.createTextNode(isukorabbrv+'\u00A0\u00A0'));
+             a.appendChild(document.createTextNode(issuecode+'\u00A0\u00A0'));
+             a.href='javascript:insert_place("'+isukorabbrv+'")'
+             li.appendChild(a)
+             result_position.append(li);
+         }
+     }
+
+     function insert_place(name){
+     let values = document.getElementById("place").value = name ;
+     $('#result_list').hide();
+     }
+
 /*
     $(document).ready(function(){
         //키를 누르거나 떼었을때 이벤트 발생
         $("#numcomma").bind('keyup keydown',function(){
             inputNumberFormat(this);
         });
-    
+
         //입력한 문자열 전달
         function inputNumberFormat(obj) {
             obj.value = comma(uncomma(obj.value));
         }
-          
+
         //콤마찍기
         function comma(str) {
             str = String(str);
             return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
         }
-    
+
         //콤마풀기
         function uncomma(str) {
             str = String(str);
             return str.replace(/[^\d]+/g, '');
         }
-    
+
         //숫자만 리턴(저장할때)
         //alert(cf_getNumberOnly('1,2./3g')); -> 123 return
         function cf_getNumberOnly (str) {
             var len      = str.length;
             var sReturn  = "";
-    
+
             for (var i=0; i<len; i++){
                 if ( (str.charAt(i) >= "0") && (str.charAt(i) <= "9") ){
                     sReturn += str.charAt(i);

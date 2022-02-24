@@ -29,6 +29,8 @@ urlpatterns = [
 
     path('ajax_pushdate', views.ajax_pushdate, name='ajax_pushdate'),
     path('ajax_sendSMS', views.ajax_sendSMS, name='ajax_sendSMS'),
+
+    # path('stock_search_result1', views.stock_search_result1, name='stock_list_result1'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -137,7 +137,7 @@
         <div class="add_info_content">
             <input type="text" class="add_info_input" id="pin" name="pin" placeholder="핀번호 입력해주세요. 미입력시 초기 비밀번호는 0000 입니다." value="">
         </div>
-        
+
         <button class="access_btn" id="signupBtn" onclick="signup_check();" type="button" value="signup" disabled style="width:100%">레몬 시작하기</button>
     </div><!-- 추가정보 영역 끝 -->
     </form>
@@ -391,7 +391,7 @@ document.addEventListener('keydown', function(event) {
     </div> <!-- 차트부분 끝 -->
 
     <!-- 소비 영역 -->
-    <div class="home-spand-div"> 
+    <div class="home-spand-div">
         <div class="home-spand-title">
             <a><strong>{{month}}월</strong> 소비</a>
             <b class="home-spand-dateView" id="date_view"></b>
@@ -416,7 +416,7 @@ document.addEventListener('keydown', function(event) {
 
         <div class="home-stock-input">
             <a>{{total_investment_amount|default_if_none:'0'|intcomma}}원</a>
-            
+
         </div>
 
         <div class="home-stock-input2">
@@ -466,7 +466,7 @@ document.addEventListener('keydown', function(event) {
     tmp.innerHTML = today;
     console.log(today);
 
-    
+
   });
 </script>
 

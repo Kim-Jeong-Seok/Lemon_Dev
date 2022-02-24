@@ -14,7 +14,7 @@ class LemonUserManager(BaseUserManager):
             raise ValueError("이름을 입력해주세요!")
         if not u_chk:
             raise ValueError("개인정보에 동의 해주세요!")
-        
+
 
         user = self.model(
             email = self.normalize_email(email),
@@ -43,7 +43,7 @@ class LemonUserManager(BaseUserManager):
             u_chk = True,
         )
         user.set_password(password)
-    
+
         user.is_admin = True
         user.is_active = True
         user.is_superuser = True
@@ -74,7 +74,7 @@ class user(AbstractBaseUser):
     pin = models.CharField(verbose_name="pin번호", blank=True, null=True, max_length=8)
     gender = models.CharField(max_length=10, db_collation='utf8_general_ci', verbose_name= "성별")
     job = models.IntegerField(verbose_name="직업",blank=True, null=True)
-    birthday = models.DateField(verbose_name="생년월일",blank=True, null=True)
+    birthday = models.DateTimeField(verbose_name="생년월일",blank=True, null=True)
     pin_date = models.DateTimeField(verbose_name="핀입력시간",blank=True, null=True)
 
 

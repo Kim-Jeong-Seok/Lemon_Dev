@@ -1,5 +1,6 @@
 from allauth.socialaccount.providers.kakao import views as kakao_view
-from mysettings import SECRET_KEY,KAKAO_KEY
+from allauth.socialaccount.providers.naver import views as naver_view
+from mysettings import SECRET_KEY,KAKAO_KEY, NAVER_KEY
 from django.views import View
 
 
@@ -10,6 +11,14 @@ from django.views import View
 #     return redirect(
 #         f"https://kauth.kakao.com/oauth/authorize?client_id={'f7392204050136e895a59bbdcb9090db'}&redirect_uri={'http://127.0.0.1:8000/'}&response_type=code"
 #     )
+class NaverSignInView(View):
+    def post(self, request):
+        client_id = NAVER_KEY['NAVER_KEY']
+        redirect_uri = "http://127.0.0.1:8000/social/naver/login/callback/"
+        kakao_auth_api = 'http://kauth.kakao.com/pauth/author?response_type=code '
+        return redirect(
+                f"https://b\nid.naver.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code"
+            )
 
 
 class KakaoSignInView(View):

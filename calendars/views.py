@@ -22,7 +22,7 @@ from django.http import JsonResponse
 from stocks import stockcal as cal
 from stocks import kocom
 from stocks import iex
-from stocks.models import Stocksector
+from stocks.models import Stocksector, Totalmerge
 
 # Create your views here.
 URL_LOGIN = '/login'
@@ -37,16 +37,16 @@ def home(request):
         invest = request.POST['invest']
         birthday = request.POST['birthday']
         pin = request.POST['pin']
-        
+
         if invest == '0':
             #invest_date = None
             invest_date = date(1111,1,11)
         else:
             invest_date = datetime.now()
-        
+
         if birthday == '':
             #birthday = date(1111, 1, 11)
-            birthday = datetime.now()
+            birthday =  datetime.datetime.now()
         else:
             birthday = birthday
 
@@ -54,7 +54,7 @@ def home(request):
             pin = '0000'
         else:
             pin = pin
-        
+
         user = get_user_model().objects.filter(user_id=user).update(
             u_chk=request.POST['u_chk'],
             username=request.POST['username'],
@@ -393,7 +393,8 @@ def add_spend_calendar(request):
             return redirect('/history')
     else:
         sform = SpendForm()
-    wntlr = Stocksector.objects.all().values('ss_isukorabbrv')
+    wntlr = Totalmerge.objects.all().values('name')
+    print(wntlr)
     return render(request, 'add_spend_calendar.html', {'wntlr': wntlr})
 
 
@@ -404,7 +405,7 @@ def sms_add_spend_calendar(request):
         amount = request.POST.get("amount", None)
         place = request.POST.get("place", None)
         wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
-    
+
     return render(request, 'sms_add_spend_calendar.html', {'date': date, 'amount': amount, 'place': place, 'wntlr': wntlr})
 
 
@@ -470,3 +471,21 @@ def ajax_pushdate(request):
         evens = {'msg1': even1}
 
         return JsonResponse(evens)
+
+def stock_search_result(request):
+    data = json.loads(request.body)
+    result = False
+    if request.method == 'POST':
+        try:
+            totalmerge = Totalmerge.objects.filter(name__icontains=data)
+            result = []
+            for elements in totalmerge:
+                result.append({
+                    'logo': elements.logo,
+                    'isukorabbrv': elements.name,
+                    'issuecode': elements.id,
+                    'marketcode': elements.marketcode
+                })
+        except Exception as e:
+            print('Error in stock_search_result: \n', e)
+    return JsonResponse({'result': result}, content_type='application/json')
