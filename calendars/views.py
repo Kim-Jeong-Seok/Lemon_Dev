@@ -30,68 +30,73 @@ URL_LOGIN = '/login'
 
 @login_required(login_url=URL_LOGIN)
 def home(request):
-    invest = request.user.invest
-    user = request.user.user_id
-    now = datetime.datetime.now()
-    month = now.strftime('%m').replace('0', '')
-    year = now.strftime('%Y')
-    # 월별 기간 필터링
-    spend_month_filter2 = Spend.objects.filter(user_id=user, spend_date__month=month).values('spend_id', 'kind',
-                                                                                             'spend_date', 'amount',
-                                                                                             'place', 'category')
-    income_month_filter2 = Income.objects.filter(user_id=user, income_date__month=month).values('income_id', 'kind',
-                                                                                                'income_date', 'amount',
-                                                                                                'income_way',
-                                                                                                'income_way')
-    # 월 총 수입, 지출
-    spend_sum = spend_month_filter2.values('amount').aggregate(Sum('amount'))
-    spend_sum_value = list(spend_sum.values())
-    income_sum = income_month_filter2.values('amount').aggregate(Sum('amount'))
-    income_sum_value = list(income_sum.values())
-    stock_cal = cal.calculator()
-    total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
-    total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
-    total_current_price = stock_cal.total_current_price(request.user.user_id)
-    user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
-    son = total_investment_amount - user_total_investment_amount
-    invest = invest - total_investment_amount
+    u_check = request.user.u_chk
+    print(u_check)
+    if u_check == True:
+        invest = request.user.invest
+        user = request.user.user_id
+        now = datetime.datetime.now()
+        month = now.strftime('%m').replace('0', '')
+        year = now.strftime('%Y')
+        # 월별 기간 필터링
+        spend_month_filter2 = Spend.objects.filter(user_id=user, spend_date__month=month).values('spend_id', 'kind',
+                                                                                                 'spend_date', 'amount',
+                                                                                                 'place', 'category')
+        income_month_filter2 = Income.objects.filter(user_id=user, income_date__month=month).values('income_id', 'kind',
+                                                                                                    'income_date', 'amount',
+                                                                                                    'income_way',
+                                                                                                    'income_way')
+        # 월 총 수입, 지출
+        spend_sum = spend_month_filter2.values('amount').aggregate(Sum('amount'))
+        spend_sum_value = list(spend_sum.values())
+        income_sum = income_month_filter2.values('amount').aggregate(Sum('amount'))
+        income_sum_value = list(income_sum.values())
+        stock_cal = cal.calculator()
+        total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+        total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+        total_current_price = stock_cal.total_current_price(request.user.user_id)
+        user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
+        son = total_investment_amount - user_total_investment_amount
+        invest = invest - total_investment_amount
 
-    if total_current_price is False:
-        total_current_price = 0
-    else:
-        total_current_price = total_current_price
-
-    if user_total_investment_amount is False:
-        user_total_investment_amount = 0
-    else:
-        user_total_investment_amount = user_total_investment_amount
-
-    if total_investment_amount is False:
-        total_investment_amount = 0
-    else:
-        total_investment_amount = total_investment_amount
-
-    home_chartjs_data = [invest, son]
-    for spend_sum_value in spend_sum_value:
-        if spend_sum_value == None:
-            home_chartjs_data.append(0)
+        if total_current_price is False:
+            total_current_price = 0
         else:
-            home_chartjs_data.append(spend_sum_value)
-    for income_sum_value in income_sum_value:
-        if income_sum_value == None:
-            home_chartjs_data.append(0)
-        else:
-            home_chartjs_data.append(income_sum_value)
+            total_current_price = total_current_price
 
-    result = {}
-    result['month'] = month
-    result['Expenditure'] = spend_sum
-    result['Income'] = income_sum
-    result['income_sum_value'] = income_sum_value
-    result['total_current_price'] = total_current_price
-    result['Home_chartjs_data'] = home_chartjs_data
-    result['total_investment_amount'] = total_investment_amount
-    result['user_total_investment_amount'] = user_total_investment_amount
+        if user_total_investment_amount is False:
+            user_total_investment_amount = 0
+        else:
+            user_total_investment_amount = user_total_investment_amount
+
+        if total_investment_amount is False:
+            total_investment_amount = 0
+        else:
+            total_investment_amount = total_investment_amount
+
+        home_chartjs_data = [invest, son]
+        for spend_sum_value in spend_sum_value:
+            if spend_sum_value == None:
+                home_chartjs_data.append(0)
+            else:
+                home_chartjs_data.append(spend_sum_value)
+        for income_sum_value in income_sum_value:
+            if income_sum_value == None:
+                home_chartjs_data.append(0)
+            else:
+                home_chartjs_data.append(income_sum_value)
+
+        result = {}
+        result['month'] = month
+        result['Expenditure'] = spend_sum
+        result['Income'] = income_sum
+        result['income_sum_value'] = income_sum_value
+        result['total_current_price'] = total_current_price
+        result['Home_chartjs_data'] = home_chartjs_data
+        result['total_investment_amount'] = total_investment_amount
+        result['user_total_investment_amount'] = user_total_investment_amount
+    else:
+        return redirect('social/info')
     return render(request, 'home.html', result)
 
 
@@ -209,25 +214,31 @@ def top5(request):
                                                                                                'income_way',
                                                                                                'income_way')
     # 소비 TOP5 카테고리 , 카드, 거래처
-    category_amount = spend_month_filter.values('category', 'card', 'place').annotate(amount=Sum('amount')).order_by(
-        '-amount')[:5]
-
+    category_amount = spend_month_filter.values('category', 'card', 'place').annotate(amount=Sum('amount'),count=Count('category')).order_by('-amount')[:5]
+    print(category_amount)
+    print('------category_amount-----')
     # 소비 TOP5 카테고리 금액 합계
-    category_sum = spend_month_filter.values('category').annotate(amount=Sum('amount')).order_by('-amount')[:5]
-    category_card = spend_month_filter.values('card').annotate(amount=Sum('amount')).order_by('-amount')[:5]
-    category_place = spend_month_filter.values('place').annotate(amount=Sum('amount')).order_by('-amount')[:5]
+    category_sum = list(category_amount.values('category','amount').order_by('-amount')[:6])
+    # 소비 TOP5 소비처 금액 합계
+    #category_place= list(category_amount.values('place','amount').order_by('-amount')[:6])
+    #category_sum = spend_month_filter.values('category').annotate(amount=Sum('amount')).order_by('-amount')[:5]
+    #print(category_sum)
+    #category_card = spend_month_filter.values('card').annotate(amount=Sum('amount')).order_by('-amount')[:5]
+    #category_place = spend_month_filter.values('place').annotate(amount=Sum('amount')).order_by('-amount')[:5]
+    #print(category_place)
 
-    category_category = spend_month_filter.values('category').annotate(amount=Sum('amount')).order_by('-amount')[:5]
 
     # 요약 페이지_카테고리 건수별 TOP5
     category_amount_count = spend_month_filter.values('category').annotate(count=Count('category')).order_by('-count')[:5]
-
+    print(category_amount_count)
+    print('---------------------------------------------')
     category_stock = []
     koscom_api = kocom.api()
     nasdaq_api = iex.api()
-    for element in category_place:
+    for element in category_amount:
         find_market_code = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_marketcode', flat=True)
         find_isusrtcd = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_isusrtcd', flat=True)
+        print(find_market_code)
 
 
         market_code = find_market_code[0] if find_market_code else None
@@ -238,6 +249,8 @@ def top5(request):
             symbol = issuecode
             current_price = nasdaq_api.get_current_price(market_code, symbol)
         category_stock.append([current_price, element['amount'], element['place'], issuecode, market_code])
+        print(category_stock)
+        print('-----------------------------------------')
 
     category_amount_data = []
     category_amount_label = []
@@ -245,10 +258,16 @@ def top5(request):
     category_count_label = []
     for item in category_amount:
         category_amount_data.append(item['amount'])
+        print(category_amount_data)
         category_amount_label.append(item['category'])
+        print(category_amount_label)
+        print('-----------------------------------------')
+
     for item in category_amount_count:
         category_count_data.append(item['count'])
+        print(category_count_data)
         category_count_label.append(item['category'])
+        print(category_count_label)
 
     category = {}
     category['month'] = month
@@ -258,8 +277,8 @@ def top5(request):
     category['Category_count_label']=category_count_label
     category['Category_count']=category_amount_count
     category['Category_sum']=category_sum
-    category['category_card']=category_card
-    category['category_place']=category_place
+    # category['category_card']=category_card
+    #category['category_place']=category_place
     category['category_stock']=category_stock
 
     return render(request, 'top5.html', category)
@@ -367,7 +386,7 @@ def sms_add_spend_calendar(request):
         amount = request.POST.get("amount", None)
         place = request.POST.get("place", None)
         wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
-    
+
     return render(request, 'sms_add_spend_calendar.html', {'date': date, 'amount': amount, 'place': place, 'wntlr': wntlr})
 
 

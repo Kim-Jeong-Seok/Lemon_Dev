@@ -54,12 +54,12 @@ INSTALLED_APPS = [
     'storages',
 ]
 
-LOGIN_REDIRECT_URL = '/social/info/' # 로그인 후 리디렉션할 페이지
-ACCOUNT_LOGOUT_REDIRECT_URL = "/login"  # 로그아웃 후 리디렉션 할 페이지
+LOGIN_REDIRECT_URL = '/' # 로그인 후 리디렉션할 페이지
+ACCOUNT_LOGOUT_REDIRECT_URL = "/"  # 로그아웃 후 리디렉션 할 페이지
 ACCOUNT_LOGOUT_ON_GET = True # 로그아웃 버튼 클릭 시 자동 로그아웃
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 ACCOUNT_USER_MODEL_EMAIL_FIELD: None
-ACCOUNT_EMAIL_REQUIRED: False 
+ACCOUNT_EMAIL_REQUIRED: False
 SOCIALACCOUNT_AUTO_SIGNUP = True # 디폴트 값은 True이며 SNS 공급자에서 넘겨받은 정보를 가지고 바로 회원가입시킨다. 부가정보를 입력 받기 위해 False로 설정할 수 있다.
 LOGOUT_REDIRECT_URL = '/login'
 SIGNUP_REDIRECT_URL = '/signup'

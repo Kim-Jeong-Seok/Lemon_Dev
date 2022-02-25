@@ -104,8 +104,10 @@ def signup(request):
                                             pin_date=pin_date,
                                             birthday = birthday,
                                             )
+
             auth.login(request, user)
-            return redirect('/home')
+            print('성공')
+            return redirect('/social/info')
         return render(request, 'signup.html')
     return render(request, 'signup.html')
 
@@ -168,7 +170,7 @@ def ajax_checkEmail(request):
 def social_info(request):
     u_check = request.user.u_chk
     if u_check == False:
-    
+
         if request.method == 'POST':
             user = request.user.user_id
             phonenumber = request.POST.get('phonenumber', None)
@@ -208,4 +210,4 @@ def social_info(request):
             return redirect('/home')
     else:
         return redirect('/home')
-    return render(request, 'social_signup-aditional_info.html') 
+    return render(request, 'social_signup-aditional_info.html')
