@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700;900&family=Pacifico&display=swap" rel="stylesheet"></head>
 
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -208,7 +208,6 @@
         }
     }
 </style>
-
 {% block nav %}
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
             <div>
@@ -225,7 +224,7 @@
 {% endblock nav %}
 <div class="addEvent-wrap">
     {% for i in income %}
-    <form id="del" action = "{% url 'calendars:delete_ihistory' i.income_id %}" method="POST"  style="position:absolute;right:13px;">
+    <form id="del" action = "{% url 'calendars:delete_ihistory' i.income_id %}" method="POST"  style="position:absolute;right:13px;top: 5px;">
             {% csrf_token %}
         <div class="delBtn" onclick="del()"><i class="fa fa-ban" aria-hidden="true"></i></div>
         </form>
@@ -278,7 +277,7 @@
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">금액</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" pattern="\\d*" value="{{i.amount}}"/></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" pattern="[0-9]*" inputmode="numeric" value="{{i.amount}}"/></th>
                 </tr>
                 <tr> <!-- 행선언 -->
                 <th width="200" height="60"><a class="span_list_title">메모</a></th>
@@ -288,15 +287,31 @@
             </table>
         </div>
     </div>
-         <div class="addBtn" onclick="submit()" style="line-height:37px;text-align:center;">수정</div>
+         <div class="addBtn" onclick="check()" style="line-height:37px;text-align:center;">수정</div>
     </form>
     <script>
-            function submit(){
+            function check(){
+            var max_int = 210000000;
+                if ($('#amount').val() == '') {
+                    alert('금액을 입력 해주세요.');
+                    $("#amount").focus();
+                    return false;
+                }
+                if ($('#amount').val() >= max_int) {
+                    alert('입력 받을 수 있는 금액 범위를 초과 하였습니다.');
+                    $("#amount").focus();
+                    return false;
+                }
+                if ($('#place').val() == '') {
+                    alert('소비처를 작성 해주세요.');
+                    $("#place").focus();
+                    return false;
+                }
             const form = document.getElementById('ieidt_form');
             form.action="{% url 'calendars:iedit_calendar' i.income_id %}"
             form.submit();
             }
-        </script>
+    </script>
 </div>
 {% endfor %}
 {% endblock %}

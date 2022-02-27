@@ -5,7 +5,8 @@ import json
 from django.http import JsonResponse
 from datetime import datetime
 from django.db import transaction
-from . import kocom
+from . import koscom
+from . import iex
 from . import stockcal as cal
 from .models import *
 from accounts import models as acc_models
@@ -26,25 +27,31 @@ def stock(request):
     stockheld = Stockheld.objects.filter(sh_userid=request.user.user_id).exclude(sh_share=0) # 자기가 구매한 것 보이고 다 판건 안보이게 만듬
     stock_data = []
     stock_cal = cal.calculator()
-    koscom_api = kocom.api()
+    koscom_api = koscom.api()
+    nasdaq_api = iex.api()
     mark = bookmark.objects.filter(user_id=request.user.user_id)
     bookmark_date = []
     for element in stockheld:
+        stock_api = nasdaq_api if element.sh_marketcode == 'nasdaq' else koscom_api
         average_price = stock_cal.average_price(request.user.user_id, element.sh_isusrtcd)
-        current_price = koscom_api.get_current_price(element.sh_marketcode, element.sh_isusrtcd)
+        current_price = stock_api.get_current_price(element.sh_marketcode, element.sh_isusrtcd)
+        if element.sh_marketcode == 'nasdaq':
+            current_price = int(current_price * stock_api.get_ex_rate('FRX.KRWUSD'))
         stock_data.append(
             [element.sh_isukorabbrv, average_price, current_price, element.sh_isusrtcd, element.sh_marketcode, element.sh_share])
 
     for element in mark :
+        stock_api = iex.api() if element.marketcode == 'nasdaq' else koscom.api()
         find_stock_name = Stocksector.objects.filter(ss_isusrtcd=element.isuSrtCd).values_list('ss_isukorabbrv', flat=True)
         name = find_stock_name[0]
-        current_price = koscom_api.get_current_price(element.marketcode, element.isuSrtCd)
+        current_price = stock_api.get_current_price(element.marketcode, element.isuSrtCd)
         bookmark_date.append([element.marketcode,element.isuSrtCd, current_price, name])
     return render(request, 'stock.html', {'stock_data': stock_data,'bookmark_date':bookmark_date})
 
-
-def portfolio(request):
-    categorys =  Stockheld.objects.filter(sh_userid=request.user.user_id).values('sh_idxindmidclsscd','sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count')
+def suggestion(request):
+    koscom_api = koscom.api()
+    nasdaq_api = iex.api()
+    categorys = Stockheld.objects.exclude(sh_share=0).filter(sh_userid=request.user.user_id ).values('sh_idxindmidclsscd', 'sh_isusrtcd').annotate(count=Count('sh_idxindmidclsscd')).order_by('-count').distinct()
     category_list = list(categorys.values('sh_idxindmidclsscd'))
     categorys_isurtcd = list(categorys.values('sh_isusrtcd'))
     category_keep = category_list[0:3]
@@ -54,40 +61,83 @@ def portfolio(request):
         category_arr.append(i['sh_idxindmidclsscd'])
     for i in categorys_isurtcd:
         isurtcd_arr.append(i['sh_isusrtcd'])
-    stock_list = Category.objects.select_related('spend').filter(category=4)
-    print(stock_list)
-    stock_suggestion1 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =category_arr[0:3]).values("id",'per','pbr',"marketcode","name","category").annotate(
-    ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
-    stock_suggestion2 =list(stock_suggestion1)
+    #stock_list = Category.objects.select_related('spend').filter(category=4)
+    stock_suggestion1 = Totalmerge.objects.exclude(id__in=isurtcd_arr).filter(category__in=category_arr[0:3]).values("id", 'per', 'pbr', "marketcode", "name", "category").annotate(
+        ROA=(F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+    print(stock_suggestion1)
+    #stock_suggestion2 = list(stock_suggestion1)
     category_stock = []
-    koscom_api = kocom.api()
-    for element in stock_suggestion2:
-        stock_suggestion = koscom_api.s_get_current_price(element['marketcode'],element['id'])
-        category_stock.append([stock_suggestion,element['id'],element['per'],element['pbr'],element['marketcode'],element['name'],element['category']  ])
 
+    for element in stock_suggestion1:
+        issuecode = element['id']
+        stock_suggestion = koscom_api.get_current_price(element['marketcode'], issuecode)
+        print(stock_suggestion)
+        category_stock.append([stock_suggestion, issuecode, element['per'],
+                              element['pbr'], element['marketcode'], element['name'], element['category']])
+        print(category_stock)
+    nasdaq_category = nasdaq_test.objects.filter(category__in=category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
+    print(nasdaq_category)
+    nasdaq_top5 = Totalmerge.objects.exclude(id__in=isurtcd_arr).filter(category__in=nasdaq_category).values("id", 'per', 'pbr', "marketcode", "name", "category").annotate(ROA=(F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+    print(nasdaq_top5)
+    nasdaq_top5_price = []
+
+
+    for element in nasdaq_top5:
+        symbol = element['id']
+        print(symbol)
+        # marketcode = element['marketcode']
+        # print(marketcode)
+        naqdaq_price = nasdaq_api.get_current_price(element['marketcode'],symbol)
+        print(naqdaq_price)
+        nasdaq_top5_price.append([naqdaq_price, element['id'], element['per'],
+                                element['pbr'], element['marketcode'], element['name'], element['category']])
+        print(nasdaq_top5_price)
+
+    # result = {}
+    # result['category_stock'] = category_stock
+    # result['nasdaq_top5_price'] = nasdaq_top5_price
+    # print(result)
+
+    return render(request, 'suggestions.html', {'category_stock':category_stock, 'nasdaq_top5_price':nasdaq_top5_price })
+
+
+def portfolio(request):
     result = {}
     stock_cal = cal.calculator()
-    total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+    user_total_investment_amount = stock_cal.user_total_investment_amount(
+        request.user.user_id)
+    total_investment_amount = stock_cal.total_investment_amount(
+        request.user.user_id)
     total_current_price = stock_cal.total_current_price(request.user.user_id)
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
-    if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False:
+    total_profit_n_loss = stock_cal.total_profit_n_loss(request.user.user_id)
+    invest = request.user.invest
+    total_invest = invest + total_use_investment_amount
+
+
+    if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False or user_total_investment_amount is False:
         result['total_investment_amount'] = 0
+        result['user_total_investment_amount'] = 0
         result['total_current_price'] = 0
         result['total_use_investment_amount'] = 0
+        result['total_profit_n_loss'] = 0
+        result['total_invest'] = 0
     else:
-        result['category_stock'] = category_stock
+        result['user_total_investment_amount'] = user_total_investment_amount
         result['total_investment_amount'] = total_investment_amount
         result['total_current_price'] = total_current_price
         result['total_use_investment_amount'] = total_use_investment_amount
+        result['total_profit_n_loss'] = total_profit_n_loss
+        result['total_invest'] = total_invest
     return render(request, 'portfolio.html', result)
 
 
 def stock_info(request, marketcode, issuecode):
+    stock_api = iex.api() if marketcode == 'nasdaq' else koscom.api()
     stock_cal = cal.calculator()
     total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
-    koscom_api = kocom.api()
-    result = koscom_api.get_stock_master(marketcode, issuecode)
+    result = stock_api.get_stock_master(marketcode, issuecode)
     mark = bookmark.objects.filter(user_id=request.user.user_id, marketcode=marketcode, isuSrtCd=issuecode)
     if mark:
         star=1
@@ -96,42 +146,52 @@ def stock_info(request, marketcode, issuecode):
     if result:
         result['total_investment_amount'] = total_investment_amount if total_investment_amount else 0
         result['total_use_investment_amount'] = total_use_investment_amount if total_use_investment_amount else 0
-        result['total'] = result['total_use_investment_amount'] - result['total_investment_amount']
         result['share'] = Stockheld.objects.filter(sh_userid=request.user.user_id,
                                                    sh_isusrtcd=issuecode).values_list('sh_share', flat=True)
-        result['curPrice'] = koscom_api.get_current_price(marketcode, issuecode)
+        result['curPrice'] = stock_api.get_current_price(marketcode, issuecode)
         result['marketcode'] = marketcode
         result['total_allow_invest'] = request.user.invest - stock_cal.total_use_investment_amount(request.user.user_id)
 
-
-        result['year_history'] = day_trdDd_matching(
-            cal_year_history(koscom_api.get_stock_history(marketcode, issuecode,
-                                                                'M', '19800101', datetime.today().strftime('%Y%m%d'), 50)))
-        if result['year_history'] is False:
-                result['year_history'] = str(0)
-
-        result['month_history'] = day_trdDd_matching(
-            koscom_api.get_stock_history(marketcode, issuecode,
-                                        'M', '19800101', datetime.today().strftime('%Y%m%d'), 50))
-        if result['month_history'] is False:
+        if marketcode == 'nasdaq':
+            result['ex_rate'] = stock_api.get_ex_rate('FRX.KRWUSD')
+            result['year_history'] = str(0)
             result['month_history'] = str(0)
-        result['week_history'] = day_trdDd_matching(
-            koscom_api.get_stock_history(marketcode, issuecode,
-                                        'W', '19800101', datetime.today().strftime('%Y%m%d'), 50))
-
-        if result['week_history'] is False:
             result['week_history'] = str(0)
-
-        result['day_history'] = day_trdDd_matching(
-            koscom_api.get_stock_history(marketcode, issuecode,
-                                        'D', '19800101', datetime.today().strftime('%Y%m%d'), 50))
-        if result['day_history'] is False:
             result['day_history'] = str(0)
+        else:
+            result['year_history'] = day_trdDd_matching(
+                cal_year_history(stock_api.get_stock_history(marketcode, issuecode,
+                                                                    'M', '19800101', datetime.today().strftime('%Y%m%d'), 50)))
+            if result['year_history'] is False:
+                    result['year_history'] = str(0)
 
+            result['month_history'] = day_trdDd_matching(
+                stock_api.get_stock_history(marketcode, issuecode,
+                                            'M', '19800101', datetime.today().strftime('%Y%m%d'), 50))
+            if result['month_history'] is False:
+                result['month_history'] = str(0)
+            result['week_history'] = day_trdDd_matching(
+                stock_api.get_stock_history(marketcode, issuecode,
+                                            'W', '19800101', datetime.today().strftime('%Y%m%d'), 50))
+
+            if result['week_history'] is False:
+                result['week_history'] = str(0)
+
+            result['day_history'] = day_trdDd_matching(
+                stock_api.get_stock_history(marketcode, issuecode,
+                                            'D', '19800101', datetime.today().strftime('%Y%m%d'), 50))
+            if result['day_history'] is False:
+                result['day_history'] = str(0)
     else:
-        return redirect('/stock_info' + '/' + marketcode + '/' + issuecode)
+        if marketcode == 'nasdaq':
+            return redirect('/nasdaq_stock_info' + '/' + marketcode + '/' + issuecode)
+        else:
+            return redirect('/stock_info' + '/' + marketcode + '/' + issuecode)
 
-    return render(request, 'stock_info.html', {'result': result,'star':star})
+    if marketcode == 'nasdaq':
+        return render(request, 'nasdaq_stock_info.html', {'result': result, 'star':star})
+    else:
+        return render(request, 'stock_info.html', {'result': result, 'star':star})
 
 
 def cal_year_history(history):
@@ -156,10 +216,10 @@ def boomark(request, marketcode, isuSrtCd ):
             mark.delete()
         else:
             bookmark.objects.create(
-                user_id =request.user.user_id,
-                marketcode = marketcode,
-                isuSrtCd = isuSrtCd,
-                activate = 1
+                user_id=request.user.user_id,
+                marketcode=marketcode,
+                isuSrtCd=isuSrtCd,
+                activate=1
             )
         data = json.loads(request.body)
         context = {
@@ -183,7 +243,7 @@ def current_stock(request):
     data = json.loads(request.body)
     result = False
     if request.method == 'POST':
-        result = kocom.api().get_current_stock(data['marketcode'], data['issuecode'])
+        result = koscom.api().get_current_stock(data['marketcode'], data['issuecode'])
     return JsonResponse({'result': result}, content_type='application/json')
 
 
@@ -215,17 +275,22 @@ def buy_stock(request):
         if (request.user.invest + total_rest_investment) - buy_price < 0:
             return JsonResponse({'result': '가상잔액이 부족합니다'}, content_type='application/json')
         try:
-            stock_master = kocom.api().get_stock_master(data['marketcode'], data['issuecode'])
+            stock_api = iex.api() if data['marketcode'] == 'nasdaq' else koscom.api()
+            stock_master = stock_api.get_stock_master(data['marketcode'], data['issuecode'])
             stockheld_check = Stockheld.objects.filter(sh_userid=request.user.user_id,
-                                                       sh_isusrtcd=stock_master['isuSrtCd']).exists()
+                                                       sh_isusrtcd=data['issuecode']).exists()
+            if data['marketcode'] == 'nasdaq':
+                stock_master['idxIndMidclssCd'] = stock_api.get_stocksector(data['issuecode'])['sector']
+                stock_master['isuCd'] = data['issuecode']
+                stock_master['isuKorAbbrv'] = stock_master['companyName']
             with transaction.atomic():
                 if stock_master and not stockheld_check:
                     stockheld_insert(request.user.user_id, data, stock_master)
-                    stocktrading_insert(request.user.user_id, data, stock_master, 'B')
+                    stocktrading_insert(request.user.user_id, data, 'B')
                     stockprofit_input(request.user.user_id, data, 'B')
                 elif stock_master and stockheld_check:
-                    stockheld_update(request.user.user_id, data, stock_master, 'B')
-                    stocktrading_insert(request.user.user_id, data, stock_master, 'B')
+                    stockheld_update(request.user.user_id, data, 'B')
+                    stocktrading_insert(request.user.user_id, data, 'B')
                     stockprofit_input(request.user.user_id, data, 'B')
                 result = True
         except Exception as e:
@@ -246,13 +311,12 @@ def sold_stock(request):
             data['sh_z_date'] = datetime.now()
 
         try:
-            stock_master = kocom.api().get_stock_master(data['marketcode'], data['issuecode'])
             stockheld_check = Stockheld.objects.filter(sh_userid=request.user.user_id,
-                                                       sh_isusrtcd=stock_master['isuSrtCd']).exists()
+                                                       sh_isusrtcd=data['issuecode']).exists()
             with transaction.atomic():
-                if stock_master and stockheld_check:
-                    stockheld_update(request.user.user_id, data, stock_master, 'S')
-                    stocktrading_insert(request.user.user_id, data, stock_master, 'S')
+                if stockheld_check:
+                    stockheld_update(request.user.user_id, data, 'S')
+                    stocktrading_insert(request.user.user_id, data, 'S')
                     stockprofit_input(request.user.user_id, data, 'S')
                 result = True
         except Exception as e:
@@ -264,7 +328,7 @@ def sold_stock(request):
 def stockheld_insert(user_id, data, master):
     Stockheld(
         sh_userid=acc_models.user.objects.get(user_id=user_id),
-        sh_isusrtcd=master['isuSrtCd'],
+        sh_isusrtcd=data['issuecode'],
         sh_isucd=master['isuCd'],
         sh_isukorabbrv=master['isuKorAbbrv'],
         sh_marketcode=data['marketcode'],
@@ -275,7 +339,7 @@ def stockheld_insert(user_id, data, master):
     ).save()
 
 
-def stockheld_update(user_id, data, master, kind):
+def stockheld_update(user_id, data, kind):
     share = int(data['share'])
     price = int(data['share']) * int(data['current_price'])
     if kind == 'B':
@@ -283,7 +347,7 @@ def stockheld_update(user_id, data, master, kind):
     if kind == 'S':
         share = -share
     stockheld_objects = Stockheld.objects.get(sh_userid=acc_models.user.objects.get(user_id=user_id),
-                                              sh_isusrtcd=master['isuSrtCd'])
+                                              sh_isusrtcd=data['issuecode'])
     stockheld_objects.sh_share += share
     stockheld_objects.sh_price += price
     if 'sh_z_date' in data:
@@ -291,14 +355,14 @@ def stockheld_update(user_id, data, master, kind):
     stockheld_objects.save()
 
 
-def stocktrading_insert(user_id, data, master, kind):
+def stocktrading_insert(user_id, data, kind):
     price = int(data['current_price'])
     if kind == 'B':
         price = -price
     print(f'stocktrading Insert: {user_id}, {price}')
     Stocktrading(
         st_userid=acc_models.user.objects.get(user_id=user_id),
-        st_isusrtcd=master['isuSrtCd'],
+        st_isusrtcd=data['issuecode'],
         st_kind=kind,
         st_share=data['share'],
         st_price=price
@@ -313,7 +377,7 @@ def stockprofit_input(user_id, data, kind):
     if not stockprofit_check:
         print(f'stockprofit Insert: {user_id}, {price}')
         Stockprofit(
-            sp_userid=user_id,
+            sp_userid=acc_models.user.objects.get(user_id=user_id),
             sp_profit=price,
         ).save()
     else:
@@ -328,13 +392,13 @@ def get_selectivemaster(request):
     data = json.loads(request.body)
     result = False
     if request.method == 'POST':
-        result = kocom.api().get_selectivemaster(data['marketcode'], data['issuecode'])
+        result = koscom.api().get_selectivemaster(data['marketcode'], data['issuecode'])
     return JsonResponse({'result': result}, content_type='application/json')
 
-from . import iex
+
 def stocksector_update(request):
     if request.method == 'POST':
-        # stocksectors_bundle = kocom.api().get_stocksectors_bundle()
+        # stocksectors_bundle = koscom.api().get_stocksectors_bundle()
         stocksectors_bundle = iex.api().get_stocksectors_bundle()
         if stocksectors_bundle:
             stocksector_insert(stocksectors_bundle)
@@ -370,18 +434,19 @@ def get_history(request):
     data = json.loads(request.body)
     result = False
     if request.method == 'POST':
-        result = kocom.api().get_stock_history(data['marketcode'], data['issuecode'],
-                                               data['trnsmCycleTpCd'], data['inqStrtDd'],
-                                               data['inqEndDd'], data['reqCnt'])
+        result = koscom.api().get_stock_history(data['marketcode'], data['issuecode'],
+                                                data['trnsmCycleTpCd'], data['inqStrtDd'],
+                                                data['inqEndDd'], data['reqCnt'])
     return JsonResponse({'result': result}, content_type='application/json')
 
 
 def per_pbr_update(request):
     result = False
     if request.method == 'POST':
-        koscom_api = kocom.api()
+        data = json.loads(request.body)     # 여기서부터 코스피 perpbr 버튼 , 나스닥 perpbr 버튼 구분
+        stock_api = iex.api() if data == 'nasdaq' else koscom.api()
         try:
-            per_pbr_bundle = koscom_api.get_per_pbr_bundle()
+            per_pbr_bundle = stock_api.get_per_pbr_bundle()
             if per_pbr_bundle:
                 per_pbr_insert(per_pbr_bundle)
                 result = True

@@ -152,6 +152,90 @@
           },
           {% endfor %}
         ],
+        dateClick: function(info) {
+          click_date = info.dateStr; // 날짜
+          title_date = moment(click_date).format('DD일');
+          document.getElementById('click_date').value = click_date;
+          $.ajax({
+            type: "POST",
+            url: "{% url 'calendars:ajax_pushdate' %}",
+            data: {
+              clikDate: $('#click_date').val(),
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              dataType: "json",
+            },
+            success: function (data) {
+
+              msg_value = data.msg1;
+              const reset = document.getElementById('modalBody');
+              const element = document.getElementById('modalBody');
+              reset.innerHTML = '';
+              $.each(msg_value, function (index, el) {
+                
+                if (el.kind == '지출') {
+                  el.amount = '- ' + el.amount
+                };
+                if (el.kind == '수입') {
+                  el.amount = '+ ' + el.amount
+                };
+                if (el.income_way == 0) {
+                  el.income_way = '카테고리 미선택'
+                }
+                else if (el.income_way == 1) {
+                  el.income_way = '금융/보험'
+                }
+                else if (el.income_way == 2) {
+                  el.income_way = '저축'
+                }
+                else if (el.income_way == 3) {
+                  el.income_way = '온라인쇼핑'
+                }
+                else if (el.income_way == 4) {
+                  el.income_way = '출금'
+                }
+                else if (el.income_way == 5) {
+                  el.income_way = '생활/마트'
+                }
+                else if (el.income_way == 6) {
+                  el.income_way = '카페/간식'
+                }
+                else if (el.income_way == 7) {
+                  el.income_way = '기타지출(사회생활비)'
+                }
+                else if (el.income_way == 8) {
+                  el.income_way = '교통/차량유지'
+                }
+                else if (el.income_way == 9) {
+                  el.income_way = '주거생활/통신'
+                }
+                else if (el.income_way == 10) {
+                  el.income_way = '식사'
+                }
+                else if (el.income_way == 11) {
+                  el.income_way = '의료/건강'
+                }
+                else if (el.income_way == 12) {
+                  el.income_way = '문화/예술 '
+                }
+                else if (el.income_way == 13) {
+                  el.income_way = '교육비'
+                };
+                element.innerHTML +=
+                  '<div class="ajaxModalWrap" style="" onClick="location.href=\'edit_calendar/' + el.kind + '/' + el.income_id + '/\'">'
+                  + '<div class="ajaxTableWay">' + el.income_way + '</div>'
+                  + '<div class="ajaxTableAmount" id="ajaxTableAmount" style="font-weight:500; float:right;"><a id="appen"></a> ' + el.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원</div></div>';
+              console.log(el == 0, '값이 없음');
+              });
+            },
+            fail: function () {
+              console.log('ajax send error!');
+              alert('해당날짜의 내역을 불러오는 과정에서 오류가 발생했습니다');
+            },
+          });
+          $('#calendarModal').modal('show');
+          $('#modalTitle').text(title_date);
+        },
+
         eventClick: function(info) {
           click_date = info.event.startStr; // 날짜
           title_date = moment(click_date).format('DD일');

@@ -4,6 +4,12 @@
 {% block nav %}
 <!-- 상단바 영역 시작 -->
 <style>
+    *{
+        -webkit-user-select: text; /* Safari fallback only */
+        -webkit-user-select: text; /* Chrome/Safari */
+        -moz-user-select: text; /* Firefox */
+        -ms-user-select: text; /* IE10+ */
+    }
  .loader-main{
     bottom:0px !important;
     }
@@ -220,7 +226,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700;900&family=Pacifico&display=swap" rel="stylesheet"></head>
 
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -238,11 +244,11 @@
             <table min-width="300">
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">금액</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" value="{{form.amount.value|default_if_none:''}}"/></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" id="amount" name="amount" type="number" pattern="[0-9]*" inputmode="numeric" value=""/></th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">날짜</a></th>
-                    <th width="240" style="text-align: end;"><input class="input_span" type="date" id="date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="income_date" value="{{form.income_date.value|default_if_none:''}}"></th>
+                    <th width="240" style="text-align: end;"><input class="input_span" type="date" id="date" min="1900-01-01" max="2099-12-31" autocomplete="off" name="income_date" value=""></th>
                 </tr>
                 <tr> <!-- 행선언 -->
                     <th width="200" height="60"><a class="span_list_title">카테고리</a></th>
@@ -273,7 +279,7 @@
         </div>
 
         <div style="text-align:center; margin-top:15px;">
-            <div class="addBtn" onclick="submit()" style="line-height:47px;">추가하기</div>
+            <div class="addBtn" onclick="check()" style="line-height:47px;">추가하기</div>
         </div>
     </div>
     </form>
@@ -285,27 +291,38 @@
     let today2 = today.format('YYYY-MM-DD')
     $('#date').attr('value', today2);
     });
-    
-    function submit(){
-    var max_int = 210000000;
 
+var doubleSubmitFlag = false;
+
+function doubleSubmitCheck() {
+        if (doubleSubmitFlag) {
+        return doubleSubmitFlag;
+        } else {
+        doubleSubmitFlag = true;
+        return false;
+        }
+    }
+
+    function check(){
+    var max_int = 210000000;
     if ($('#amount').val() == '') {
         alert('금액을 입력해주세요.');
+        $("#amount").focus();
         return false;
     }
-    else if ($('#amount').val() >= max_int) {
+    if ($('#amount').val() >= max_int) {
         alert('입력받을수 있는 금액 범위를 초과하였습니다.');
+        $("#amount").focus();
         return false;
     }
-    else if ($('#date').val() == '') {
+    if ($('#date').val() == '') {
         alert('날짜를 선택해주세요.');
+        $("#date").focus();
         return false;
     }
-    else if ($('#where').val() == '') {
-        alert('소비처를 작성해주세요.');
-        return false;
-    }
-    else{
+    if (doubleSubmitCheck()) {
+    return false;
+    }else{
     const form = document.getElementById('income_form');
     form.action="{% url 'calendars:add_income_calendar' %}"
     form.submit();

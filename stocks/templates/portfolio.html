@@ -13,17 +13,61 @@
     padding: 7px 0 5px 0;
     border-bottom: 2px solid #93bcf9;
     }
+  /* 요약페이지 페이지네이션 */
+  .pagenation{
+    background-color: lightgrey;
+    z-index: 10;
+    padding:0;
+    bottom: 70px;
+    left: 50%;
+    position: fixed;
+    vertical-align: middle;
+    text-align: center;
+    width: 50%;
+    height: 30px;
+    border-radius: 20px;
+    margin: 0 auto;
+    transform: translate(-50%, 0);
+  }
+  .pagenation li{
+    padding-top: 2px;
+    font-weight: 500;
+    border-radius: 20px;
+    width : 48%;
+    height: 30px;
+    display:inline-block;
+  }
+  #pagenation_portfolio{
+    background-color: #93bcf9;
+    width : 49%;
+  }
+  #pagenation_portfolio a{
+    color: #fff;
+  }
+  #pagenation_recommend a{
+    color: white;
+  }
 </style>
 {% load mytag %}
+
+<!-- pagenation -->
+<div class="pagenation">
+  <ul style="padding-left: 0 !important;">
+    <li id="pagenation_portfolio"><a style="font-size: 13px;" href="{% url 'stocks:portfolio' %}">포트폴리오</a></li>
+    <li id="pagenation_recommend"><a style="padding-right: 13px;" href="{% url 'stocks:suggestion' %}">추천</a></li>
+  </ul>
+</div>
+
 <div class="portfolio-wrapper">
-    <div class="portfolio-title"><strong>{{user.uid}}</strong>님의</div>
+    <div class="portfolio-title"><strong>{{user.username}}</strong>님의</div>
     <div class="portfolio-title"><strong>포트폴리오</strong></div>
 <div>
     <!-- staff 권한을 가진 계정만 per pbr 버튼 활성화 -->
     {% if user.is_staff == True %}
         <div>
             <a>아래 버튼은 관리자 권한을 가진 사용자만 보입니다.</a>
-            <button class="perPbr-Btn" onclick="fn_set_PER_PBR()">PER, PBR 넣기</button>
+            <button id="kospi" class="perPbr-Btn" value="kospi">코스피 PER, PBR 넣기</button>
+            <button id="nasdaq" class="perPbr-Btn2" value="nasdaq">나스닥 PER, PBR 넣기</button>
         </div>
     {% else %}{% endif %}
 
@@ -35,9 +79,9 @@
 {% comment %} <div style="text-align:center;font-size:22px;">{{total_current_amount|intcomma}}원</div> {% endcomment %}
 <!--<div style="text-align:center;font-size:22px;">{{total_invest_amount|intcomma}}원</div>-->
 
-    <div style="text-align:center;font-size:22px;font-weight:bold;">{{total_current_price|intcomma}}원</div>
+    <div style="text-align:center;font-size:22px;font-weight:bold;">{{total_investment_amount|intcomma}}원</div>
     <div style="text-align:center;font-size:14px;color:white;">
-       {{total_current_price|sub:total_investment_amount|intcomma}} ({{total_current_price|yields:total_investment_amount|rounds:2}}%) </div>
+    {{total_investment_amount|sub:user_total_investment_amount|intcomma}} ({{total_investment_amount|yields:user_total_investment_amount|floatformat:2}}%) </div>
     <div class="my_stock"><a class="my_stock-btn" href="{% url 'stocks:stock' %}">보유 주식</a></div>
 
 </div>
@@ -45,9 +89,9 @@
 
 <div class="home-chart" id="home-chart" style="padding:20px;">
     <div class="title" style="color:black;margin-bottom:20px; font-size:16pt; font-weight:bold;">주식 정보</div>
-    <div style="text-align:center;font-size:14px;text-align:left;">내 가상 자산 {{ user.invest|intcomma }} 원에서 {{total_use_investment_amount|yields:user.invest|rounds:2}}% 증가</div>
+    <div style="text-align:center;font-size:14px;text-align:left;">내 가상 자산 {{ user.invest|intcomma }} 원에서 {{total_invest|yields:user.invest|floatformat:2}}% 증가</div>
     <div style="text-align:center;font-size:14px;text-align:left;">총 가상 자산 : {{ user.invest|add:total_use_investment_amount|intcomma}}원</div>
-    <div style="text-align:center;font-size:14px;text-align:left;">손익금 : {{total_use_investment_amount|intcomma}}원</div>
+    <div style="text-align:center;font-size:14px;text-align:left;">손익금 : {{total_profit_n_loss|intcomma}}원</div>
 
         <div class="chart-legend">
             <div><a style="color: #4c8ae5; padding-right: 5px;">■</a><a>가상 잔여 금액</a><a
@@ -55,7 +99,7 @@
             <div><a style="color: #ff5d51; padding-right: 5px;">■</a><a>구매한 주식</a><a
                     style="float: right;">{{total_investment_amount|intcomma}}원</a></div>
             <div><a style="color: #ffd85a; padding-right: 5px;">■</a><a>손익금</a><a
-                    style="float: right;">{{total_use_investment_amount|intcomma}}원</a></div>
+                    style="float: right;">{{total_profit_n_loss|intcomma}}원</a></div>
         </div>
 
         <canvas id="myChart2" width="100" height="100" style="margin-top: 50px; pointer-events: none;"></canvas>
@@ -97,7 +141,7 @@
 
 
 
-<div class="stock-container" style="margin-top:20px;">
+<div class="stock-container" style="margin-top:20px; margin-bottom:50px;">
     <span class="stock-container-side">금일 기준</span>
     <div class="stock-container-title">주문 가능 금액</div>
     <div style="text-align:center;font-size:22px;">{{user.invest|sub:total_investment_amount|add:total_use_investment_amount|intcomma}}원</div>
@@ -105,44 +149,23 @@
     </div>
 </div>
 
-   <div style="background-color:#fff; margin:20px 5% 40px 5%; padding: 10px;">
-    <div style="text-align:left; font-weight: bold; font-size:16px;">
-      <a style="font-weight: bold; font-family: 'Noto Sans KR', sans-serif; font-size:16pt;">포트폴리오 기반 추천 Top 5</a>
-    </div>
-        <form id="form" method="post">
-            {% csrf_token %}
-            <input type="hidden" id="issuecode" name="issuecode">
-            <input type="hidden" id="marketcode" name="marketcode">
-        </form>
-    <div>
-      <ol style="padding-left: 1rem !important;">
-        <table style="width: 100%; margin-top:10px; border-collapse:inherit;">
-          {% for recom in category_stock %}
-          <tr onclick="info('{{ recom.1 }}','{{ recom.4 }}')">
-            <td width='10'>
-              <li style="font-weight: bold; color:#8e8e8e;"></li>
-            </td>
-            <td class="spendTop5-tableTitle" width='50'>
-              <a>{{recom.5}}</a>
-            </td>
-            <td style="text-align: right;" width='25'>
-              <a style="font-weight:400; color:#3a3a3a">{{ recom.1|truncatechars:500|intcomma }}원</a>
-            </td>
-          {% empty %}
-          <div class="summary-nodata-wrap">
-            <a>주식 구매후 추천해드릴게요</a>
-          </div>
-            {% endfor %}
-        </table>
-      </ol>
-    </div>
-  </div><!-- 건수 탑5 div 끝-->
-
 <script>
 $(document).ready(function(){
     //$('.footer-selector').fadeIn(550);
 });
 </script>
+<script>
+    var myElement = document.getElementById('container');
+
+    // create a simple instance
+    // by default, it only adds horizontal recognizers
+    var mc = new Hammer(myElement);
+
+    // listen to events...
+    mc.on("swipeleft", function(ev) {
+        window.location.href="/suggestion";
+    });
+  </script>
 <script>
     var csrftoken = getCookie('csrftoken');
     function getCookie(cname) {
@@ -161,13 +184,28 @@ $(document).ready(function(){
         return "";
     }
 
-    function fn_set_PER_PBR() {
+    // 코스피 나스닥 perpbr 버튼에 따른 함수 실행
+    $('.perPbr-Btn ,.perPbr-Btn2').click(function() {
+        var $this = $(this);
+        console.log($this);
+        if ($this.hasClass('perPbr-Btn')){
+            alert('코스피 버튼 클릭');
+            alert($('.perPbr-Btn').val());
+            value = $('.perPbr-Btn').val();
+        }
+        else{
+            alert('나스닥 버튼 클릭');
+            alert($('.perPbr-Btn2').val());
+            value = $('.perPbr-Btn2').val();
+        }
+        
         var headers = new Headers();
         headers.append('Content-Type', 'application/json')
         headers.append('X-CSRFToken', csrftoken)
         fetch('/per_pbr_update', {
             method: "POST",
             headers: headers,
+            body: JSON.stringify(value),
         })
         .then(res => {
             if(res.status === 200) return res.json();
@@ -179,7 +217,8 @@ $(document).ready(function(){
         .catch(err => {
             console.log(err)
         })
-    }
+        
+    });
 
     function info(issuecode, marketcode) {
         document.getElementById('issuecode').value = issuecode;

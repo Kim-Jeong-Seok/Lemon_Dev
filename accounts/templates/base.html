@@ -30,6 +30,7 @@
   <meta name="msapplication-TileImage" content="media/favicon/ms-icon-144x144.png">
   <meta name="theme-color" content="#ffffff">
   <meta charset="UTF-8">
+
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta http-equiv="Expires" content="-1">
@@ -41,7 +42,7 @@
   <!-- Bootstrap 선언 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js" type="text/javascript"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
       crossorigin="anonymous"></script>
@@ -76,6 +77,18 @@
   </head>
 
   <style>
+    #pin_save {
+      display: block;
+      caret-color: transparent !important;
+      font-size:18px;
+      border-radius: 10px;
+      margin-top: 30px;
+      width: 80%;
+      border: 1px solid #93bcf9;
+      /*padding-left: 35px;*/
+      letter-spacing: 43px;
+      text-align: center;
+    }
   .fa-home,
 .fa-calendar,
 .fa-portfolio,
@@ -83,12 +96,6 @@
 .fa-myinfo{
 filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) contrast(95%) !important;
 }
-  * { -ms-user-select: none;
-      -moz-user-select: -moz-none;
-      -khtml-user-select: none;
-      -webkit-user-select: none;
-      user-select: none; }
-
     a:link, a:visited, a:hover {
         color: #2b2b2b;
         text-decoration-line: none;
@@ -167,6 +174,7 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
     $( document ).ready(function() {
       $('#container').hide();
       $('#container').fadeIn(150);
+
     });
 
         $(window).on('load',function(){
@@ -196,7 +204,11 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
     });
 
     function pin_saver(pin){
-      let password = $('#pin').val()
+      var password =  passwordList[0].innerHTML + passwordList[1].innerHTML + passwordList[2].innerHTML +  passwordList[3].innerHTML;
+        if (!password.match(/^[0-9]{4}$/)) {
+           alert('Pin 번호 4자리를 입력해주세요.');
+             return false;
+        }
         if ( password == pin ){
           $('.pin_saver').fadeOut()
           $('.fa-search').show()
@@ -207,31 +219,213 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
             } else {
                 alert('핀번호가 틀렸습니다.');
             }
-    }
-    </script>
+         }
+          </script>
+        <style>
+          .pin-code input {
+          border: none;
+          text-align: center;
+          width: 48px;
+          height:48px;
+          font-size: 20px;
+          margin-right:5px;
+          padding-bottom: 10px;
+          }
 
+        .pin-code input:focus {
+          border: 1px solid #573D8B;
+          outline:none;
+        }
+
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+            }
+          </style>
     <!-- 핀 번호 로드 -->
     <div id="pin-preload">
         <div class="pin_saver">
-            <div class="pin-input-wrap" style="flex-direction: column;">
-                <input type="password" pattern="[0-9]*" inputmode="numeric" name="pin" id="pin" maxlength='4' />
-                  <a id="forget-pin-kakao-link" style="color: rgba(0, 0, 0, 0.5); text-decoration: underline;">Pin번호를 잊으셨나요?</a>
-                </div>
-                <div>
-            </div>
-            <div class="pin-btn-wrap">
-                <div onclick="pin_saver({{user.pin}})" class="pinBtn">Pin 번호</div>
-            </div>
+               <div class="pin-wrap" style="padding-top:155px;flex-direction: column;">
+        <div id="pw_container">
+<ul id="password">
+  <li class="pas5" id="pin_1"></li>
+  <li class="pas6" id="pin_2"></li>
+  <li class="pas7" id="pin_3"></li>
+  <li class="pas8" id="pin_4"></li>
+</ul>
+  </div>
+<div id="numbers">
+  <div class="li li1"><p>1</p></div>
+  <div class="li li2"><p>2</p></div>
+  <div class="li li3"><p>3</p></div>
+  <div class="li li4"><p>4</p></div>
+  <div class="li li5"><p>5</p></div>
+  <div class="li li6"><p>6</p></div>
+  <div class="li li7"><p>7</p></div>
+  <div class="li li8"><p>8</p></div>
+  <div class="li li9"><p>9</p></div>
+  <div class="li10"><p><i class="fas fa-backspace"></i></p></div>
+  <div class="li li11"><p>0</p></div>
+</div>
+
+    </div>
+      <input type="hidden" id="pin_change" name="pin">
+    <div class="pin-btn-wrap">
+      <button class="pin-btn" type="button" onclick="pin_saver({{user.pin}})">Pin 번호 변경</button>
+    </div>
         </div>
     </div>
-
     <form id="pin_form" method="post">
         {% csrf_token %}
     </form>
     {% endif %}
-    
+  <script>
+        let password = document.querySelector("#password");
+        let passwordList = document.querySelectorAll("#password li");
+        let pas1 = document.querySelector(".pas5");
+        let pas2 = document.querySelector(".pas6");
+        let pas3 = document.querySelector(".pas7");
+        let pas4 = document.querySelector(".pas8");
+        let numbers = document.querySelector("#numbers");
+        let numberList = document.querySelectorAll(".li");
+        let li1 = document.querySelector(".li1");
+        let li2 = document.querySelector(".li2");
+        let li3 = document.querySelector(".li3");
+        let li4 = document.querySelector(".li4");
+        let li5 = document.querySelector(".li5");
+        let li6 = document.querySelector(".li6");
+        let li7 = document.querySelector(".li7");
+        let li8 = document.querySelector(".li8");
+        let li9 = document.querySelector(".li9");
+        let li0 = document.querySelector(".li11");
+        let backspace = document.querySelector(".li10");
 
- <!-- 페이지 로딩 에니메이션 -->
+        let click1 = false;
+        let click2 = false;
+        let click3 = false;
+        let click4 = false;
+
+        let errorCount = 0;
+
+        numberList.forEach(function(elem) {
+          elem.addEventListener("click", function() {
+            moveClick(elem.children[0].innerHTML);
+          });
+        });
+
+        function moveClick(parm){
+          if (click1 == false){
+            click1 = true;
+            passwordList[0].innerHTML = parm;
+          } else if (click2 == false){
+            click2 = true;
+            passwordList[1].innerHTML = parm;
+          } else if (click3 == false){
+            click3 = true;
+            passwordList[2].innerHTML = parm;
+          } else if (click4 == false){
+            click4 = true;
+            passwordList[3].innerHTML = parm;
+
+          };
+        };
+
+        backspace.addEventListener("click", backspaceFunc);
+
+        function backspaceFunc(){
+          console.log("delete");
+          password.style.backgroundColor = "inherit";
+            password.style.color = "inherit";
+          if (click4 == true){
+            click4 = false;
+            passwordList[3].innerHTML = "";
+          } else if (click3 == true){
+            click3 = false;
+            passwordList[2].innerHTML = "";
+          } else if (click2 == true){
+            click2 = false;
+            passwordList[1].innerHTML = "";
+          } else if (click1 == true){
+            click1 = false;
+            passwordList[0].innerHTML = "";
+          };
+        }
+  </script>
+ <style>
+#retry {
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            background-color: yellow;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+        }
+
+h1 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#pw_container {
+  width: 50%;
+  margin: 0 auto;
+}
+
+#password {
+  list-style: none;
+  border: 2px grey solid;
+  height: 40px;
+  padding-left: 0;
+  text-align: center;
+  border-radius:10px;
+}
+
+#password li {
+  display: inline-block;
+  font-size: 25px;
+}
+
+#numbers {
+  display: grid;
+  width: 300px;
+  height: 400px;
+  margin: 0 auto;
+  margin-top: 20px;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-gap: 1px 1px;
+}
+
+#numbers .li, .li10, .li12 {
+  margin: 0 auto;
+  border-radius: 90%;
+  background-color: #e4e4e4;
+  width: 90%;
+  height: 90%;
+  cursor: pointer;
+}
+
+#numbers .li p, .li10 p, .li12 p {
+  text-align: center;
+  font-size: 30px;
+  margin-top: 22px;
+}
+
+#numbers .li:hover, .li10:hover, .li12:hover  {
+  background-color: #cccccc;
+}
+
+#numbers .li:active, .li10:active, .li12:active {
+  background-color: grey;
+}
+</style>
+  <!-- 페이지 로딩 에니메이션 -->
   <div id="page-preloader">
       <div class="loader-main">
           <div class="la-ball-clip-rotate">
@@ -246,8 +440,7 @@ filter: invert(78%) sepia(70%) saturate(1%) hue-rotate(2deg) brightness(94%) con
   <div id="nav">
     <div>
       <div style="margin-left:15px; float:left; width:35%;">
-          <img onclick="location.href='{% url 'calendars:home' %}'" src="{% static 'main/assets/img/lemon_horizontal.png'%}"
-                width="100px">
+          <img onclick="location.href='{% url 'calendars:home' %}'" src="{% static 'main/assets/img/lemon_horizontal.png'%}" width="100px">
       </div>
       <div style="margin-right:15px; float:right;">
           <a href="{% url 'stocks:search_stock' %}"><i class="fa fa-search" style="color:#93bcf9"></i></a>

@@ -8,18 +8,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
   <link rel="stylesheet" href="{% static 'css/style.css'%}">
   <link rel="stylesheet" href="{% static 'css/account.css'%}">
-    <!-- Fontawesome 선언 -->
-    <script src="https://kit.fontawesome.com/51db22a717.js" crossorigin="anonymous"></script>
+  <!-- Fontawesome 선언 -->
+  <script src="https://kit.fontawesome.com/51db22a717.js" crossorigin="anonymous"></script>
   <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-  <title>레몬::회원가입</title>
+  <title>레몬::소셜-추가정보</title>
 </head>
 
 <style>
-  body,html{
+  body, html {
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow:hidden;
   }
   select {
     border-radius:0; /* 아이폰 사파리 보더 없애기 */
@@ -32,17 +31,17 @@
   /* Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-  -webkit-border-radius: 0;
+    -webkit-appearance: none;
+    margin: 0;
+    -webkit-border-radius: 0;
   }
   /* Firefox */
   input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
   }
-  .idVailed_btn{
+  .idVailed_btn {
     float: right;
-    margin-top: 15px;
+    margin-top: 11px;
     margin-right: 0px;
     width: 73px;
     height: 35px;
@@ -58,31 +57,33 @@
     border-radius: 10px;
     line-height: 35px;
   }
-  .signup-form{
-  padding-top:5px;
+  .signup-form {
+    padding-top:5px;
   }
-  .options_info{
-  padding-top:5px;
+  .options_info {
+    padding-top:5px;
   }
 </style>
 
 <body>
-<div style="height:100%;overflow:scroll">
 <!-- 회원가입 navbar -->
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
-    <div>
-        <a style="color: #fff;" href="{% url 'accounts:login' %}"><i class="fa fa-angle-left" style="position: absolute;
-    left: 5px;
-    padding: 14px 15px;
-    top: 0;
-    font-size: 25px;
-    font-weight: 600;color:black;"></i></a><div style="text-align:center;">회원가입</div>
-    </div>
+  <div>
+    <a style="color: #fff;" href="{% url 'accounts:login' %}">
+      <i class="fa fa-angle-left" style="position: absolute;
+      left: 5px;
+      padding: 14px 15px;
+      top: 0;
+      font-size: 25px;
+      font-weight: 600;color:black;"></i>
+    </a>
+    <div style="text-align:center;">추가정보 입력</div>
+  </div>
 </div>
 <!-- 회원가입 navbar 끝 -->
 <!-- 회원가입 Wrapper -->
 <div class="signup-wrapper" style="padding:70px 20px 40px 20px;">
-  <form class="validation-form" style="width:100%;" method="POST" action="{% url 'accounts:signup' %}" id="signupForm">
+  <form class="validation-form" style="width:100%;" method="POST" action="{% url 'accounts:social_info' %}" id="signupForm">
     {% csrf_token %}
     <div class="persnal_info_access" style="padding-bottom: 20px;">
       <div class="require_chk_wrap">
@@ -97,183 +98,137 @@
 
   <!-- 회원가입 폼 시작 -->
   <div class="signup-form-wrap"> 
-    <!-- 아이디 입력 input -->
-    <div class="signup-form">
-    <a>아이디 <strong>(필수)</strong></a><br>
-        <div style="display: flex; justify-content: space-between;">
-            <input type="text" class="add_info_select_signup" style="width:70%; margin-top: 10px; margin-bottom:10px;text-transform: lowercase;"
-          id="Vailduid" name="Vailduid" placeholder="(영문시작/숫자 포함 6~20자)" value="" ><div onclick="checkID();" id="check_ID" class="idVailed_btn">중복확인</div>
-        </div>
-        <br><input type="hidden" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;"
-          id="uid" name="uid" placeholder="" value="">
-    </div>
-
-    <!-- 비밀번호 입력 input -->
-    <div class="signup-form">
-    <a>비밀번호 <strong>(필수)</strong></a>
-        <input type="password" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;"
-          id="password" name="password" placeholder="" value="">
-    </div>
-
-    <!-- 비밀번호 입력2 input -->
-    <div class="signup-form">
-    <a>비밀번호 확인 <strong>(필수)</strong></a>
-        <input type="password" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;"
-          id="password1" name="password1" placeholder="" value="">
-    </div>
-
     <!-- 이름 입력 input -->
     <div class="signup-form">
-    <a>이름 <strong>(필수)</strong></a>
-        <input type="text" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;"
-          id="name" name="username" placeholder="" value="">
+      <a>이름 <strong>(필수)</strong></a>
+      <input type="text" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;" id="name" name="username" placeholder="" value="">
     </div>
 
     <!-- 이메일 입력 input -->
     <div class="signup-form">
-    <a>이메일 <strong>(필수)</strong></a>
-    <div style="display: flex; justify-content: space-between;">
-      <input type="email" class="add_info_select_signup" style="width: 70%; margin-top: 10px; margin-bottom:10px;" id="Vailemail" name="Vailemail" placeholder="" value="">
+      <a>이메일 <strong>(필수)</strong></a>
+      <div style="display: flex; justify-content: space-between;">
+        <input type="email" class="add_info_select_signup" style="width: 70%; margin-top: 10px; margin-bottom:10px;" id="Vailemail" name="Vailemail" placeholder="" value="">
         <div onclick="checkEmail();" id="check_Email" class="idVailed_btn">중복확인</div>
+      </div>
+      <input type="hidden" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;" id="email" name="email" placeholder="" value="">
     </div>
-    <input type="hidden" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;" id="email" name="email"
-        placeholder="" value="">
+
+    <!-- 생년월일 입력 input -->
+    <div class="signup-form">
+      <a>생년월일</a>
+      <input class="add_info_select_signup" name=birthday type="date" id="year" maxlength="8" placeholder="생년월일을 입력해주세요. 예시)19801210" style="margin-top: 10px; margin-bottom:25px;">
     </div>
+
     <!-- 핀번호 입력 input -->
-        <div class="signup-form">
-            <a>Pin번호 <strong>(필수)</strong></a>
-            <input type="number" name="pin" class="add_info_select_signup"
-                id="pin" placeholder="최대 4자리" value=""/>
-        </div>
+    <div class="signup-form">
+      <a>Pin번호 <strong>(필수)</strong></a>
+      <input type="number" name="pin" class="add_info_select_signup" id="pin" placeholder="최대 4자리" value=""/>
+    </div>
 
-
-
+    
+    <!-- 성별 입력 input -->
     <div class="options_info" id="options_info">
-            <!-- 생년월일 입력 input -->
-        <div class="signup-form" style="margin-top: 20px;">
-        <a>생년월일 (선택)</a>
-        <input class="add_info_select_signup" name=birthday type="date" id="year" maxlength="8" placeholder="생년월일을 입력해주세요. 예시)19801210" style="margin-top: 10px; margin-bottom:25px;">
-    </div>
-        <div class="signup-form">
-            <a>성별 (선택)</a>
-            <select name="gender" class="add_info_select" style="margin-top: 10px; margin-bottom:10px;">
-                <option value="0"> -- 선택 -- </option>
-                <option value="M"> 남자 </option>
-                <option value="F"> 여자 </option>
-            </select>
-        </div>
+      <div class="signup-form" style="margin-top: 20px;">
+        <a>성별 (선택)</a>
+        <select name="gender" class="add_info_select" style="margin-top: 10px; margin-bottom:10px;">
+          <option value="0"> -- 선택 -- </option>
+          <option value="M"> 남자 </option>
+          <option value="F"> 여자 </option>
+        </select>
+      </div>
 
-        <!-- 직업군 입력 input -->
-        <div class="signup-form">
-            <a>직업군 (선택)</a>
-            <select name=job class="add_info_select" style="margin-top: 10px; margin-bottom:10px;">
-                <option value="0"> -- 선택 -- </option>
-                <option value="1">학생</option>
-                <option value="2">직장인</option>
-                <option value="3">사업자</option>
-                <option value="4">공무원</option>
-                <option value="5">기타(프리랜서)</option>
-                <option value="6">무직</option>
-            </select>
-        </div>
+      <!-- 직업군 입력 input -->
+      <div class="signup-form">
+        <a>직업군 (선택)</a>
+        <select name=job class="add_info_select" style="margin-top: 10px; margin-bottom:10px;">
+          <option value="0"> -- 선택 -- </option>
+          <option value="1">학생</option>
+          <option value="2">직장인</option>
+          <option value="3">사업자</option>
+          <option value="4">공무원</option>
+          <option value="5">기타(프리랜서)</option>
+          <option value="6">무직</option>
+        </select>
+      </div>
 
-        <!-- 연락처 입력 input -->
-        <div class="signup-form">
-            <a>전화번호 (선택)</a>
-            <div style="width:100%;">
-                <div style="display: flex;align-items: center;justify-content: space-between;">
-                    <input class="add_info_phone_signup" id="vaildPhonenumber" name="vaildPhonenumber" type="number"
-                        placeholder="- 를 제외하고 입력하세요" style="margin-top: 10px; margin-bottom:5px;">
-                    <input type="hidden" name="phonenumber">
-                    <div id="codeBtn" class="phone_code_btn_signup">발송</div>
-                </div>
-                <div style="display: flex;align-items: center;justify-content: space-between;">
-                    <input id="inputCode" class="add_info_phonecode_signup" type="number" placeholder="인증번호 입력" disabled>
-                    <div style="display: flex; align-items: center;justify-content: space-between;"><a id="count"
-                            class="count-signup" style="width:50px;margin-top: 5px; margin-bottom:10px;"></a>
-                        <div id="certBtn" onclick="certfun();" class="phone_code_btn_signup" disabled>확인</div>
-                    </div>
-                </div>
+      <!-- 연락처 입력 input -->
+      <div class="signup-form">
+        <a>전화번호 (선택)</a>
+        <div style="width:100%;">
+          <div style="display: flex;align-items: center;justify-content: space-between;">
+            <input class="add_info_phone_signup" id="vaildPhonenumber" name="vaildPhonenumber" type="number" placeholder="- 를 제외하고 입력하세요" style="margin-top: 10px; margin-bottom:5px;">
+            <input type="hidden" name="phonenumber">
+            <div id="codeBtn" class="phone_code_btn_signup">발송</div>
+          </div>
+          <div style="display: flex;align-items: center;justify-content: space-between;">
+            <input id="inputCode" class="add_info_phonecode_signup" type="number" placeholder="인증번호 입력" disabled>
+            <div style="display: flex; align-items: center;justify-content: space-between;">
+              <a id="count" class="count-signup" style="width:50px;margin-top: 5px; margin-bottom:10px;"></a>
+              <div id="certBtn" onclick="certfun();" class="phone_code_btn_signup" disabled>확인</div>
             </div>
+          </div>
         </div>
-        <!-- 모의투자금액 입력 input -->
-        <div class="signup-form">
-            <a>모의투자 금액 (선택)</a>
-            <input type="number" class="add_info_select_signup" id="invest" name="invest" placeholder="모의 투자금액을 입력하세요."
-                value="0" style="margin-top: 10px; margin-bottom:25px;"><br>
+      </div>
 
-        </div>
+      <!-- 모의투자금액 입력 input -->
+      <div class="signup-form">
+        <a>모의투자 금액 (선택)</a>
+        <input type="number" class="add_info_select_signup" id="invest" name="invest" placeholder="모의 투자금액을 입력하세요." value="0" style="margin-top: 10px; margin-bottom:25px;">
+        <br>
+      </div>
     </div>
-    <!-- <button class="signup-btn" id="signupBtn" onclick="signup_check()" disabled style="width:100%">회원가입</button> -->
     <div class="signup-btn" id="signupBtn" onclick="signup_check();" style="width:100%">회원가입</span>
-  </div><!-- 회원가입 폼 끝 -->
+    </div><!-- 회원가입 폼 끝 -->
   </form>
 </div><!-- 회원가입 Wrapper 끝 -->
-</div>
 </body>
 
 <script>
-    // 이용약관도 체크 확인 하기
-    // 핸드폰 중복 확인
-    function signup_check() {
-        let require_chk =  $('input[id="require_chk2"]').is(":checked");
-        if (!require_chk) {
-            alert('이용약관을 동의해 주세요.')
-        }
-        else if ($('#uid').val() == '') {
-            alert('아이디 입력 또는 중복확인 해주세요.');
-            return false;
-        }
-        else if ($('#password').val() == '') {
-            alert('비밀번호를 입력해주세요.');
-            return false;
-        }
-        else if ($('#password1').val() == '') {
-            alert('한번더 비밀번호를 입력해주세요.');
-            return false;
-        }
-        else if ($('#password').val() !== $('#password1').val()) {
-            alert('비밀번호가 일치하지 않습니다.');
-            return false;
-        }
-        else if ($('#name').val() == '') {
-            alert('이름을 입력해주세요.');
-            return false;
-        }
-        else if ($('#email').val() == '') {
-            alert('이메일 입력 또는 중복확인 해주세요.');
-            return false;
-        }
-        else if (!$('#pin').val().match(/^[0-9]{4}$/)) {
-            alert('Pin 번호 4자리를 입력해주세요.');
-            return false;
-        }
-        else {
-            const form = document.getElementById('signupForm');
-            alert($('#name').val()+'님, 회원가입을 축하합니다.')
-            form.action = "{% url 'accounts:signup' %}"
-            form.submit();
-        }
+  /* Form 유효성 검사 START */
+  function signup_check() {
+    let require_chk =  $('input[id="require_chk2"]').is(":checked");
+    if (!require_chk) {
+      alert('이용약관을 동의해 주세요.')
     }
+    else if ($('#name').val() == '') {
+      alert('이름을 입력해주세요.');
+      return false;
+    }
+    else if ($('#email').val() == '') {
+      alert('이메일 입력 또는 중복확인 해주세요.');
+      return false;
+    }
+    else if (!$('#pin').val().match(/^[0-9]{4}$/)) {
+      alert('Pin 번호 4자리를 입력해주세요.');
+      return false;
+    }
+    else {
+      const form = document.getElementById('signupForm');
+      alert($('#name').val()+'님, 회원가입을 축하합니다.')
+      form.action = "{% url 'accounts:social_info' %}"
+      form.submit();
+    }
+  }
+  /* Form 유효성 검사 END */
 </script>
-
 <script>
-    $( document ).ready(function() {
-        let temp_date = document.getElementById('invest').value;
-        if (temp_date == 0) {
-            $('input[name=invest_date]').attr('value',date);
-        }
-    });
-
+/*
+  $( document ).ready(function() {
+    let temp_date = document.getElementById('invest').value;
+    if (temp_date == 0) {
+      $('input[name=invest_date]').attr('value', date);
+    }
+  });
+  */
 </script>
-
 <script>
-/* 전화번호 길이 검증 스크립트 */
-document.addEventListener('keydown', function(event) {
+  /* 전화번호 길이 검증 스크립트 */
+  document.addEventListener('keydown', function(event) {
     if (event.keyCode === 13) {
-        event.preventDefault();
+      event.preventDefault();
     };
-}, true);
+  }, true);
 
   document.addEventListener('keydown', function(event) {
   if (event.keyCode === 13) {
@@ -281,7 +236,6 @@ document.addEventListener('keydown', function(event) {
   };
 }, true);
 </script>
-
 <script>
     document.getElementById('codeBtn').addEventListener('click', codebtn);
 
@@ -332,7 +286,7 @@ document.addEventListener('keydown', function(event) {
         else{
             alert('전화번호를 확인해주세요.');
         }
-
+        
         // 난수 설정
         function makeRandomNum(n) {
             let value = '';
@@ -354,8 +308,6 @@ document.addEventListener('keydown', function(event) {
             $('#codeBtn').attr('disabled', true);
             $('#certBtn').attr('disabled', true);
             document.querySelector("#count").style.display = "none";
-            const element = document.getElementById('certBtn');
-            element.style.backgroundColor = 'grey';
         }
         else if(document.querySelector("#inputCode").value != KEY) {
             alert('인증번호가 일치하지 않습니다. 다시 확인해주세요.');
@@ -412,8 +364,6 @@ document.addEventListener('keydown', function(event) {
                         alert('사용가능한 아이디입니다.');
                         $('input[name=uid]').attr('value', vailID);
                         $('input[name=Vailduid]').attr('disabled', true);
-                        const element = document.getElementById('check_ID');
-                        element.style.backgroundColor = 'grey';
                     }
                 },
                 fail: function () {
@@ -449,8 +399,6 @@ document.addEventListener('keydown', function(event) {
                         alert('사용가능한 이메일입니다.');
                         $('input[name=email]').attr('value', vailEmail);
                         $('input[name=Vailemail]').attr('disabled', true);
-                        const element = document.getElementById('check_Email');
-                        element.style.backgroundColor = 'grey';
                     }
                 },
                 fail: function () {

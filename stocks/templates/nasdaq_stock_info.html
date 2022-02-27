@@ -107,18 +107,18 @@
 {% endblock nav %}
         {% if result %}
         <div class="title">
-                <div class="stock-name">{{ result.isuKorAbbrv }} </div>
-                <div class="code">{{ result.isuSrtCd }} </div>
+                <div class="stock-name">{{ result.companyName }} </div>
+                <div class="code">{{ result.symbol }} </div>
             <div class="pick {% if star == 1  %} gold {% endif %}" onclick="pick()"><i class="fas fa-star"></i></div>
             <div class="marketcode"> {{ result.marketcode }}</div>
-                <div class="curprice">{{ result.curPrice|intcomma }}원</div>
-                <div class="lastprice"> 종가 : {{ result.prevddClsprc|intcomma }}원</div>
+                <div class="curprice">{{ result.curPrice|mul:result.ex_rate|floatformat:0|intcomma }}원</div>
+                <div class="lastprice"> 종가 : {{ result.iexClose|mul:result.ex_rate|floatformat:0|intcomma }}원</div>
             <i class="fas fa-angle-up red"></i>
             <i class="fas fa-angle-down blue"></i>
             <i class="fas fa-minus"></i>
-                <div id="howup" style="display:inline-block;"> {{  result.curPrice|sub:result.prevddClsprc|intcomma }}</div><div class="percent" style="display:inline-block">원</div>
-                 <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|floatformat:3 }}%)</div>
-                 {% comment %} <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.prevddClsprc|floatformat:2 }}%)</div> {% endcomment %}
+                <div id="howup" style="display:inline-block;"> {{  result.curPrice|sub:result.iexClose|mul:result.ex_rate|floatformat:0|intcomma }}</div><div class="percent" style="display:inline-block">원</div>
+                 <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.iexClose|floatformat:3 }}%)</div>
+                 {% comment %} <div class="percent" style="display:inline-block;">({{ result.curPrice|div:result.iexClose|floatformat:2 }}%)</div> {% endcomment %}
         </div>
         {% else %}
             상세정보가 없습니다.
@@ -166,9 +166,9 @@
     </table>
                 <div class="buy">
                 <input type="hidden" id="buy_marketcode" name="buy_marketcode" value="{{ result.marketcode }}">
-                <input type="hidden" id="buy_issuecode" name="buy_issuecode" value="{{ result.isuSrtCd }}">
-                <input type="hidden" id="buy_price" name="price" value="{{ result.curPrice}}"/>
-                <div class="title_1">현재가</div><input type="text" name="price" value="{{ result.curPrice|intcomma}}"/>
+                <input type="hidden" id="buy_issuecode" name="buy_issuecode" value="{{ result.symbol }}">
+                <input type="hidden" id="buy_price" name="price" value="{{ result.curPrice|mul:result.ex_rate|floatformat:0 }}"/>
+                <div class="title_1">현재가</div><input type="text" name="price" value="{{ result.curPrice|mul:result.ex_rate|floatformat:0|intcomma}}"/>
                 <div class="title_1">주문 가능 주 </div><input disabled type="text" id="howmuch" value=" "/>
                 <div class="title_1">주</div><input type="number" id="buy_share" name="buy_share" value=""/>
                     <div style="display: flex;justify-content: space-between;padding:10px">
@@ -182,8 +182,8 @@
 
                 <div class="sell" style="display:none;">
                 <input type="hidden" id="sold_marketcode" name="sold_marketcode" value="{{ result.marketcode }}">
-                <input type="hidden" id="sold_issuecode" name="sold_issuecode" value="{{ result.isuSrtCd }}">
-                    <input type="hidden" id="sold_price" name="price" value="{{ result.curPrice}}"/>
+                <input type="hidden" id="sold_issuecode" name="sold_issuecode" value="{{ result.symbol }}">
+                <input type="hidden" id="sold_price" name="price" value="{{ result.curPrice}}"/>
                 <div class="title_1">현재가</div><input type="text" name="price" value="{{ result.curPrice|intcomma}}"/>
                 <div class="title_1">보유주</div><input type="text" id="curr_share" disabled name="price" value="{{ result.share.0 }}"/>
                 <div class="title_1">주</div><input type="number" id="sold_share" name="sold_share" value=""/>
@@ -681,9 +681,9 @@ var myChart4 = new Chart(ctx, {
     };
 </script>
 <script>
-    var csrftoken = getCookie('csrftoken');
+    let csrftoken = getCookie('csrftoken');
     function getCookie(cname) {
-        var name = cname + "=";
+        let name = cname + "=";
             decodedCookie = decodeURIComponent(document.cookie);
             ca = decodedCookie.split(';');
         for(var i = 0; i <ca.length; i++) {
@@ -699,7 +699,7 @@ var myChart4 = new Chart(ctx, {
     }
 
 <!--    async function get_current_price(marketcode, issuecode, result_position) {-->
-<!--        var result_text = document.getElementsByClassName(result_position);-->
+<!--        let result_text = document.getElementsByClassName(result_position);-->
 <!--            data = { marketcode, issuecode };-->
 <!--            result = await fn_koscom(data);-->
 <!--        console.log(JSON.stringify(result.result));-->
@@ -786,16 +786,16 @@ var myChart4 = new Chart(ctx, {
     }
 
     function fn_buy_stock() {
-        var marketcode = document.getElementById('buy_marketcode').value;
-        var issuecode = document.getElementById('buy_issuecode').value;
-        var current_price = document.getElementById('buy_price').value;
-        var share = parseInt(document.getElementById('buy_share').value);
-        var howmuch = parseInt($('#howmuch').val());
+        let marketcode = document.getElementById('buy_marketcode').value;
+        let issuecode = document.getElementById('buy_issuecode').value;
+        let current_price = document.getElementById('buy_price').value;
+        let share = parseInt(document.getElementById('buy_share').value);
+        let howmuch = parseInt($('#howmuch').val());
         if(share == '' || share == 0) {
             alert('구매할 주를 입력해주세요.');
         }
         else if(share > howmuch) {
-            alert('구매 가능한 주를 입력해주세요.' + typeof(share) + typeof(howmuch));
+            alert('구매 가능한 주를 입력해주세요.');
         }
         else{
             var headers = new Headers();
@@ -824,12 +824,12 @@ var myChart4 = new Chart(ctx, {
     }
 
     function fn_sold_stock() {
-        var marketcode = document.getElementById('sold_marketcode').value
+        let marketcode = document.getElementById('sold_marketcode').value
             issuecode = document.getElementById('sold_issuecode').value
             current_price = document.getElementById('buy_price').value
-            share = document.getElementById('sold_share').value;
+            share = parseInt(document.getElementById('sold_share').value);
             curr_share = document.getElementById('curr_share').value;
-        var sold_stock =  curr_share - share ;
+        let sold_stock =  curr_share - share ;
             if (sold_stock < 0 ){
                 alert("보유 주식보다 더 많이 매도할 수 없습니다.");
             }
@@ -857,13 +857,13 @@ var myChart4 = new Chart(ctx, {
             var here = window.location.href;
             location.replace(here);
         }
-        }
+    }
 
     function fn_get_selectivemaster() {
-        var marketcode = document.getElementById('buy_marketcode').value
+        let marketcode = document.getElementById('buy_marketcode').value
             issuecode = document.getElementById('buy_issuecode').value
 
-        var headers = new Headers();
+        let headers = new Headers();
         headers.append('Content-Type', 'application/json')
         headers.append('X-CSRFToken', csrftoken)
         var data = { marketcode, issuecode }
@@ -885,17 +885,17 @@ var myChart4 = new Chart(ctx, {
     }
 
     function fn_currentPrice() {
-        var result_text = document.getElementsByName('price');
+        let result_text = document.getElementsByName('price');
         for (i=0; i < result_text.length; i++)
             result_text[i].value = document.getElementsByClassName('current_price')[0].innerText;
     }
 
     // 업종분류 업데이트
     function fn_stocksector_update() {
-        var stocksector_update_alert = document.getElementById('stocksector_update_alert');
+        let stocksector_update_alert = document.getElementById('stocksector_update_alert');
         stocksector_update_alert.innerText = 'Please wait until the stocksector updating is over';
 
-        var headers = new Headers();
+        let headers = new Headers();
         headers.append('Content-Type', 'application/json')
         headers.append('X-CSRFToken', csrftoken)
         fetch('/stocksector_update', {
@@ -941,7 +941,7 @@ $( document ).ready(function() {
     }
 });
 $( document ).ready(function() {
-var number = {{user.invest|add:result.total_use_investment_amount|div:result.curPrice|floatformat}};
+var number = {{user.invest|add:result.total_use_investment_amount|div:result.curPrice|div:result.ex_rate}};
 var final = Math.trunc(number);
 $('#howmuch').val(final);
 });
@@ -955,7 +955,7 @@ $.ajaxSetup({
         alert('관심 종목에 등록이 되었습니다.');
          $.ajax({
         type:'post',
-        url:'{% url 'stocks:boomark' result.marketcode result.isuSrtCd  %}',
+        url:'{% url 'stocks:boomark' result.marketcode result.symbol  %}',
         data:JSON.stringify(data),
         success:function(json){
         $('.pick').addClass('gold');
@@ -969,7 +969,7 @@ $.ajaxSetup({
         alert('관심 종목에 등록이 해지 되었습니다.');
          $.ajax({
         type:'post',
-        url:'{% url 'stocks:boomark' result.marketcode result.isuSrtCd  %}',
+        url:'{% url 'stocks:boomark' result.marketcode result.symbol  %}',
         data:JSON.stringify(data),
         success:function(json){
         $('.pick').removeClass('gold');
@@ -982,7 +982,7 @@ $.ajaxSetup({
 
 </script>
 <div  style="display:none;">
-    <form action = "{% url 'stocks:boomark' result.marketcode result.isuSrtCd  %}" method="POST" id="form3">
+    <form action = "{% url 'stocks:boomark' result.marketcode result.symbol  %}" method="POST" id="form3">
         {% csrf_token %}
     </form>
 </div>

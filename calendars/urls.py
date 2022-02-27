@@ -10,7 +10,7 @@ app_name = 'calendars'
 
 urlpatterns = [
 
-    path('', views.home, name='home'),
+    path('home', views.home, name='home'),
     path('top5', views.top5, name='top5'),
     path('summary', views.summary, name='summary'), # 요약페이 지
     path('recom', views.recom, name='recom'), # 추천페이지
@@ -26,6 +26,7 @@ urlpatterns = [
     path('category_detail/<int>', views.category_detail, name= 'category_detail'),
     path('delete_shistory/<int:spend_id>', views.delete_shistory, name='delete_shistory'),
     path('delete_ihistory/<int:income_id>', views.delete_ihistory, name='delete_ihistory'),
+    path('spend_search_result', views.spend_search_result, name='spend_search_result'),
 
     path('ajax_pushdate', views.ajax_pushdate, name='ajax_pushdate'),
     path('ajax_sendSMS', views.ajax_sendSMS, name='ajax_sendSMS'),

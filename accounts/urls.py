@@ -9,7 +9,7 @@ from django.conf.urls.static import static
 app_name='accounts'
 
 urlpatterns = [
-    path('main', views.main, name='main'),
+    path('', views.main, name='main'),
     path('myinfo', views.myinfo, name='myinfo'),
     path('signup', views.signup, name='signup'),
     path('login', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
@@ -30,7 +30,7 @@ urlpatterns = [
 
     path('ajax_checkID/', views.ajax_checkID, name="ajax_checkID"),  # 아이디중복 체크
     path('ajax_checkEmail/', views.ajax_checkEmail, name="ajax_checkEmail"),  # 이메일 중복 체크
-    
+    path('social/info/', views.social_info, name="social_info"),  # 소셜 로그인 추가정보 입력
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
