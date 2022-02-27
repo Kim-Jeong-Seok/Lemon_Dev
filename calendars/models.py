@@ -24,7 +24,7 @@ class Cardlist(models.Model):
         db_table = 'cardlist'
 
 class Category(models.Model):
-    category_id = models.IntegerField(primary_key=True)
+    category = models.IntegerField(primary_key=True)
     category_name = models.CharField(max_length=30, blank=True, null=True)
 
     class Meta:
@@ -39,10 +39,10 @@ class Spend(models.Model):
     amount = models.IntegerField(blank=True, null=True)
     place = models.CharField(max_length=100, blank=True, null=True)
     way = models.IntegerField(blank=True, null=True)
-    category = models.ForeignKey(Category, models.DO_NOTHING, db_column='category', blank=True, null=True)
+    category = models.OneToOneField(Category, models.DO_NOTHING, db_column='category', blank=True, null=True)
     card = models.ForeignKey(Cardlist, models.DO_NOTHING, db_column='card', blank=True, null=True)
     memo = models.TextField(blank=True, null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
     stock = models.CharField(max_length=100, blank=True, null=True)
     class Meta:
         managed = False
@@ -57,7 +57,7 @@ class Income(models.Model):
     amount = models.IntegerField(blank=True, null=True)
     income_way = models.IntegerField(blank=True, null=True)
     memo = models.TextField(blank=True, null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False

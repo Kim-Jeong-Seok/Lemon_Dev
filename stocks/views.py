@@ -12,6 +12,10 @@ from accounts import models as acc_models
 from stocks.models import Stocksector
 from django.db.models import Sum, Count, F
 from decimal import *
+from calendars.models import Spend, Income
+from accounts.models import user
+from calendars.models import *
+
 
 def search_stock(request):
     wntlr = Totalmerge.objects.all().values('id', 'name')
@@ -50,7 +54,8 @@ def portfolio(request):
         category_arr.append(i['sh_idxindmidclsscd'])
     for i in categorys_isurtcd:
         isurtcd_arr.append(i['sh_isusrtcd'])
-
+    stock_list = Category.objects.select_related('spend').filter(category=4)
+    print(stock_list)
     stock_suggestion1 = Totalmerge.objects.exclude(id__in = isurtcd_arr).filter(category__in =category_arr[0:3]).values("id",'per','pbr',"marketcode","name","category").annotate(
     ROA = (F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
     stock_suggestion2 =list(stock_suggestion1)
