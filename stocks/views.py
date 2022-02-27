@@ -104,31 +104,60 @@ def suggestion(request):
 def portfolio(request):
     result = {}
     stock_cal = cal.calculator()
+
     user_total_investment_amount = stock_cal.user_total_investment_amount(
         request.user.user_id)
+    s_stock_amout = stock_cal.S_total_investment(request.user.user_id)
+    print('s_stock_amout:',s_stock_amout)
+    b_stock_amout = stock_cal.B_total_investment(request.user.user_id)
+    print('b_stock_amout:',b_stock_amout)
+    #SB_amount = s_stock_amout / b_stock_amout
+    # print('SB_amount:',SB_amount)
+    # SB_amount2 = SB_amount * 100 -100
+    # print('SB_amount2:',SB_amount2)
+    # total_history_average_price = stock_cal.total_history_average_price(request.user.user_id)
+    # print('total_history_average_price:', total_history_average_price)
+    total_profit_amount = stock_cal.total_profit_amount(request.user.user_id)
+    print('---------',total_profit_amount)
+    print('user_total_investment_amount:',user_total_investment_amount)
     total_investment_amount = stock_cal.total_investment_amount(
         request.user.user_id)
+    print('total_investment_amount:',total_investment_amount)
     total_current_price = stock_cal.total_current_price(request.user.user_id)
+    print('total_current_price:',total_current_price)
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+    print('---------------------------')
+    print('total_use_investment_amount:',total_use_investment_amount)
     total_profit_n_loss = stock_cal.total_profit_n_loss(request.user.user_id)
+    print('total_profit_n_loss',total_profit_n_loss)
+    print('-------------')
     invest = request.user.invest
     total_invest = invest + total_use_investment_amount
-
-
-    if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False or user_total_investment_amount is False:
-        result['total_investment_amount'] = 0
-        result['user_total_investment_amount'] = 0
+    total_clac = total_investment_amount + total_use_investment_amount
+    print('total_clac:',total_clac)
+    if total_current_price is False:
         result['total_current_price'] = 0
-        result['total_use_investment_amount'] = 0
-        result['total_profit_n_loss'] = 0
-        result['total_invest'] = 0
     else:
-        result['user_total_investment_amount'] = user_total_investment_amount
-        result['total_investment_amount'] = total_investment_amount
         result['total_current_price'] = total_current_price
+    #if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False or user_total_investment_amount is False:
+        result['total_investment_amount'] = total_investment_amount
+        result['user_total_investment_amount'] = user_total_investment_amount
+        #result['total_current_price'] = 0
         result['total_use_investment_amount'] = total_use_investment_amount
         result['total_profit_n_loss'] = total_profit_n_loss
         result['total_invest'] = total_invest
+        result['total_clac'] = total_clac
+        result['total_profit_amount']=total_profit_amount
+        result['s_stock_amout']=s_stock_amout
+        result['b_stock_amout']=b_stock_amout
+
+    #else:
+    # result['user_total_investment_amount'] = user_total_investment_amount
+    # result['total_investment_amount'] = total_investment_amount
+    # result['total_current_price'] = total_current_price
+    # result['total_use_investment_amount'] = total_use_investment_amount
+    # result['total_profit_n_loss'] = total_profit_n_loss
+    # result['total_invest'] = total_invest
     return render(request, 'portfolio.html', result)
 
 

@@ -29,6 +29,13 @@ def yields(value, arg):
         return (value - arg) * 100 / arg
     else:
         return float('0')
+@register.filter
+def yields2(value, arg):
+    if value:
+        return (value / arg) * 100 - 100
+    else:
+        return float('0')
+
 
 
 @register.filter
