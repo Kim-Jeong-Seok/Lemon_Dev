@@ -43,11 +43,18 @@ class calculator:
         total_current_price = 0
         try:
             stockheld = Stockheld.objects.filter(sh_userid=user_id).exclude(sh_share__lte=0)
+            print(stockheld)
             if stockheld.exists():
+
                 for element in stockheld:
+                    print(stockheld)
                     current_price = koscom.api().get_current_price(element.sh_marketcode, element.sh_isusrtcd)
+
+                    print(current_price)
+
                     if current_price:
                         total_current_price += current_price * element.sh_share
+                        print(total_current_price)
                         return total_current_price
                     else:
                         return False
@@ -159,6 +166,60 @@ class calculator:
                         total=Sum(F('st_price') * F('st_share')))['total']
                     total_buy += stocktrading
                 return -total_buy
+            else:
+                return False
+        except Exception as e:
+            print('Error in total_buy_investment_amount: \n', e)
+            return False
+    def S_total_investment(self, user_id):
+            total_buy = 0
+            try:
+                stockheld = Stockheld.objects.filter(
+                    sh_userid=user_id).exclude(sh_share__lte=0)
+                if stockheld.exists():
+                    P = []
+                    for element in stockheld:
+                        stocktrading1 = Stocktrading.objects.filter(st_userid=user_id,
+                                                                   st_isusrtcd=element.sh_isusrtcd,
+                                                                   st_date__gt=element.sh_z_date,
+                                                                   st_kind = 'S').aggregate(
+                            total=Sum(('st_price') ))['total']
+
+                        if stocktrading1 == None:
+                            stocktrading1= Stocktrading.objects.filter(st_userid=user_id,
+                                                st_isusrtcd=element.sh_isusrtcd,
+                                                st_date__gt=element.sh_z_date,
+                                                st_kind = 'B').aggregate(
+                                                    total=-Sum(('st_price') ))['total']
+
+                        
+                        print(stocktrading1)
+                        total_buy += stocktrading1
+
+                    return total_buy
+                else:
+                    return False
+            except Exception as e:
+                print('Error in total_buy_investment_amount: \n', e)
+                return False
+    def B_total_investment(self, user_id):
+        total_buy = 0
+        try:
+            stockheld = Stockheld.objects.filter(
+                sh_userid=user_id).exclude(sh_share__lte=0)
+            if stockheld.exists():
+                for element in stockheld:
+                    stocktrading = Stocktrading.objects.filter(st_userid=user_id,
+                                                               st_isusrtcd=element.sh_isusrtcd,
+                                                               st_date__gt=element.sh_z_date,
+                                                               st_kind = 'B').aggregate(
+                        total=Sum(F('st_price') ))['total']
+
+                    print(stocktrading)
+
+                    total_buy += -stocktrading
+
+                return total_buy
             else:
                 return False
         except Exception as e:

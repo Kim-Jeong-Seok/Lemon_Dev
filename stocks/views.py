@@ -71,11 +71,11 @@ def suggestion(request):
         category_stock.append([stock_suggestion, issuecode, element['per'],
                               element['pbr'], element['marketcode'], element['name'], element['category']])
         print(category_stock)
-    nasdaq_category = nasdaq_test.objects.filter(category__in=category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
-    print(nasdaq_category)
-    nasdaq_top5 = Totalmerge.objects.exclude(id__in=isurtcd_arr).filter(category__in=nasdaq_category).values("id", 'per', 'pbr', "marketcode", "name", "category").annotate(ROA=(F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
-    print(nasdaq_top5)
-    nasdaq_top5_price = []
+        nasdaq = nasdaq_category.objects.filter(category__in=category_arr[0:3]).values_list('nasdaq_cname', flat=True).values("nasdaq_cname")
+        print(nasdaq)
+        nasdaq_top5 = Totalmerge.objects.exclude(id__in=isurtcd_arr).filter(category__in=nasdaq).values("id", 'per', 'pbr', "marketcode", "name", "category").annotate(ROA=(F('per') * Decimal('1.0') / F('pbr') * Decimal('1.0'))).order_by('-ROA')[0:5]
+        print(nasdaq_top5)
+        nasdaq_top5_price = []
 
 
     for element in nasdaq_top5:
@@ -102,14 +102,24 @@ def portfolio(request):
     stock_cal = cal.calculator()
     user_total_investment_amount = stock_cal.user_total_investment_amount(
         request.user.user_id)
+    print('user_total_investment_amount:',user_total_investment_amount)
     total_investment_amount = stock_cal.total_investment_amount(
         request.user.user_id)
+    print('total_investment_amount:',total_investment_amount)
     total_current_price = stock_cal.total_current_price(request.user.user_id)
+    print('total_current_price:',total_current_price)
     total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+    print('total_use_investment_amount:',total_use_investment_amount)
     total_profit_n_loss = stock_cal.total_profit_n_loss(request.user.user_id)
+    print('total_profit_n_loss:',total_profit_n_loss)
     invest = request.user.invest
+    print('invest:',invest)
     total_invest = invest + total_use_investment_amount
-
+    print('total_invest:',total_invest)
+    s_stock_amout = stock_cal.S_total_investment(request.user.user_id)
+    print('s_stock_amout:',s_stock_amout)
+    b_stock_amout = stock_cal.B_total_investment(request.user.user_id)
+    print('b_stock_amout:',b_stock_amout)
 
     if total_investment_amount is False or total_current_price is False or total_use_investment_amount is False or user_total_investment_amount is False:
         result['total_investment_amount'] = 0
@@ -125,6 +135,8 @@ def portfolio(request):
         result['total_use_investment_amount'] = total_use_investment_amount
         result['total_profit_n_loss'] = total_profit_n_loss
         result['total_invest'] = total_invest
+        result['s_stock_amout'] = s_stock_amout
+        result['b_stock_amout'] = b_stock_amout
     return render(request, 'portfolio.html', result)
 
 

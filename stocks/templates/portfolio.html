@@ -79,9 +79,9 @@
 {% comment %} <div style="text-align:center;font-size:22px;">{{total_current_amount|intcomma}}원</div> {% endcomment %}
 <!--<div style="text-align:center;font-size:22px;">{{total_invest_amount|intcomma}}원</div>-->
 
-    <div style="text-align:center;font-size:22px;font-weight:bold;">{{total_investment_amount|intcomma}}원</div>
+    <div style="text-align:center;font-size:22px;font-weight:bold;">{{total_current_price|intcomma}}원</div>
     <div style="text-align:center;font-size:14px;color:white;">
-    {{total_investment_amount|sub:user_total_investment_amount|intcomma}} ({{total_investment_amount|yields:user_total_investment_amount|floatformat:2}}%) </div>
+    {{total_investment_amount|sub:user_total_investment_amount|intcomma}} ({{s_stock_amout|yields2:b_stock_amout|floatformat:2}}%) </div>
     <div class="my_stock"><a class="my_stock-btn" href="{% url 'stocks:stock' %}">보유 주식</a></div>
 
 </div>
@@ -118,7 +118,7 @@
                         '#4c8ae5',
                         '#ff5d51',
                         '#ffd85a',
-                        
+
                     ],
                     borderColor: [
                         '#FFF',
@@ -198,7 +198,7 @@ $(document).ready(function(){
             alert($('.perPbr-Btn2').val());
             value = $('.perPbr-Btn2').val();
         }
-        
+
         var headers = new Headers();
         headers.append('Content-Type', 'application/json')
         headers.append('X-CSRFToken', csrftoken)
@@ -217,7 +217,7 @@ $(document).ready(function(){
         .catch(err => {
             console.log(err)
         })
-        
+
     });
 
     function info(issuecode, marketcode) {

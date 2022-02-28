@@ -99,14 +99,14 @@ class bookmark(models.Model):
 #나스닥 테스트용
 
 
-class nasdaq_test(models.Model):
+class nasdaq_category(models.Model):
     idnasdaq_num = models.AutoField(db_column='idnasdaq_num', primary_key=True)
     category = models.OneToOneField(
-        Totalmerge, models.DO_NOTHING, db_column='category', blank=True, null=True)
+    Totalmerge, models.DO_NOTHING, db_column='category', blank=True, null=True)
     nasdaq_cname = models.CharField(max_length=50)
     Kor = models.CharField(max_length=50)
     marketcode = models.CharField(max_length=30)
 
     class Meta:
         managed = False
-        db_table = 'nasdaq_test'
+        db_table = 'nasdaq_category'

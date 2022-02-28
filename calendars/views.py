@@ -237,8 +237,9 @@ def top5(request):
 
         market_code = find_market_code[0] if find_market_code else None
         issuecode = find_isusrtcd[0] if find_isusrtcd else None
-        if market_code == 'kospi':
+        if market_code == 'kospi' or 'kospdaq':
             current_price = koscom_api.get_current_price(market_code , issuecode )
+            print(current_price)
         else:
             symbol = issuecode
             current_price = nasdaq_api.get_current_price(market_code, symbol)
@@ -372,7 +373,7 @@ def sms_add_spend_calendar(request):
         amount = request.POST.get("amount", None)
         place = request.POST.get("place", None)
         wntlr = Stocksector.objects.all().values('ss_isusrtcd', 'ss_isukorabbrv')
-    
+
     return render(request, 'sms_add_spend_calendar.html', {'date': date, 'amount': amount, 'place': place, 'wntlr': wntlr})
 
 
