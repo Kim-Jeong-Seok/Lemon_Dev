@@ -237,7 +237,7 @@ def top5(request):
 
         market_code = find_market_code[0] if find_market_code else None
         issuecode = find_isusrtcd[0] if find_isusrtcd else None
-        if market_code == 'kospi':
+        if market_code == 'kospi' or 'kospdaq':
             current_price = koscom_api.get_current_price(market_code , issuecode )
         else:
             symbol = issuecode

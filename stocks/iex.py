@@ -1,3 +1,4 @@
+import re
 import json
 import requests
 from mysettings import IEX_C_TOKEN, IEX_S_TOKEN
@@ -123,11 +124,13 @@ class api:
 
     def get_stock_history(self, marketcode, symbol, h_range, h_date=None):
         try:
-            url = f'https://cloud.iexapis.com/stable/stock/{symbol}/chart/{h_range}'
-            url += f'/{h_date}?token={IEX_C_TOKEN}' if h_date is not None else f'?token={IEX_C_TOKEN}'
+            # url = f'https://cloud.iexapis.com/stable/stock/{symbol}/chart/{h_range}'
+            # url += f'/{h_date}?token={IEX_C_TOKEN}' if h_date is not None else f'?token={IEX_C_TOKEN}'
+            url = f'https://sandbox.iexapis.com/stable/stock/{symbol}/chart/{h_range}'
+            url += f'/{h_date}?token={IEX_S_TOKEN}' if h_date is not None else f'?token={IEX_S_TOKEN}'
             response = requests.get(url, timeout=self.timeout)
             if response.status_code == 200:
-                return json.loads(response.text)
+                return json.loads(re.sub('[-]', '', response.text))
             else:
                 return False
         except Exception as e:

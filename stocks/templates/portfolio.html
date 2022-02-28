@@ -54,7 +54,7 @@
 <div class="pagenation">
   <ul style="padding-left: 0 !important;">
     <li id="pagenation_portfolio"><a style="font-size: 13px;" href="{% url 'stocks:portfolio' %}">포트폴리오</a></li>
-    <li id="pagenation_recommend"><a style="padding-right: 13px;" href="{% url 'stocks:suggestion' %}">추천</a></li>
+    <li id="pagenation_recommend"><a style="padding-right: 13px;" onclick="go_suggest();">추천</a></li>
   </ul>
 </div>
 
@@ -79,9 +79,10 @@
 {% comment %} <div style="text-align:center;font-size:22px;">{{total_current_amount|intcomma}}원</div> {% endcomment %}
 <!--<div style="text-align:center;font-size:22px;">{{total_invest_amount|intcomma}}원</div>-->
 
-    <div style="text-align:center;font-size:22px;font-weight:bold;">{{total_investment_amount|intcomma}}원</div>
+    <div style="text-align:center;font-size:22px;font-weight:bold;">{{total_current_price|intcomma}}원</div>
     <div style="text-align:center;font-size:14px;color:white;">
-    {{total_investment_amount|sub:user_total_investment_amount|intcomma}} ({{total_investment_amount|yields:user_total_investment_amount|floatformat:2}}%) </div>
+    
+    {{total_investment_amount|sub:user_total_investment_amount|intcomma}}원 ({{s_stock_amout|yields2:b_stock_amout|floatformat:2}}%)
     <div class="my_stock"><a class="my_stock-btn" href="{% url 'stocks:stock' %}">보유 주식</a></div>
 
 </div>
@@ -144,7 +145,7 @@
 <div class="stock-container" style="margin-top:20px; margin-bottom:50px;">
     <span class="stock-container-side">금일 기준</span>
     <div class="stock-container-title">주문 가능 금액</div>
-    <div style="text-align:center;font-size:22px;">{{user.invest|sub:total_investment_amount|add:total_use_investment_amount|intcomma}}원</div>
+    <div style="text-align:center;font-size:22px;">{{user.invest|add:total_use_investment_amount|intcomma}}원</div>
     <div class="my_stock"><a href="{% url 'admins:edit_invest' %}" class="my_stock-btn" >추가</a></div>
     </div>
 </div>
@@ -155,6 +156,12 @@ $(document).ready(function(){
 });
 </script>
 <script>
+    function go_suggest(){
+        $('#goLoading').show();
+        window.location.href="/suggestion";
+    }
+
+
     var myElement = document.getElementById('container');
 
     // create a simple instance
@@ -163,6 +170,7 @@ $(document).ready(function(){
 
     // listen to events...
     mc.on("swipeleft", function(ev) {
+        $('#goLoading').show();
         window.location.href="/suggestion";
     });
   </script>

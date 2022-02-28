@@ -35,7 +35,7 @@
   <ul>
     <li id="pagenation_summary"><a href="{% url 'calendars:summary' %}">요약</a></li>
     <li id="pagenation_list"><a href="{% url 'calendars:history' %}">내역</a></li>
-    <li id="pagenation_calendar"><a href="{% url 'calendars:top5' %}">TOP 5</a></li>
+    <li id="pagenation_calendar"><a href="{% url 'calendars:top5' %}" onclick="go_suggest();">TOP 5</a></li>
   </ul>
 </div>
 <!-- pagenation 끝 -->
@@ -260,6 +260,11 @@ function check_date(){
       //document.getElementById('footer_calendar').src = "/media/calendar_active.png";
 </script>
 <script>
+    function go_suggest(){
+        $('#goLoading').show();
+        window.location.href="/top5";
+    }
+
   var myElement = document.getElementById('container');
 
   // create a simple instance
@@ -268,7 +273,8 @@ function check_date(){
 
   // listen to events...
   mc.on("swipeleft", function(ev) {
-      window.location.href="/top5";
+    $('#goLoading').show();
+        window.location.href="/top5";
   });
 
   mc.on("swiperight", function(ev) {

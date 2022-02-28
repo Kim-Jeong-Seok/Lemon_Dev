@@ -454,7 +454,13 @@ var myChart3 = new Chart(ctx, {
         labels: [{% for r in result.month_history %} '{{r.trdDd}}', {% endfor %}],
         datasets: [{
             label: '종가',
-            data: [{% for r in result.month_history %} '{{r.trdPrc}}', {% endfor %}],
+            data: [{% for r in result.month_history %}
+                        {% if r.trdPrc %}
+                            '{{r.trdPrc|mul:result.ex_rate}}',
+                        {% else %}
+                            ''
+                        {% endif %}
+                    {% endfor %}],
             backgroundColor: [
                 'rgba(235, 235, 235,0.8)',
             ],
@@ -563,7 +569,7 @@ var myChart4 = new Chart(ctx, {
         labels: [{% for r in result.year_history %} '{{r.trdDd}}', {% endfor %}],
         datasets: [{
             label: '종가',
-            data: [{% for r in result.year_history %} '{{r.trdPrc}}', {% endfor %}],
+            data: [{% for r in result.year_history %} '{{r.trdPrc|mul:result.ex_rate}}', {% endfor %}],
             backgroundColor: [
                 'rgba(235, 235, 235,0.8)',
             ],
