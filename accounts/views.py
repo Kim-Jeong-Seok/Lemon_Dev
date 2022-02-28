@@ -4,7 +4,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from rest_framework.response import Response
 from django.http.response import HttpResponse
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.models import User
 from .models import user
@@ -105,6 +105,7 @@ def signup(request):
                                             birthday = birthday,
                                             )
             auth.login(request, user)
+            messages.add_message(request, messages.SUCCESS, '로그인 성공')
             return redirect('/home')
         return render(request, 'signup.html')
     return render(request, 'signup.html')

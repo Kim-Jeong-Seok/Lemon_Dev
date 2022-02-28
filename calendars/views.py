@@ -20,7 +20,7 @@ from django.contrib.auth.hashers import check_password
 from dateutil.relativedelta import relativedelta
 from django.http import JsonResponse
 from stocks import stockcal as cal
-from stocks import kocom
+from stocks import koscom
 from stocks import iex
 from stocks.models import Stocksector, Totalmerge
 
@@ -30,68 +30,73 @@ URL_LOGIN = '/login'
 
 @login_required(login_url=URL_LOGIN)
 def home(request):
-    invest = request.user.invest
-    user = request.user.user_id
-    now = datetime.datetime.now()
-    month = now.strftime('%m').replace('0', '')
-    year = now.strftime('%Y')
-    # 월별 기간 필터링
-    spend_month_filter2 = Spend.objects.filter(user_id=user, spend_date__month=month).values('spend_id', 'kind',
-                                                                                             'spend_date', 'amount',
-                                                                                             'place', 'category')
-    income_month_filter2 = Income.objects.filter(user_id=user, income_date__month=month).values('income_id', 'kind',
-                                                                                                'income_date', 'amount',
-                                                                                                'income_way',
-                                                                                                'income_way')
-    # 월 총 수입, 지출
-    spend_sum = spend_month_filter2.values('amount').aggregate(Sum('amount'))
-    spend_sum_value = list(spend_sum.values())
-    income_sum = income_month_filter2.values('amount').aggregate(Sum('amount'))
-    income_sum_value = list(income_sum.values())
-    stock_cal = cal.calculator()
-    total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
-    total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
-    total_current_price = stock_cal.total_current_price(request.user.user_id)
-    user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
-    son = total_investment_amount - user_total_investment_amount
-    invest = invest - total_investment_amount
+    u_chk = request.user.u_chk
+    if u_chk == True:
 
-    if total_current_price is False:
-        total_current_price = 0
-    else:
-        total_current_price = total_current_price
+        invest = request.user.invest
+        user = request.user.user_id
+        now = datetime.datetime.now()
+        month = now.strftime('%m').replace('0', '')
+        year = now.strftime('%Y')
+        # 월별 기간 필터링
+        spend_month_filter2 = Spend.objects.filter(user_id=user, spend_date__month=month).values('spend_id', 'kind',
+                                                                                                'spend_date', 'amount',
+                                                                                                'place', 'category')
+        income_month_filter2 = Income.objects.filter(user_id=user, income_date__month=month).values('income_id', 'kind',
+                                                                                                    'income_date', 'amount',
+                                                                                                    'income_way',
+                                                                                                    'income_way')
+        # 월 총 수입, 지출
+        spend_sum = spend_month_filter2.values('amount').aggregate(Sum('amount'))
+        spend_sum_value = list(spend_sum.values())
+        income_sum = income_month_filter2.values('amount').aggregate(Sum('amount'))
+        income_sum_value = list(income_sum.values())
+        stock_cal = cal.calculator()
+        total_investment_amount = stock_cal.total_investment_amount(request.user.user_id)
+        total_use_investment_amount = stock_cal.total_use_investment_amount(request.user.user_id)
+        total_current_price = stock_cal.total_current_price(request.user.user_id)
+        user_total_investment_amount = stock_cal.user_total_investment_amount(request.user.user_id)
+        son = total_investment_amount - user_total_investment_amount
+        invest = invest - total_investment_amount
 
-    if user_total_investment_amount is False:
-        user_total_investment_amount = 0
-    else:
-        user_total_investment_amount = user_total_investment_amount
-
-    if total_investment_amount is False:
-        total_investment_amount = 0
-    else:
-        total_investment_amount = total_investment_amount
-
-    home_chartjs_data = [invest, son]
-    for spend_sum_value in spend_sum_value:
-        if spend_sum_value == None:
-            home_chartjs_data.append(0)
+        if total_current_price is False:
+            total_current_price = 0
         else:
-            home_chartjs_data.append(spend_sum_value)
-    for income_sum_value in income_sum_value:
-        if income_sum_value == None:
-            home_chartjs_data.append(0)
-        else:
-            home_chartjs_data.append(income_sum_value)
+            total_current_price = total_current_price
 
-    result = {}
-    result['month'] = month
-    result['Expenditure'] = spend_sum
-    result['Income'] = income_sum
-    result['income_sum_value'] = income_sum_value
-    result['total_current_price'] = total_current_price
-    result['Home_chartjs_data'] = home_chartjs_data
-    result['total_investment_amount'] = total_investment_amount
-    result['user_total_investment_amount'] = user_total_investment_amount
+        if user_total_investment_amount is False:
+            user_total_investment_amount = 0
+        else:
+            user_total_investment_amount = user_total_investment_amount
+
+        if total_investment_amount is False:
+            total_investment_amount = 0
+        else:
+            total_investment_amount = total_investment_amount
+
+        home_chartjs_data = [invest, son]
+        for spend_sum_value in spend_sum_value:
+            if spend_sum_value == None:
+                home_chartjs_data.append(0)
+            else:
+                home_chartjs_data.append(spend_sum_value)
+        for income_sum_value in income_sum_value:
+            if income_sum_value == None:
+                home_chartjs_data.append(0)
+            else:
+                home_chartjs_data.append(income_sum_value)
+
+        result = {}
+        result['month'] = month
+        result['Expenditure'] = spend_sum
+        result['Income'] = income_sum
+        result['income_sum_value'] = income_sum_value
+        result['total_current_price'] = total_current_price
+        result['Home_chartjs_data'] = home_chartjs_data
+        result['total_investment_amount'] = total_investment_amount
+        result['user_total_investment_amount'] = user_total_investment_amount
+    else:
+        return redirect('social/info')
     return render(request, 'home.html', result)
 
 
@@ -223,7 +228,7 @@ def top5(request):
     category_amount_count = spend_month_filter.values('category').annotate(count=Count('category')).order_by('-count')[:5]
 
     category_stock = []
-    koscom_api = kocom.api()
+    koscom_api = koscom.api()
     nasdaq_api = iex.api()
     for element in category_place:
         find_market_code = Stocksector.objects.filter(ss_isukorabbrv=element['place']).values_list('ss_marketcode', flat=True)

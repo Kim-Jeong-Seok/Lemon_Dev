@@ -789,13 +789,13 @@ var myChart4 = new Chart(ctx, {
         var marketcode = document.getElementById('buy_marketcode').value;
         var issuecode = document.getElementById('buy_issuecode').value;
         var current_price = document.getElementById('buy_price').value;
-        var share = document.getElementById('buy_share').value;
-        var howmuch = $('#howmuch').val();
+        var share = parseInt(document.getElementById('buy_share').value);
+        var howmuch = parseInt($('#howmuch').val());
         if(share == '' || share == 0) {
             alert('구매할 주를 입력해주세요.');
         }
         else if(share > howmuch) {
-            alert('구매 가능한 주를 입력해주세요.');
+            alert('구매 가능한 주를 입력해주세요.' + typeof(share) + typeof(howmuch));
         }
         else{
             var headers = new Headers();
@@ -941,7 +941,7 @@ $( document ).ready(function() {
     }
 });
 $( document ).ready(function() {
-var number = {{user.invest|add:result.total|div:result.curPrice|floatformat}};
+var number = {{user.invest|add:result.total_use_investment_amount|div:result.curPrice|floatformat}};
 var final = Math.trunc(number);
 $('#howmuch').val(final);
 });

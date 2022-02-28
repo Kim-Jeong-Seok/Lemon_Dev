@@ -19,6 +19,7 @@
     width: 100%;
     margin: 0;
     padding: 0;
+    overflow:hidden;
   }
   select {
     border-radius:0; /* 아이폰 사파리 보더 없애기 */
@@ -41,7 +42,7 @@
   }
   .idVailed_btn{
     float: right;
-    margin-top: 11px;
+    margin-top: 15px;
     margin-right: 0px;
     width: 73px;
     height: 35px;
@@ -66,6 +67,7 @@
 </style>
 
 <body>
+<div style="height:100%;overflow:scroll">
 <!-- 회원가입 navbar -->
 <div id="nav" style="border-bottom: 1px solid #f1f1f1;">
     <div>
@@ -99,7 +101,7 @@
     <div class="signup-form">
     <a>아이디 <strong>(필수)</strong></a><br>
         <div style="display: flex; justify-content: space-between;">
-            <input type="text" class="add_info_select_signup" style="width:70%; margin-top: 10px; margin-bottom:10px;"
+            <input type="text" class="add_info_select_signup" style="width:70%; margin-top: 10px; margin-bottom:10px;text-transform: lowercase;"
           id="Vailduid" name="Vailduid" placeholder="(영문시작/숫자 포함 6~20자)" value="" ><div onclick="checkID();" id="check_ID" class="idVailed_btn">중복확인</div>
         </div>
         <br><input type="hidden" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;"
@@ -137,23 +139,22 @@
     <input type="hidden" class="add_info_select_signup" style="margin-top: 10px; margin-bottom:10px;" id="email" name="email"
         placeholder="" value="">
     </div>
-
-    <!-- 생년월일 입력 input -->
-    <div class="signup-form">
-        <a>생년월일</a>
-        <input class="add_info_select_signup" name=birthday type="date" id="year" maxlength="8" placeholder="생년월일을 입력해주세요. 예시)19801210" style="margin-top: 10px; margin-bottom:25px;">
-    </div>
-
     <!-- 핀번호 입력 input -->
-    <div class="signup-form">
-        <a>Pin번호 <strong>(필수)</strong></a>
-        <input type="number" name="pin" class="add_info_select_signup"
-            id="pin" placeholder="최대 4자리" value=""/>
-    </div>
+        <div class="signup-form">
+            <a>Pin번호 <strong>(필수)</strong></a>
+            <input type="number" name="pin" class="add_info_select_signup"
+                id="pin" placeholder="최대 4자리" value=""/>
+        </div>
+
 
 
     <div class="options_info" id="options_info">
+            <!-- 생년월일 입력 input -->
         <div class="signup-form" style="margin-top: 20px;">
+        <a>생년월일 (선택)</a>
+        <input class="add_info_select_signup" name=birthday type="date" id="year" maxlength="8" placeholder="생년월일을 입력해주세요. 예시)19801210" style="margin-top: 10px; margin-bottom:25px;">
+    </div>
+        <div class="signup-form">
             <a>성별 (선택)</a>
             <select name="gender" class="add_info_select" style="margin-top: 10px; margin-bottom:10px;">
                 <option value="0"> -- 선택 -- </option>
@@ -208,6 +209,7 @@
   </div><!-- 회원가입 폼 끝 -->
   </form>
 </div><!-- 회원가입 Wrapper 끝 -->
+</div>
 </body>
 
 <script>
@@ -330,7 +332,7 @@ document.addEventListener('keydown', function(event) {
         else{
             alert('전화번호를 확인해주세요.');
         }
-        
+
         // 난수 설정
         function makeRandomNum(n) {
             let value = '';
@@ -352,6 +354,8 @@ document.addEventListener('keydown', function(event) {
             $('#codeBtn').attr('disabled', true);
             $('#certBtn').attr('disabled', true);
             document.querySelector("#count").style.display = "none";
+            const element = document.getElementById('certBtn');
+            element.style.backgroundColor = 'grey';
         }
         else if(document.querySelector("#inputCode").value != KEY) {
             alert('인증번호가 일치하지 않습니다. 다시 확인해주세요.');
@@ -408,6 +412,8 @@ document.addEventListener('keydown', function(event) {
                         alert('사용가능한 아이디입니다.');
                         $('input[name=uid]').attr('value', vailID);
                         $('input[name=Vailduid]').attr('disabled', true);
+                        const element = document.getElementById('check_ID');
+                        element.style.backgroundColor = 'grey';
                     }
                 },
                 fail: function () {
@@ -443,6 +449,8 @@ document.addEventListener('keydown', function(event) {
                         alert('사용가능한 이메일입니다.');
                         $('input[name=email]').attr('value', vailEmail);
                         $('input[name=Vailemail]').attr('disabled', true);
+                        const element = document.getElementById('check_Email');
+                        element.style.backgroundColor = 'grey';
                     }
                 },
                 fail: function () {
